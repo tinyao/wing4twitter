@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="@color/primary"
+        android:elevation="4dp"
+        android:gravity="bottom"
+        android:minHeight="?android:attr/actionBarSize"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/spacing_signin_page"
+        android:paddingRight="@dimen/spacing_signin_page"
+        android:title="@string/welcome_wing"
+        android:transitionName="actionBar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_signin_page"
+        android:paddingRight="@dimen/spacing_signin_page"
+        android:layout_marginTop="@dimen/spacing_signin_page"
+        android:orientation="vertical"
+        android:layout_marginLeft="2dp"
+        android:layout_weight="1.0">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_medium"
+            android:text="Before getting started, Let's sign in first."/>
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/light_gray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true"
+            android:drawablePadding="16dp"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing_signin_page"
+            android:paddingRight="@dimen/spacing_signin_page"
+            android:text="@string/signin"
+            android:textColor="@color/black"
+            android:onClick="signin"
+            android:textSize="@dimen/text_size_medium" />
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer-array name="gplus_colors">
+        <item>@integer/google_green</item>
+        <item>@integer/google_blue</item>
+        <item>@integer/google_red</item>
+        <item>@integer/google_yellow</item>
+    </integer-array>
+
+    <string-array name="draw_menu_icons">
+        <item>@drawable/ic_drawer_home</item>
+        <item>@drawable/ic_drawer_favorite_n</item>
+        <item>@drawable/ic_drawer_search_n</item>
+        <item>@drawable/ic_drawer_list_n</item>
+        <item>@drawable/ic_drawer_trends_n</item>
+        <item>@drawable/ic_drawer_drafts_n</item>
+        <item>@drawable/ic_drawer_settings_n</item>
+    </string-array>
+
+    <string-array name="drawer_menu_group">
+        <item>Home</item>
+        <item>Favorite</item>
+        <item>Search</item>
+        <item>Lists</item>
+        <item>Trends</item>
+        <item>Draft</item>
+        <item>Settings</item>
+    </string-array>
+
+    <string-array name="user_list_sample">
+        <item>xdlinux</item>
+        <item>Android Dev</item>
+        <item>Square Inc</item>
+        <item>See all ... </item>
+    </string-array>
+</resources>

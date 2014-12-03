@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/primary"
+        android:elevation="4dp"
+        android:popupTheme="@android:style/Theme.Material.Light"
+        android:transitionName="actionBar" />
+
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/loadProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:indeterminate="true"
+        android:layout_marginTop="-3dp"
+        app:spb_sections_count="4"
+        app:spb_color="#F4B400"
+        app:spb_stroke_width="3dp"
+        app:spb_stroke_separator_length="4dp"/>
+
+    <WebView
+        android:id="@+id/webview_login"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        ></WebView>
+
+</LinearLayout>

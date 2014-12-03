@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Wing</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="drawer_home">Home</string>
+    <string name="title_login">Login your account</string>
+    <string name="signin">SIGN IN</string>
+    <string name="signin_twitter">Sign in Twitter</string>
+    <string name="welcome_wing">Welcome to Wing !</string>
+    <string name="welcom_login">Login your Account</string>
+    <string name="drawer_fav">Favorite</string>
+    <string name="drawer_draft">Draft</string>
+    <string name="drawer_settings">Settings</string>
+    <string name="drawer_trends">Trends</string>
+    <string name="drawer_userlist">List</string>
+
+</resources>

@@ -1,0 +1,57 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+
+    <style name="Text">
+
+    </style>
+
+    <style name="Text.White" parent="Text">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Text.Black" parent="Text">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Text.White.Medium" parent="Text.White">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+    </style>
+
+    <style name="DrawerItem">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="DrawerItemTxt" parent="Text.Black">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginLeft">20dp</item>
+    </style>
+
+    <style name="Text.Black.Huge" prarent="Text.Black">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+    </style>
+
+    <style name="Text.Black.Medium" prarent="Text.Black">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+    </style>
+
+    <style name="GNowProgressBar" parent="SmoothProgressBar">
+        <item name="spb_stroke_separator_length">0dp</item>
+        <item name="spb_sections_count">2</item>
+        <item name="spb_speed">1.7</item>
+        <item name="spb_progressiveStart_speed">2</item>
+        <item name="spb_progressiveStop_speed">3.4</item>
+        <item name="spb_interpolator">spb_interpolator_acceleratedecelerate</item>
+        <item name="spb_mirror_mode">true</item>
+        <item name="spb_reversed">true</item>
+        <item name="spb_colors">@array/gplus_colors</item>
+        <item name="spb_progressiveStart_activated">true</item>
+    </style>
+
+</resources>

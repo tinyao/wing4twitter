@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_drawer_child_item"
+    style="@style/DrawerItemTxt"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:height="48dp"
+    android:paddingLeft="@dimen/spacing_keyline2"
+    android:text="@string/drawer_userlist"
+    android:textColor="@color/gray" />
