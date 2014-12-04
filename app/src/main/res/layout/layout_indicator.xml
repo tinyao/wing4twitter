@@ -17,9 +17,10 @@
         android:id="@+id/tab_home"
         android:layout_width="45.0dip"
         android:layout_height="fill_parent"
-        android:background="?android:selectableItemBackground"
         android:scaleType="center"
         android:src="@drawable/ic_home_inactive" />
+
+    <!--android:background="?android:selectableItemBackground"-->
 
     <ImageView
         android:id="@+id/tab_mention"
@@ -27,17 +28,15 @@
         android:layout_height="fill_parent"
         android:layout_above="@+id/indicator"
         android:layout_toRightOf="@id/tab_home"
-        android:background="?android:selectableItemBackground"
         android:scaleType="center"
         android:src="@drawable/ic_at_inactive" />
 
     <ImageView
-        android:id="@+id/tab_comment"
+        android:id="@+id/tab_message"
         android:layout_width="45.0dip"
         android:layout_height="fill_parent"
         android:layout_above="@id/indicator"
         android:layout_toRightOf="@id/tab_mention"
-        android:background="?android:selectableItemBackground"
         android:scaleType="center"
         android:src="@drawable/ic_msg_inactive" />
 

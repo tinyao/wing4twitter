@@ -98,12 +98,11 @@ public class DrawerListAdapter extends BaseExpandableListAdapter {
                 .findViewById(R.id.tv_drawer_group_label);
         ImageView lblListHeaderIcon = (ImageView) convertView.findViewById(R.id.img_drawer_group_tag);
         lblListHeader.setText(headerTitle);
-        lblListHeaderIcon.setSelected(true);
         lblListHeaderIcon.setImageResource(_listDataHeaderIcons
                 .getResourceId(groupPosition, R.drawable.ic_drawer_home));
 
         CheckBox groupIndicator = (CheckBox) convertView.findViewById(R.id.check_drawer_group);
-        if (groupPosition == 3 || groupPosition == 4) {
+        if (groupPosition == 2 || groupPosition == 3) {
             groupIndicator.setVisibility(View.VISIBLE);
         } else {
             groupIndicator.setVisibility(View.GONE);

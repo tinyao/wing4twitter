@@ -10,20 +10,20 @@
 
     <string-array name="draw_menu_icons">
         <item>@drawable/ic_drawer_home</item>
-        <item>@drawable/ic_drawer_favorite_n</item>
-        <item>@drawable/ic_drawer_search_n</item>
-        <item>@drawable/ic_drawer_list_n</item>
-        <item>@drawable/ic_drawer_trends_n</item>
-        <item>@drawable/ic_drawer_drafts_n</item>
-        <item>@drawable/ic_drawer_settings_n</item>
+        <item>@drawable/ic_drawer_favorite</item>
+        <item>@drawable/ic_drawer_lists</item>
+        <item>@drawable/ic_drawer_trends</item>
+        <item>@drawable/ic_drawer_search</item>
+        <item>@drawable/ic_drawer_drafts</item>
+        <item>@drawable/ic_drawer_settings</item>
     </string-array>
 
     <string-array name="drawer_menu_group">
         <item>Home</item>
         <item>Favorite</item>
-        <item>Search</item>
         <item>Lists</item>
         <item>Trends</item>
+        <item>Search</item>
         <item>Draft</item>
         <item>Settings</item>
     </string-array>

@@ -3,19 +3,18 @@ package im.zico.wingtwitter.ui.fragment;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.TypedValue;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.ViewDragHelper;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,7 +22,6 @@ import java.util.List;
 
 import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.adapter.DrawerListAdapter;
-import im.zico.wingtwitter.view.NestedListView;
 
 
 /**
@@ -31,50 +29,35 @@ import im.zico.wingtwitter.view.NestedListView;
  * Activities that contain this fragment must implement the
  * {@link DrawerFragment.NavigationDrawerCallbacks} interface
  * to handle interaction events.
- * Use the {@link DrawerFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class DrawerFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    private String mParam1;
-    private String mParam2;
+    private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
 
     private NavigationDrawerCallbacks mCallbacks;
 
+    private int mCurrentSelectedPosition = 0;
+    private int mCurrentSelectedChildPosition = 0;
+
+
+    private DrawerLayout mDrawerLayout;
+    private View mFragmentContainerView;
+    private boolean mFromSavedInstanceState;
     private ExpandableListView expListView;
     private DrawerListAdapter listAdapter;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DrawerFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DrawerFragment newInstance(String param1, String param2) {
-        DrawerFragment fragment = new DrawerFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private ActionBarDrawerToggle mDrawerToggle;
 
-    public DrawerFragment() {
-        // Required empty public constructor
-    }
+    public DrawerFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
+        if (savedInstanceState != null) {
+            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+            mFromSavedInstanceState = true;
         }
     }
 
@@ -82,7 +65,7 @@ public class DrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View contentView =  inflater.inflate(R.layout.fragment_drawer, container, false);
+        View contentView = inflater.inflate(R.layout.fragment_drawer, container, false);
 
         expListView = (ExpandableListView) contentView.findViewById(R.id.explist_drawer);
         prepareListData();
@@ -96,30 +79,29 @@ public class DrawerFragment extends Fragment {
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-//                parent.setSelectedGroup(groupPosition);
-//                parent.setItemChecked(groupPosition, true);
-                Toast.makeText(getActivity(), "GroupPosition: " + groupPosition, Toast.LENGTH_SHORT).show();
-                CheckBox checkBox = (CheckBox) v.findViewById(R.id.check_drawer_group);
-                checkBox.setChecked(!checkBox.isChecked());
-
+                if(groupPosition == 2 || groupPosition == 3) {
+                    expListView.setItemChecked(groupPosition + 1, true);
+                    expListView.setItemChecked(groupPosition + 1, false);
+                } else {
+                    selectItem(groupPosition, -1);
+                }
                 return false;
             }
         });
 
-        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            expListView.setIndicatorBounds(expListView.getRight()-40, expListView.getWidth());
-        } else {
-            expListView.setIndicatorBoundsRelative(expListView.getRight()-40, expListView.getWidth());
-        }
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                if (groupPosition == 2 || groupPosition == 3) {
+                    selectItem(groupPosition, childPosition);
+                }
+                return false;
+            }
+        });
 
-//        NestedListView listView = (NestedListView) contentView.findViewById(R.id.drawer_group_list);
-//        String[] lists = getResources().getStringArray(R.array.user_list_sample);
-//        ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.group_list_item, R.id.tv_drawer_list_item, lists);
-//        listView.setAdapter(adapter);
-
+        selectItem(mCurrentSelectedPosition, -1);
         return contentView;
     }
-
 
     private List<String> parentMenus;
     private HashMap<String, List<String>> childMenuItems;
@@ -132,24 +114,34 @@ public class DrawerFragment extends Fragment {
 
         List<String> listChild = Arrays.asList(getResources().getStringArray(R.array.user_list_sample));
         List<String> emptyChild = new ArrayList<String>();
-        for(int i=0; i<parentMenus.size(); i++) {
+        for (int i = 0; i < parentMenus.size(); i++) {
             childMenuItems.put(parentMenus.get(i), emptyChild);
         }
-        childMenuItems.put(parentMenus.get(3), listChild);
+        childMenuItems.put(parentMenus.get(2), listChild);
     }
 
-//    private void selectItem(int position) {
-//        mCurrentSelectedPosition = position;
-//        if (mDrawerListView != null) {
-//            mDrawerListView.setItemChecked(position, true);
-//        }
-//        if (mDrawerLayout != null) {
-//            mDrawerLayout.closeDrawer(mFragmentContainerView);
-//        }
-//        if (mCallbacks != null) {
-//            mCallbacks.onNavigationDrawerItemSelected(position);
-//        }
-//    }
+    /**
+     * Select the drawer item
+     *
+     * @param groupPos
+     * @param childPos
+     */
+    private void selectItem(int groupPos, int childPos) {
+        Toast.makeText(getActivity(), "child: " + groupPos + "-" + childPos, Toast.LENGTH_SHORT).show();
+        mCurrentSelectedPosition = groupPos;
+        mCurrentSelectedChildPosition = childPos;
+        if (expListView != null) {
+            if (childPos == -1) {
+                expListView.setItemChecked(groupPos+1, true);
+            }
+        }
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawer(mFragmentContainerView);
+        }
+        if (mCallbacks != null) {
+            mCallbacks.onNavigationDrawerItemSelected(groupPos, childPos);
+        }
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -170,27 +162,73 @@ public class DrawerFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        // Forward the new configuration the drawer toggle component.
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p/>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        public void onFragmentInteraction(Uri uri);
-//    }
+    public void setUp(int drawer_resId, DrawerLayout drawerLayout) {
+        mDrawerLayout = drawerLayout;
+        mFragmentContainerView = getActivity().findViewById(drawer_resId);
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(),
+                drawerLayout,
+                R.string.open,
+                R.string.close);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+
+        // Defer code dependent on restoration of previous instance state.
+        mDrawerLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mDrawerToggle.syncState();
+            }
+        });
+
+        drawerLayout.setDrawerListener(mDrawerToggle);
+        enlargeDrawerDragger(drawerLayout);
+    }
+
+    /**
+     * Enlarge the trigger edge for the sliding drawer
+     *
+     * @param mDrawerLayout
+     */
+    private void enlargeDrawerDragger(DrawerLayout mDrawerLayout) {
+        Field mDragger = null;
+        try {
+            mDragger = ((Object) mDrawerLayout).getClass().getDeclaredField(
+                    "mLeftDragger");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        mDragger.setAccessible(true);
+
+        ViewDragHelper draggerObj = null;
+        try {
+            draggerObj = (ViewDragHelper) mDragger
+                    .get(mDrawerLayout);
+            Field mEdgeSize = draggerObj.getClass().getDeclaredField(
+                    "mEdgeSize");
+            mEdgeSize.setAccessible(true);
+            int edge = mEdgeSize.getInt(draggerObj);
+
+            mEdgeSize.setInt(draggerObj, edge * 3);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public ActionBarDrawerToggle getToggle() {
+        return mDrawerToggle;
+    }
 
     /**
      * Callbacks interface that all activities using this fragment must implement.
@@ -199,7 +237,7 @@ public class DrawerFragment extends Fragment {
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(int position);
+        void onNavigationDrawerItemSelected(int groupPos, int childPos);
     }
 
 }
