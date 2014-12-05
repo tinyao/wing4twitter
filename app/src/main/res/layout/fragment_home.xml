@@ -4,9 +4,16 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="home"/>
+
+    <ProgressBar
+        android:id="@+id/load_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"

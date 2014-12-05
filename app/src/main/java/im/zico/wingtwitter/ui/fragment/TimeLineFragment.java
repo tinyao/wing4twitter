@@ -1,7 +1,10 @@
 package im.zico.wingtwitter.ui.fragment;
 
 import android.app.Fragment;
+import android.app.ListFragment;
+import android.content.Loader;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +15,7 @@ import im.zico.wingtwitter.R;
 /**
  * Created by tinyao on 12/4/14.
  */
-public class TimeLineFragment extends Fragment{
+public class TimeLineFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -41,4 +44,5 @@ public class TimeLineFragment extends Fragment{
         textView.setText("HOME");
         return rootView;
     }
+
 }

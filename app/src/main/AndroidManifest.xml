@@ -46,6 +46,12 @@
             </intent-filter>
         </receiver>
 
+        <provider
+            android:name=".dao.WingDataProvider"
+            android:authorities="im.zico.wing.provider"
+            android:exported="false">
+        </provider>
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

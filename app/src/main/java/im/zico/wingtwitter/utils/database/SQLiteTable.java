@@ -7,6 +7,7 @@ import android.provider.BaseColumns;
 import java.util.ArrayList;
 
 public class SQLiteTable {
+
     String mTableName;
 
     ArrayList<Column> mColumnsDefinitions = new ArrayList<Column>();
@@ -42,6 +43,40 @@ public class SQLiteTable {
         return this;
     }
 
+    public SQLiteTable addColumns(String[] columnNames, Column.DataType[] types) {
+        int length = columnNames.length;
+        for (int i = 0; i < length; i++) {
+            mColumnsDefinitions.add(new Column(columnNames[i], null, types[i]));
+        }
+        return this;
+    }
+
+    public String buildTableSQL() {
+        String formatter = " %s";
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("CREATE TABLE IF NOT EXISTS ");
+        stringBuilder.append(mTableName);
+        stringBuilder.append("(");
+        int columnCount = mColumnsDefinitions.size();
+        int index = 0;
+        for (Column columnsDefinition : mColumnsDefinitions) {
+            stringBuilder.append(columnsDefinition.getColumnName()).append(
+                    String.format(formatter, columnsDefinition.getDataType().name()));
+            Column.Constraint constraint = columnsDefinition.getConstraint();
+
+            if (constraint != null) {
+                stringBuilder.append(String.format(formatter, constraint.toString()));
+            }
+            if (index < columnCount - 1) {
+                stringBuilder.append(",");
+            }
+            index++;
+        }
+        stringBuilder.append(");");
+
+        return stringBuilder.toString();
+    }
+
     public void create(SQLiteDatabase db) {
         String formatter = " %s";
         StringBuilder stringBuilder = new StringBuilder();
@@ -70,4 +105,6 @@ public class SQLiteTable {
     public void delete(final SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + mTableName);
     }
+
+
 }

@@ -10,8 +10,6 @@ public class PreferencesManager {
 
     private static final String PREF_NAME = "com.example.app.PREF_NAME";
 
-
-
     private static PreferencesManager sInstance;
     private final SharedPreferences mPref;
 
@@ -19,16 +17,9 @@ public class PreferencesManager {
         mPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
-    public static synchronized void initializeInstance(Context context) {
+    public static synchronized PreferencesManager getInstance(Context context) {
         if (sInstance == null) {
             sInstance = new PreferencesManager(context);
-        }
-    }
-
-    public static synchronized PreferencesManager getInstance() {
-        if (sInstance == null) {
-            throw new IllegalStateException(PreferencesManager.class.getSimpleName() +
-                    " is not initialized, call initializeInstance(..) method first.");
         }
         return sInstance;
     }
@@ -43,6 +34,10 @@ public class PreferencesManager {
         mPref.edit()
                 .putLong(key, value)
                 .commit();
+    }
+
+    public boolean hasKey(String key) {
+        return mPref.contains(key);
     }
 
     public String getValue(String key) {

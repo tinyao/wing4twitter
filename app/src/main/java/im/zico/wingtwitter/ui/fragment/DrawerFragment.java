@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Field;
@@ -24,32 +26,25 @@ import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.adapter.DrawerListAdapter;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DrawerFragment.NavigationDrawerCallbacks} interface
- * to handle interaction events.
- */
 public class DrawerFragment extends Fragment {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
 
     private NavigationDrawerCallbacks mCallbacks;
-
     private int mCurrentSelectedPosition = 0;
     private int mCurrentSelectedChildPosition = 0;
 
-
     private DrawerLayout mDrawerLayout;
     private View mFragmentContainerView;
+    private ImageView avatarView;
+    private TextView userName;
     private boolean mFromSavedInstanceState;
     private ExpandableListView expListView;
     private DrawerListAdapter listAdapter;
-
     private ActionBarDrawerToggle mDrawerToggle;
 
-    public DrawerFragment() {}
+    public DrawerFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,12 +69,14 @@ public class DrawerFragment extends Fragment {
         expListView.setAdapter(listAdapter);
 
         View headerCover = getActivity().getLayoutInflater().inflate(R.layout.drawer_menu_header, null);
+        avatarView = (ImageView) headerCover.findViewById(R.id.drawer_user_avatar);
+        userName = (TextView) headerCover.findViewById(R.id.drawer_user_name);
         expListView.addHeaderView(headerCover);
 
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                if(groupPosition == 2 || groupPosition == 3) {
+                if (groupPosition == 2 || groupPosition == 3) {
                     expListView.setItemChecked(groupPosition + 1, true);
                     expListView.setItemChecked(groupPosition + 1, false);
                 } else {
@@ -132,7 +129,7 @@ public class DrawerFragment extends Fragment {
         mCurrentSelectedChildPosition = childPos;
         if (expListView != null) {
             if (childPos == -1) {
-                expListView.setItemChecked(groupPos+1, true);
+                expListView.setItemChecked(groupPos + 1, true);
             }
         }
         if (mDrawerLayout != null) {

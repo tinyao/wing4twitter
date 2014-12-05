@@ -2,9 +2,11 @@
 package im.zico.wingtwitter.utils.database;
 
 public class Column {
+
     public static enum Constraint {
-        UNIQUE("UNIQUE"), NOT("NOT"), NULL("NULL"), CHECK("CHECK"), FOREIGN_KEY("FOREIGN KEY"), PRIMARY_KEY(
-                "PRIMARY KEY");
+        NOTHING("NOTHING"),
+        UNIQUE("UNIQUE"), NOT("NOT"), NULL("NULL"), NOTNULL("NOT NULL"), CHECK("CHECK"), FOREIGN_KEY("FOREIGN KEY"),
+        PRIMARY_KEY("PRIMARY KEY");
 
         private String value;
 
@@ -19,7 +21,19 @@ public class Column {
     }
 
     public static enum DataType {
-        NULL, INTEGER, REAL, TEXT, BLOB
+        NULL("NULL"), INTEGER("INTEGER"), REAL("REAL"), TEXT("TEXT"),
+        BLOB("BLOB"), INTEGER_1("INTEGER(1)");
+
+        private String value;
+
+        private DataType(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 
     private String mColumnName;

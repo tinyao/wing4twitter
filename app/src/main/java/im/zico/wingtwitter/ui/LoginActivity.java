@@ -22,8 +22,7 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        PreferencesManager.initializeInstance(this);
-        if (null != PreferencesManager.getInstance().getValue(PrefKey.KEY_ACCESSTOKEN)) {
+        if (null != PreferencesManager.getInstance(this).getValue(PrefKey.KEY_ACCESSTOKEN)) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }

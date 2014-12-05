@@ -1,27 +1,23 @@
 package im.zico.wingtwitter.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
-import im.zico.wingtwitter.APIKey;
 import im.zico.wingtwitter.R;
+import im.zico.wingtwitter.WingApp;
 import im.zico.wingtwitter.utils.PrefKey;
 import im.zico.wingtwitter.utils.PreferencesManager;
 import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.TwitterAdapter;
 import twitter4j.TwitterListener;
+import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
-
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -55,13 +51,7 @@ public class OAuthActivity extends BaseActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         progressBar = (SmoothProgressBar) findViewById(R.id.loadProgressBar);
 
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.setOAuthConsumerKey(APIKey.TWITTER_CONSUMER_KEY);
-        builder.setOAuthConsumerSecret(APIKey.TWITTER_CONSUMER_SECRET);
-        Configuration configuration = builder.build();
-
-        AsyncTwitterFactory factory = new AsyncTwitterFactory(configuration);
-        asyncTwitter = factory.getInstance();
+        asyncTwitter = WingApp.getTwitterInstance();
         asyncTwitter.addListener(listener);
 
         CookieSyncManager.createInstance(this);
@@ -75,7 +65,6 @@ public class OAuthActivity extends BaseActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, String url) {
-                Log.v("talon_login", "url: " + url);
                 if (url != null && url.startsWith("oauth:///zico.im")) {
                     handleTwitterCallback(url);
                 } else if (url.equals("https://twitter.com/")) {
@@ -108,26 +97,44 @@ public class OAuthActivity extends BaseActivity {
         @Override
         public void gotOAuthAccessToken(AccessToken token) {
             super.gotOAuthAccessToken(accessToken);
+
             Log.v("logging_in", "this is what the token should be: " + token.getToken());
             accessToken = token;
-            mHandler.sendEmptyMessage(1);
 
-            PreferencesManager.initializeInstance(OAuthActivity.this);
-            PreferencesManager prefManager = PreferencesManager.getInstance();
+            PreferencesManager prefManager = PreferencesManager.getInstance(OAuthActivity.this);
             prefManager.setValue(PrefKey.KEY_ACCESSTOKEN, token.getToken());
             prefManager.setValue(PrefKey.KEY_TOKENSECRET, token.getTokenSecret());
             prefManager.setValue(PrefKey.KEY_USERID, token.getUserId());
             prefManager.setValue(PrefKey.KEY_SCREENNAME, token.getScreenName());
 
+            asyncTwitter.showUser(token.getUserId());
+
         }
 
         @Override
         public void gotOAuthRequestToken(RequestToken token) {
+            Log.d("DEBUG", "request token got");
             if (token != null) {
                 requestToken = token;
                 mHandler.sendEmptyMessage(0);
             }
             super.gotOAuthRequestToken(token);
+        }
+
+        @Override
+        public void gotUserDetail(User user) {
+            super.gotUserDetail(user);
+            PreferencesManager prefManager = PreferencesManager.getInstance(OAuthActivity.this);
+            prefManager.setValue(PrefKey.KEY_USER_AVATAR_URL, user.getProfileImageURL());
+            prefManager.setValue(PrefKey.KEY_USER_AVATAR_BIG_URL, user.getBiggerProfileImageURL());
+            prefManager.setValue(PrefKey.KEY_USER_NAME, user.getName());
+            prefManager.setValue(PrefKey.KEY_USER_PROFILE_BG_URL, user.getProfileBackgroundImageURL());
+            prefManager.setValue(PrefKey.KEY_USER_DESC, user.getDescription());
+
+            WingApp.resetAsyncTwitter();
+            WingApp.initializeTwitter();
+            mHandler.sendEmptyMessage(1);
+            Log.d("DEBUG", "User: " + user.getScreenName() + " : " + user.getProfileImageURL());
         }
 
         @Override

@@ -8,14 +8,14 @@
     android:paddingBottom="8dp">
 
     <ImageView
-        android:id="@+id/user_cover"
+        android:id="@+id/drawer_user_cover"
         android:layout_width="fill_parent"
         android:layout_height="160.0dip"
         android:scaleType="centerCrop"
         android:src="@drawable/img_user_cover_default" />
 
     <ImageView
-        android:id="@+id/user_avatar"
+        android:id="@+id/drawer_user_avatar"
         android:layout_width="64.0dip"
         android:layout_height="64.0dip"
         android:layout_centerHorizontal="true"
@@ -24,10 +24,11 @@
         android:src="@drawable/avatar_circle" />
 
     <TextView
+        android:id="@+id/drawer_user_name"
         style="@style/Text.White.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/user_avatar"
+        android:layout_below="@id/drawer_user_avatar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="6dp"
         android:text="tinyao" />

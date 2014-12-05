@@ -79,6 +79,7 @@ public class MainActivity extends BaseActivity implements DrawerFragment.Navigat
                 .replace(R.id.container, getFragment(groupPos))
                 .commit();
         setTitle(getResources().getStringArray(R.array.drawer_menu_group)[groupPos]);
+        if(groupPos==0) setTitle(getResources().getString(R.string.app_name));
     }
 
 
