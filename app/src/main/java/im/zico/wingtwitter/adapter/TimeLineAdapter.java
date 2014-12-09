@@ -7,6 +7,10 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.method.LinkMovementMethod;
+import android.text.method.MovementMethod;
+import android.text.util.Linkify;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +21,17 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.WingApp;
 import im.zico.wingtwitter.type.WingTweet;
+import im.zico.wingtwitter.utils.HackyMovementMethod;
+import im.zico.wingtwitter.utils.SpannableStringUtils;
+import im.zico.wingtwitter.utils.Utils;
+import im.zico.wingtwitter.view.LinkyTextView;
+import twitter4j.util.TimeSpanConverter;
 
 /**
  * Created by tinyao on 12/4/14.
@@ -62,10 +74,20 @@ public class TimeLineAdapter extends CursorAdapter {
 
         Picasso.with(context).load(tweet.avatar_url).into(holder.avatar);
 
+        if(tweet.retweet_id != -1) {
+            holder.retweeted.setVisibility(View.VISIBLE);
+            holder.retweeted.setText(tweet.retweeted_by_user_name + " retweeted");
+        } else {
+            holder.retweeted.setVisibility(View.GONE);
+        }
+
         holder.name.setText(tweet.user_name);
-        holder.screenName.setText(tweet.screen_name);
+        holder.screenName.setText("@" + tweet.screen_name);
         holder.content.setText(String.valueOf(tweet.content));
-        holder.time.setText(String.valueOf(tweet.created_at));
+        holder.time.setText(Utils.getTimeAgo(tweet.created_at));
+
+        holder.content.setText(SpannableStringUtils.span(tweet.content));
+        holder.content.setMovementMethod(HackyMovementMethod.getInstance());
     }
 
     private Holder getHolder(final View view) {
@@ -79,6 +101,7 @@ public class TimeLineAdapter extends CursorAdapter {
 
     private class Holder {
 
+        public TextView retweeted;
         public ImageView avatar;
         public TextView name;
         public TextView screenName;
@@ -86,11 +109,32 @@ public class TimeLineAdapter extends CursorAdapter {
         public TextView time;
 
         public Holder(View view) {
+            retweeted = (TextView) view.findViewById(R.id.retweet_hint);
             avatar = (ImageView) view.findViewById(R.id.user_avatar);
             name = (TextView) view.findViewById(R.id.user_name);
             screenName = (TextView) view.findViewById(R.id.user_screen_name);
             content = (TextView) view.findViewById(R.id.tweet_content);
             time = (TextView) view.findViewById(R.id.tweet_time);
+
         }
+    }
+
+    private void setLinkable(TextView textView) {
+        Linkify.TransformFilter filter = new Linkify.TransformFilter() {
+            public final String transformUrl(final Matcher match, String url) {
+                return match.group();
+            }
+        };
+
+        Pattern mentionPattern = Pattern.compile("@([A-Za-z0-9_-]+)");
+        String mentionScheme = "http://www.twitter.com/";
+        Linkify.addLinks(textView, mentionPattern, mentionScheme, null, filter);
+
+        Pattern hashtagPattern = Pattern.compile("#([A-Za-z0-9_-]+)");
+        String hashtagScheme = "http://www.twitter.com/search/";
+        Linkify.addLinks(textView, hashtagPattern, hashtagScheme, null, filter);
+
+        Pattern urlPattern = Patterns.WEB_URL;
+        Linkify.addLinks(textView, urlPattern, null, null, filter);
     }
 }

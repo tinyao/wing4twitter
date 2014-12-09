@@ -19,4 +19,6 @@
     <string name="drawer_trends">Trends</string>
     <string name="drawer_userlist">List</string>
 
+    <string name="hello_html">This is an <a href="http://www.twitter.com/tinyao">@tinyao</a> text demo <a href="#">#Topic</a> for TextView.</string>
+
 </resources>

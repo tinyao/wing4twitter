@@ -8,7 +8,9 @@
     <color name="black">#1a1a1a</color>
     <color name="tv_main_body">#333333</color>
     <color name="light_gray">#e1e1e1</color>
+    <color name="alpha_light_gray">#99e1e1e1</color>
     <color name="stroke_gray">#dddddd</color>
     <color name="gray">#888888</color>
+    <color name="text_dark_secondery">#777777</color>
 
 </resources>

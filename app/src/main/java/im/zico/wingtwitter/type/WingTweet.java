@@ -2,6 +2,11 @@ package im.zico.wingtwitter.type;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.text.util.Linkify;
+import android.util.Patterns;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import im.zico.wingtwitter.dao.WingStore.*;
 import twitter4j.Status;
@@ -22,6 +27,7 @@ public class WingTweet {
     public String screen_name;
 
     public String content;
+    public String htmlContent;
     public long created_at;
     public String source;
 
@@ -70,6 +76,7 @@ public class WingTweet {
 
         created_at = status.getCreatedAt().getTime();
         content = status.getText();
+        htmlContent = convert2Html(content);
         source = status.getSource();
 
         retweet_count = status.getRetweetCount();
@@ -80,6 +87,28 @@ public class WingTweet {
         in_reply_user_id = status.getInReplyToUserId();
         in_reply_user_screen_name = status.getInReplyToScreenName();
         in_reply_user_name = ""; // no api
+    }
+
+    private String convert2Html(String content) {
+        Linkify.TransformFilter filter = new Linkify.TransformFilter() {
+            public final String transformUrl(final Matcher match, String url) {
+                return match.group();
+            }
+        };
+
+        Pattern mentionPattern = Pattern.compile("@([A-Za-z0-9_-]+)");
+
+//        String mentionScheme = "http://www.twitter.com/";
+//        Linkify.addLinks(textView, mentionPattern, mentionScheme, null, filter);
+
+        Pattern hashtagPattern = Pattern.compile("#([A-Za-z0-9_-]+)");
+//        String hashtagScheme = "http://www.twitter.com/search/";
+//        Linkify.addLinks(textView, hashtagPattern, hashtagScheme, null, filter);
+
+        Pattern urlPattern = Patterns.WEB_URL;
+//        Linkify.addLinks(textView, urlPattern, null, null, filter);
+
+        return "";
     }
 
     public static WingTweet fromCursor(final Cursor cursor) {
