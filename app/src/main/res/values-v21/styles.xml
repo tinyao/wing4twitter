@@ -9,9 +9,7 @@
         <item name="android:actionBarStyle">@style/CustomToolBar</item>
         <item name="android:actionBarDivider">@null</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
         <item name="actionMenuTextColor">@color/abc_primary_text_material_dark</item>
-        <item name="android:textColorSecondary">@color/abc_secondary_text_material_dark</item>
     </style>
 
     <style name="AppTheme.NoTitleBar" parent="AppTheme">
@@ -33,6 +31,7 @@
     <style name="CustomToolBar" parent="android:Widget.Material.ActionBar">
         <item name="android:background">@color/primary</item>
         <item name="android:elevation">4dp</item>
+
         <item name="android:contentInsetStart">@dimen/spacing_keyline2</item>
     </style>
 
@@ -40,6 +39,13 @@
         <item name="android:background">@color/primary</item>
         <item name="android:contentInsetStart">@dimen/spacing_keyline2</item>
         <item name="android:elevation">4dp</item>
+
+    </style>
+
+    <style name="ToolBarTheme" parent="android:Theme.Material.Light.DarkActionBar">
+        <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
+        <item name="actionMenuTextColor">@color/abc_primary_text_material_dark</item>
+        <item name="android:textColorSecondary">@color/abc_secondary_text_material_dark</item>
     </style>
 
 </resources>

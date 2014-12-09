@@ -9,7 +9,7 @@ import android.net.Uri;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.zico.wingtwitter.type.Tweet;
+import im.zico.wingtwitter.type.WingTweet;
 
 /**
  * Created by tinyao on 12/5/14.
@@ -25,35 +25,45 @@ public class WingDataHelper extends BaseDataHelper {
         return WingDataProvider.STATUS_CONTENT_URI;
     }
 
-    public Tweet query(long id) {
-        Tweet tweet = null;
+    public WingTweet query(long id) {
+        WingTweet wingTweet = null;
         Cursor cursor = query(null, null, null, null);
         if (cursor.moveToFirst()) {
-            tweet = Tweet.fromCursor(cursor);
+            wingTweet = WingTweet.fromCursor(cursor);
         }
         cursor.close();
-        return tweet;
+        return wingTweet;
     }
 
-    public void bulkInsert(List<Tweet> tweets) {
+    public void bulkInsert(List<WingTweet> wingTweets) {
         ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
 
-        for (Tweet tweet : tweets) {
-            ContentValues values = tweet.toContentValues();
+        for (WingTweet wingTweet : wingTweets) {
+            ContentValues values = wingTweet.toContentValues();
             contentValues.add(values);
         }
         ContentValues[] valueArray = new ContentValues[contentValues.size()];
         bulkInsert(contentValues.toArray(valueArray));
     }
 
-    public void insert(Tweet tweet) {
-        ContentValues values = tweet.toContentValues();
-        insert(values);
+    public void insert(WingTweet wingTweet) {
+        if(!isExisted(wingTweet.tweet_id)) {
+            ContentValues values = wingTweet.toContentValues();
+            insert(values);
+        }
+    }
+
+    private boolean isExisted(long tweet_id) {
+        Cursor c = query(getContentUri(), null, WingStore.TweetColumns.TWEET_ID + " = ?",
+                new String[]{ "" + tweet_id}, null);
+        boolean existed = c!=null && c.getCount() > 0;
+        c.close();
+        return existed;
     }
 
     public CursorLoader getCursorLoader() {
         return new CursorLoader(getContext(), getContentUri(), null, null,
-                null, WingStore.Statuses._ID + " ASC");
+                null, WingStore.TweetColumns.TWEET_ID + " DESC");
     }
 
 }

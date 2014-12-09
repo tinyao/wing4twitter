@@ -3,9 +3,10 @@ package im.zico.wingtwitter.ui.fragment;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -15,24 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import im.zico.wingtwitter.APIKey;
 import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.WingApp;
 import im.zico.wingtwitter.dao.WingDataHelper;
-import im.zico.wingtwitter.type.Tweet;
+import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.view.UnderlinePageIndicator;
 import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
 import twitter4j.ResponseList;
 import twitter4j.Status;
-import twitter4j.Twitter;
 import twitter4j.TwitterAdapter;
-import twitter4j.TwitterFactory;
 import twitter4j.TwitterListener;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * Created by tinyao on 12/1/14.
@@ -94,28 +88,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         pb = (ProgressBar) contentView.findViewById(R.id.load_progress);
         tv = (TextView) contentView.findViewById(R.id.tv_status);
 
-        AsyncTwitter asyncTwitter = WingApp.getTwitterInstance();
-        asyncTwitter.addListener(listener);
-        asyncTwitter.getHomeTimeline();
-
         Log.d("DEBUG", "get home timeline ...");
 
         return contentView;
     }
-
-    private TwitterListener listener = new TwitterAdapter() {
-        @Override
-        public void gotHomeTimeline(ResponseList<Status> statuses) {
-            super.gotHomeTimeline(statuses);
-
-            Log.d("DEBUG", "home timeline: " + statuses);
-
-            Log.d("DEBUG", "FIRST TWEET: " + statuses.get(0));
-
-            Tweet tweet = new Tweet(statuses.get(0));
-            DBHelper.insert(tweet);
-        }
-    };
 
     @Override
     public void onClick(View v) {
@@ -144,7 +120,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return TimeLineFragment.newInstance(position);
+                    return HomeTimeLineFragment.newInstance(position);
                 case 1:
                     return MentionedFragment.newInstance(position);
                 case 2:

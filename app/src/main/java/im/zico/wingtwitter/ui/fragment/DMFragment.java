@@ -35,9 +35,6 @@ public class DMFragment extends BaseTimeLineFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_blank, container,
                 false);
-        TextView textView = (TextView) rootView
-                .findViewById(R.id.hello_txt);
-        textView.setText("DM");
         return rootView;
     }
 

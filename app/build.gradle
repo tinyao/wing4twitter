@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -31,6 +31,8 @@ dependencies {
     compile 'org.twitter4j:twitter4j-stream:4.0.2'
     compile 'org.twitter4j:twitter4j-async:4.0.2'
     compile 'com.mcxiaoke.volley:library:1.+'
+    compile 'com.android.support:cardview-v7:21.0.+'
     compile 'com.github.castorflex.smoothprogressbar:library:1.0.0'
+    compile 'com.squareup.picasso:picasso:2.4.0'
 }
 

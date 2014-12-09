@@ -51,6 +51,14 @@ public class SQLiteTable {
         return this;
     }
 
+    public SQLiteTable addColumns(String[] columnNames, Column.DataType[] types, Column.Constraint[] constraints) {
+        int length = columnNames.length;
+        for (int i = 0; i < length; i++) {
+            mColumnsDefinitions.add(new Column(columnNames[i], constraints[i], types[i]));
+        }
+        return this;
+    }
+
     public String buildTableSQL() {
         String formatter = " %s";
         StringBuilder stringBuilder = new StringBuilder();
@@ -61,7 +69,7 @@ public class SQLiteTable {
         int index = 0;
         for (Column columnsDefinition : mColumnsDefinitions) {
             stringBuilder.append(columnsDefinition.getColumnName()).append(
-                    String.format(formatter, columnsDefinition.getDataType().name()));
+                    String.format(formatter, columnsDefinition.getDataType().toString()));
             Column.Constraint constraint = columnsDefinition.getConstraint();
 
             if (constraint != null) {

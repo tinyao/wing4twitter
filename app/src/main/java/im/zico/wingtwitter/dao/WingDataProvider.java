@@ -22,7 +22,7 @@ public class WingDataProvider extends ContentProvider {
     public static final String AUTHORITY = "im.zico.wing.provider";
     public static final String SCHEME = "content://";
 
-    public static final String PATH_STATUSES = "/" + WingStore.Statuses.TABLE_NAME;
+    public static final String PATH_STATUSES = "/" + WingStore.TweetColumns.TABLE_NAME;
 
     public static final Uri STATUS_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_STATUSES);
 
@@ -32,14 +32,14 @@ public class WingDataProvider extends ContentProvider {
     /*
      * MIME type definitions
      */
-    public static final String STATUS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.wingtwitter.status";
-    public static final String MENTION_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.wingtwitter.mention";
-    public static final String MESSAGE_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.wingtwitter.message";
+    public static final String STATUS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.status";
+    public static final String MENTION_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.mention";
+    public static final String MESSAGE_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.message";
 
     private static final UriMatcher sUriMatcher;
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(AUTHORITY, WingStore.Statuses.TABLE_NAME, TYPE_STATUS);
+        sUriMatcher.addURI(AUTHORITY, WingStore.TweetColumns.TABLE_NAME, TYPE_STATUS);
     }
 
     private static MSQLiteOpenHelper mDBHelper;
@@ -155,7 +155,7 @@ public class WingDataProvider extends ContentProvider {
         String table;
         switch (sUriMatcher.match(uri)) {
             case TYPE_STATUS:
-                table = WingStore.Statuses.TABLE_NAME;
+                table = WingStore.TweetColumns.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);

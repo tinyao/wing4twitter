@@ -19,4 +19,16 @@
         <attr name="android:background"/>
     </declare-styleable>
 
+    <declare-styleable name="Theme">
+        <attr name="circleImageViewStyle" format="reference"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="CircleImageView">
+        <attr name="border" format="boolean"></attr>
+        <attr name="border_width" format="dimension"></attr>
+        <attr name="border_color" format="color"></attr>
+        <attr name="shadow" format="boolean"></attr>
+    </declare-styleable>
+
+
 </resources>

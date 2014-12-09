@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Swipe Refresh Colors -->
+    <color name="refresh_progress_1">@color/accent</color>
+    <color name="refresh_progress_2">@color/primary_dark</color>
+    <color name="refresh_progress_3">@color/primary</color>
+
+</resources>

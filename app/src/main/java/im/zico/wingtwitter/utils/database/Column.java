@@ -4,7 +4,7 @@ package im.zico.wingtwitter.utils.database;
 public class Column {
 
     public static enum Constraint {
-        NOTHING("NOTHING"),
+        NOTHING(""),
         UNIQUE("UNIQUE"), NOT("NOT"), NULL("NULL"), NOTNULL("NOT NULL"), CHECK("CHECK"), FOREIGN_KEY("FOREIGN KEY"),
         PRIMARY_KEY("PRIMARY KEY");
 
