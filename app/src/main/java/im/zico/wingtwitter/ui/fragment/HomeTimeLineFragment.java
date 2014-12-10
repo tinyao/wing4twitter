@@ -13,8 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Transformation;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import com.tjerkw.slideexpandable.library.ActionSlideExpandableListView;
+import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
 
 import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.WingApp;
@@ -31,7 +39,7 @@ import twitter4j.TwitterListener;
 /**
  * Created by tinyao on 12/4/14.
  */
-public class HomeTimeLineFragment extends ListFragment
+public class HomeTimeLineFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -55,19 +63,26 @@ public class HomeTimeLineFragment extends ListFragment
 
     }
 
+    ActionSlideExpandableListView mListView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_blank, container,
                 false);
 
+        mListView = (ActionSlideExpandableListView) rootView.findViewById(R.id.list);
+
         DBHelper = new WingDataHelper(getActivity());
         mAdapter = new TimeLineAdapter(getActivity());
-        setListAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
+
         getLoaderManager().initLoader(0, null, this);
 
         return rootView;
     }
+
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -76,6 +91,15 @@ public class HomeTimeLineFragment extends ListFragment
         bindSwipeToRefresh((ViewGroup) view);
         asyncTwitter = WingApp.getTwitterInstance();
         asyncTwitter.addListener(listener);
+
+//        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                View expandV = view.findViewById(R.id.expandable);
+//                expand(expandV);
+//                return false;
+//            }
+//        });
 
         Log.d("DEBUG", "onCreatedView");
     }
@@ -97,10 +121,10 @@ public class HomeTimeLineFragment extends ListFragment
 
         // Move child to SwipeRefreshLayout, and add SwipeRefreshLayout to root
         // view
-        v.removeViewInLayout(getListView());
+        v.removeViewInLayout(mListView);
         v.addView(mSwipeRefresh, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        mSwipeRefresh.addView(getListView(), ViewGroup.LayoutParams.MATCH_PARENT,
+        mSwipeRefresh.addView(mListView, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
 
         mSwipeRefresh.setColorSchemeResources(

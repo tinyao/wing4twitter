@@ -14,8 +14,11 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,8 +33,6 @@ import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.utils.HackyMovementMethod;
 import im.zico.wingtwitter.utils.SpannableStringUtils;
 import im.zico.wingtwitter.utils.Utils;
-import im.zico.wingtwitter.view.LinkyTextView;
-import twitter4j.util.TimeSpanConverter;
 
 /**
  * Created by tinyao on 12/4/14.
@@ -65,7 +66,7 @@ public class TimeLineAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        Holder holder = getHolder(view);
+        final Holder holder = getHolder(view);
 
 //        view.setEnabled(!mListView.isItemChecked(cursor.getPosition()
 //                + mListView.getHeaderViewsCount()));
@@ -88,6 +89,8 @@ public class TimeLineAdapter extends CursorAdapter {
 
         holder.content.setText(SpannableStringUtils.span(tweet.content));
         holder.content.setMovementMethod(HackyMovementMethod.getInstance());
+
+//        ho
     }
 
     private Holder getHolder(final View view) {
@@ -107,6 +110,8 @@ public class TimeLineAdapter extends CursorAdapter {
         public TextView screenName;
         public TextView content;
         public TextView time;
+        public LinearLayout actionSlide;
+        public View mainContent;
 
         public Holder(View view) {
             retweeted = (TextView) view.findViewById(R.id.retweet_hint);
@@ -115,7 +120,8 @@ public class TimeLineAdapter extends CursorAdapter {
             screenName = (TextView) view.findViewById(R.id.user_screen_name);
             content = (TextView) view.findViewById(R.id.tweet_content);
             time = (TextView) view.findViewById(R.id.tweet_time);
-
+            actionSlide = (LinearLayout) view.findViewById(R.id.expandable);
+            mainContent = view.findViewById(R.id.main_card_content);
         }
     }
 
@@ -136,5 +142,58 @@ public class TimeLineAdapter extends CursorAdapter {
 
         Pattern urlPattern = Patterns.WEB_URL;
         Linkify.addLinks(textView, urlPattern, null, null, filter);
+    }
+
+    public static void expand(final View v) {
+        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = v.getMeasuredHeight();
+
+        v.getLayoutParams().height = 0;
+        v.setVisibility(View.VISIBLE);
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? LinearLayout.LayoutParams.WRAP_CONTENT
+                        : (int)(targetHeight * interpolatedTime);
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        // 1dp/ms
+        a.setDuration((int)(targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
+    }
+
+    public static void collapse(final View v) {
+        final int initialHeight = v.getMeasuredHeight();
+
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(interpolatedTime == 1){
+                    v.setVisibility(View.GONE);
+                }else{
+                    v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+                    v.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        // 1dp/ms
+        a.setDuration((int)(initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
     }
 }

@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@android:id/list"
+    <com.tjerkw.slideexpandable.library.ActionSlideExpandableListView
+        android:id="@+id/list"
         android:layout_width="match_parent"
-        android:drawSelectorOnTop="true"
+        android:drawSelectorOnTop="false"
         android:divider="@null"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

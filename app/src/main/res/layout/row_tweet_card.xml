@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingBottom="3dp"
-    android:descendantFocusability="blocksDescendants"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
     android:paddingTop="4dp">
 
+
     <LinearLayout
+        android:id="@+id/main_card_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/card_bg"
+        android:background="@drawable/card_ripple_selector"
+        android:clickable="true"
+        android:focusable="true"
         android:orientation="vertical">
 
         <TextView
@@ -24,9 +28,9 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="Retweeted by tinyao"
-            android:visibility="gone"
             android:textColor="@color/text_dark_secondery"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone" />
 
         <include layout="@layout/divider" />
 
@@ -56,16 +60,7 @@
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/tweet_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@id/user_avatar"
-                android:fontFamily="sans-serif-light"
-                android:text="4h"
-                android:textColor="@color/text_dark_secondery"
-                android:textSize="12sp" />
+
 
             <TextView
                 android:id="@+id/user_screen_name"
@@ -78,24 +73,107 @@
                 android:textColor="@color/text_dark_secondery"
                 android:textSize="12sp" />
 
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_alignTop="@id/user_screen_name"-->
+                <!--android:layout_toRightOf="@id/user_screen_name"-->
+                <!--android:fontFamily="sans-serif-light"-->
+                <!--android:text="·"-->
+                <!--android:layout_marginLeft="6dp"-->
+                <!--android:textColor="@color/text_dark_secondery"-->
+                <!--android:textSize="12sp" />-->
+
+            <TextView
+                android:id="@+id/tweet_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/user_name"
+                android:fontFamily="sans-serif-light"
+                android:layout_marginLeft="13dp"
+                android:text="4h"
+                android:textColor="@color/text_dark_secondery"
+                android:textSize="12sp" />
+
+            <!--<ImageView-->
+                <!--android:id="@+id/card_more"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_alignTop="@id/user_name"-->
+                <!--android:src="@drawable/ic_more"-->
+                <!--android:scaleType="centerInside"/>-->
+
             <im.zico.wingtwitter.ui.view.HackyTextView
                 android:id="@+id/tweet_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/user_avatar"
                 android:layout_marginTop="12dp"
+                android:focusable="false"
                 android:fontFamily="sans-serif-light"
                 android:lineSpacingExtra="2sp"
-                android:textColorLink="@color/primary"
                 android:linksClickable="true"
-                android:focusable="false"
                 android:text="A content URI is a URI that identifies data in a provider. Content URIs include the symbolic name of the entire provider (its authority) and a name that points to a table (a path). "
                 android:textColor="@color/tv_main_body"
+                android:textColorLink="@color/primary"
                 android:textSize="15sp" />
 
 
         </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/expandable"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_below="@+id/main_card_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="-6px"
+        android:background="@drawable/card_drawer_bg"
+        android:gravity="center_vertical|right"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_reply" />
+
+        <include layout="@layout/divider_vertical" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_retweet" />
+
+        <include layout="@layout/divider_vertical" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_favorite" />
+
+        <include layout="@layout/divider_vertical" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_share" />
+
     </LinearLayout>
 
 
-</LinearLayout>
+</RelativeLayout>
