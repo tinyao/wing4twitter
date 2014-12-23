@@ -10,7 +10,7 @@
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/primary"
         android:elevation="4dp"
-        android:popupTheme="@android:style/Theme.Material.Light"
+        android:theme="@style/ToolBarTheme"
         android:transitionName="actionBar" />
 
     <fr.castorflex.android.smoothprogressbar.SmoothProgressBar

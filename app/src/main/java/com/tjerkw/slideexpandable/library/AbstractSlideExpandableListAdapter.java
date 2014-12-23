@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -401,7 +400,6 @@ public abstract class AbstractSlideExpandableListAdapter extends WrapperListAdap
 	}
 
 	public Parcelable onSaveInstanceState(Parcelable parcelable) {
-
 		SavedState ss = new SavedState(parcelable);
 		ss.lastOpenPosition = this.lastOpenPosition;
 		ss.openItems = this.openItems;

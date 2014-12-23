@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tjerkw.slideexpandable.library.ActionSlideExpandableListView
+    <im.zico.wingtwitter.ui.view.TweetListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:drawSelectorOnTop="false"

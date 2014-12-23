@@ -1,15 +1,21 @@
 package im.zico.wingtwitter.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 import android.app.ActionBar.LayoutParams;
 
@@ -24,34 +31,29 @@ import java.lang.reflect.Field;
 import java.util.Locale;
 
 import im.zico.wingtwitter.R;
+import im.zico.wingtwitter.ui.fragment.BaseStatusesListFragment;
 import im.zico.wingtwitter.ui.fragment.DMFragment;
 import im.zico.wingtwitter.ui.fragment.DraftFragment;
 import im.zico.wingtwitter.ui.fragment.DrawerFragment;
 import im.zico.wingtwitter.ui.fragment.FavoriteFragment;
 import im.zico.wingtwitter.ui.fragment.HomeFragment;
 import im.zico.wingtwitter.ui.fragment.ListsFragment;
-import im.zico.wingtwitter.ui.fragment.MentionedFragment;
 import im.zico.wingtwitter.ui.fragment.SearchFragment;
 import im.zico.wingtwitter.ui.fragment.TrendsFragment;
-import im.zico.wingtwitter.view.UnderlinePageIndicator;
 
 
 public class MainActivity extends BaseActivity implements DrawerFragment.NavigationDrawerCallbacks {
 
     private ActionBarDrawerToggle toggle;
-
     private DrawerFragment mNavigationDrawerFragment;
-
-//    SectionsPagerAdapter mSectionsPagerAdapter;
-    ViewPager mViewPager;
-//    private Fragment fragment;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
         mNavigationDrawerFragment = (DrawerFragment)
@@ -60,26 +62,46 @@ public class MainActivity extends BaseActivity implements DrawerFragment.Navigat
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        // Drawer fragment
-//        drawerFragment = (DrawerFragment)
-//                getFragmentManager().findFragmentById(R.id.navigation_drawer);
     }
 
-    //    @Override
-//    protected void onPostCreate(Bundle savedInstanceState) {
-//        super.onPostCreate(savedInstanceState);
-//        toggle.syncState();
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
+    public Toolbar getToolBar() {
+        return toolbar;
+    }
 
     @Override
     public void onNavigationDrawerItemSelected(int groupPos, int childPos) {
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, getFragment(groupPos))
+                .replace(R.id.container, getFragment(groupPos), ""+groupPos)
                 .commit();
+
+
+        switch (groupPos) {
+            case 0:
+                homeFragment = (HomeFragment) fragmentManager.findFragmentByTag("" + groupPos);
+                break;
+            case 1:
+                favoriteFragment = (FavoriteFragment) fragmentManager.findFragmentByTag("" + groupPos);
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                searchFragment = (SearchFragment) fragmentManager.findFragmentByTag("" + groupPos);
+                break;
+            case 5:
+                draftFragment = (DraftFragment) fragmentManager.findFragmentByTag("" + groupPos);
+                break;
+        }
+
         setTitle(getResources().getStringArray(R.array.drawer_menu_group)[groupPos]);
-        if(groupPos==0) setTitle(getResources().getString(R.string.app_name));
+        if (groupPos == 0) setTitle(getResources().getString(R.string.app_name));
     }
 
 
@@ -91,53 +113,46 @@ public class MainActivity extends BaseActivity implements DrawerFragment.Navigat
         return super.onOptionsItemSelected(item);
     }
 
+    private HomeFragment homeFragment;
+    private FavoriteFragment favoriteFragment;
+    private TrendsFragment trendsFragment;
+    private SearchFragment searchFragment;
+    private DraftFragment draftFragment;
+
     public Fragment getFragment(int position) {
 
         switch (position) {
             case 0:
-                return HomeFragment.newInstance(position);
+                if (homeFragment == null) {
+                    homeFragment = HomeFragment.newInstance(position);
+                    Log.d("DEBUG", "HOME NULL");
+                }
+                return homeFragment;
             case 1:
-                return FavoriteFragment.newInstance(position);
+                if (favoriteFragment == null) {
+                    favoriteFragment = FavoriteFragment.newInstance(position);
+                    Log.d("DEBUG", "FAVORITE NULL");
+                }
+                return favoriteFragment;
             case 2:
                 return ListsFragment.newInstance(position);
             case 3:
                 return TrendsFragment.newInstance(position);
             case 4:
-                return SearchFragment.newInstance(position);
+                if (searchFragment == null) {
+                    searchFragment = SearchFragment.newInstance(position);
+                    Log.d("DEBUG", "SEARCH NULL");
+                }
+                return searchFragment;
             case 5:
-                return DraftFragment.newInstance(position);
+                if (draftFragment == null) {
+                    draftFragment = DraftFragment.newInstance(position);
+                    Log.d("DEBUG", "DRAFT NULL");
+                }
+                return draftFragment;
         }
 
         return null;
     }
-
-
-//    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-//
-//        int TAB_SIZE = 3;
-//
-//        public SectionsPagerAdapter(FragmentManager fm) {
-//            super(fm);
-//        }
-//
-//        @Override
-//        public Fragment getItem(int position) {
-//            switch (position) {
-//                case 0:
-//                    return HomeFragment.newInstance(position + 1);
-//                case 1:
-//                    return MentionedFragment.newInstance(position + 1);
-//                case 2:
-//                    return DMFragment.newInstance(position + 1);
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            // Show 3 total pages.
-//            return TAB_SIZE;
-//        }
-//    }
 
 }

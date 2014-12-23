@@ -36,7 +36,6 @@ public class SpannableStringUtils {
             ss.removeSpan(span);
             if(ss.charAt(end-1) == ')') {
                 // Fix when url ended by ')'
-                Log.d("DEBUG", ss + " --- span end --- " + ss.charAt(end-1));
                 s = new WeiboSpan(span.getURL().substring(0, span.getURL().length()-1));
                 end--;
             }

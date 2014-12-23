@@ -2,6 +2,7 @@ package im.zico.wingtwitter.type;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.text.Html;
 import android.text.util.Linkify;
 import android.util.Patterns;
 
@@ -9,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import im.zico.wingtwitter.dao.WingStore.*;
+import im.zico.wingtwitter.utils.TweetUtils;
 import twitter4j.Status;
 import twitter4j.User;
 
@@ -72,12 +74,12 @@ public class WingTweet {
         user_id = user.getId();
         user_name = user.getName();
         screen_name = user.getScreenName();
-        avatar_url = user.getBiggerProfileImageURL();
+        avatar_url = TweetUtils.getLargeAvatarUrl(user.getProfileImageURL());
 
         created_at = status.getCreatedAt().getTime();
         content = status.getText();
         htmlContent = convert2Html(content);
-        source = status.getSource();
+        source = Html.fromHtml(status.getSource()).toString();
 
         retweet_count = status.getRetweetCount();
         favorite_count = status.getFavoriteCount();

@@ -35,6 +35,17 @@ public class WingDataHelper extends BaseDataHelper {
         return wingTweet;
     }
 
+    public WingTweet getTweet(long tweet_id) {
+        WingTweet wingTweet = null;
+        Cursor cursor = query(null, WingStore.TweetColumns.TWEET_ID + " = ?",
+                new String[]{ "" + tweet_id }, null);
+        if (cursor.moveToFirst()) {
+            wingTweet = WingTweet.fromCursor(cursor);
+        }
+        cursor.close();
+        return wingTweet;
+    }
+
     public void bulkInsert(List<WingTweet> wingTweets) {
         ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
 
@@ -53,7 +64,15 @@ public class WingDataHelper extends BaseDataHelper {
         }
     }
 
-    private boolean isExisted(long tweet_id) {
+    public void delete(long id) {
+
+    }
+
+    public int deletePrevious(long tweet_id) {
+        return delete(getContentUri(), WingStore.TweetColumns.TWEET_ID + " < ?", new String[]{ "" + tweet_id });
+    }
+
+    public boolean isExisted(long tweet_id) {
         Cursor c = query(getContentUri(), null, WingStore.TweetColumns.TWEET_ID + " = ?",
                 new String[]{ "" + tweet_id}, null);
         boolean existed = c!=null && c.getCount() > 0;
@@ -63,7 +82,7 @@ public class WingDataHelper extends BaseDataHelper {
 
     public CursorLoader getCursorLoader() {
         return new CursorLoader(getContext(), getContentUri(), null, null,
-                null, WingStore.TweetColumns.TWEET_ID + " DESC");
+                null, WingStore.TweetColumns.TWEET_ID + " DESC" + " LIMIT 20");
     }
 
 }

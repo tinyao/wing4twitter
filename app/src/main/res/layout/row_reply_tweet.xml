@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/reply_user_avatar"
+        android:layout_width="@dimen/timeline_avatar_small"
+        android:layout_height="@dimen/timeline_avatar_small"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/avatar_circle"
+        android:transitionName="avatar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/reply_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/user_avatar"
+            android:layout_toRightOf="@id/user_avatar"
+            android:singleLine="true"
+            android:text="Matias Duarte"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:transitionName="name" />
+
+        <TextView
+            android:id="@+id/reply_user_screen_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/reply_user_name"
+            android:layout_toRightOf="@id/reply_user_name"
+            android:fontFamily="sans-serif-light"
+            android:paddingLeft="6dp"
+            android:text="\@matiasduarte"
+            android:textColor="@color/text_dark_secondery"
+            android:textSize="12sp"
+            android:transitionName="screenName" />
+
+        <TextView
+            android:id="@+id/reply_tweet_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/reply_user_screen_name"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="13dp"
+            android:fontFamily="sans-serif-light"
+            android:text="4h"
+            android:textColor="@color/text_dark_secondery"
+            android:textSize="12sp"
+            android:transitionName="time" />
+
+
+        <im.zico.wingtwitter.ui.view.HackyTextView
+            android:id="@+id/reply_tweet_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reply_user_name"
+            android:layout_marginTop="8dp"
+            android:focusable="false"
+            android:fontFamily="sans-serif-light"
+            android:lineSpacingMultiplier="1.2"
+            android:linksClickable="true"
+            android:text="A content URI is a URI that identifies data in a provider. Content URIs include the symbolic name of the entire provider (its authority) and a name that points to a table (a path). "
+            android:textColor="@color/tv_main_body"
+            android:textColorLink="@color/primary"
+            android:textSize="15sp"
+            android:transitionName="content" />
+
+    </RelativeLayout>
+
+</LinearLayout>

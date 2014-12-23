@@ -10,11 +10,37 @@
         <item name="android:actionBarDivider">@null</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="actionMenuTextColor">@color/abc_primary_text_material_dark</item>
+        <item name="android:windowIsTranslucent">true</item>
+
+        <!--<item name="android:windowEnterTransition">@transition/explode</item>-->
+        <!--<item name="android:windowExitTransition">@transition/explode</item>-->
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
     </style>
 
     <style name="AppTheme.NoTitleBar" parent="AppTheme">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+
+    </style>
+
+    <style name="AppTheme.NoTitleBar.Main" parent="AppTheme.NoTitleBar">
+        <item name="android:windowEnterTransition">@transition/tran_explode</item>
+        <item name="android:windowExitTransition">@transition/tran_explode</item>
+        <!--<item name="android:windowSharedElementsUseOverlay">false</item>-->
+    </style>
+
+    <style name="AppTheme.NoTitleBar.Detail" parent="AppTheme.NoTitleBar">
+        <item name="android:windowEnterTransition">@transition/tran_explode</item>
+        <item name="android:windowExitTransition">@transition/tran_fade</item>
+        <!--<item name="android:windowSharedElementsUseOverlay">false</item>-->
+    </style>
+
+    <style name="AppTheme.NoTitleBar.Profile" parent="AppTheme">
+        <item name="android:windowEnterTransition">@transition/tran_slide</item>
+        <item name="android:windowReturnTransition">@transition/tran_slide</item>
+        <item name="android:windowExitTransition">@transition/tran_slide</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
     </style>
 
     <style name="ActionBarTabStyle.MY_STYLE" parent="@android:style/Widget.Holo.ActionBar.TabView">

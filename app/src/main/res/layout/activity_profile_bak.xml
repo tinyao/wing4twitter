@@ -1,0 +1,35 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/parallax_image_height"
+        android:scaleType="centerCrop"
+        android:src="@drawable/img_user_cover_default" />
+
+    <View
+        android:id="@+id/list_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.github.ksoichiro.android.observablescrollview.ObservableListView
+        android:id="@+id/list"
+        android:layout_below="@id/image"
+        android:headerDividersEnabled="false"
+        android:footerDividersEnabled="false"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <Toolbar
+        android:id="@+id/toolbar"
+        style="@style/ToolBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:popupTheme="@android:style/Theme.Material.Light"
+        android:theme="@style/ToolBarTheme"
+        android:transitionName="actionBar" />
+
+</FrameLayout>

@@ -51,7 +51,7 @@ public class OAuthActivity extends BaseActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         progressBar = (SmoothProgressBar) findViewById(R.id.loadProgressBar);
 
-        asyncTwitter = WingApp.getTwitterInstance();
+        asyncTwitter = WingApp.newTwitterInstance();
         asyncTwitter.addListener(listener);
 
         CookieSyncManager.createInstance(this);
@@ -132,7 +132,6 @@ public class OAuthActivity extends BaseActivity {
             prefManager.setValue(PrefKey.KEY_USER_DESC, user.getDescription());
 
             WingApp.resetAsyncTwitter();
-            WingApp.initializeTwitter();
             mHandler.sendEmptyMessage(1);
             Log.d("DEBUG", "User: " + user.getScreenName() + " : " + user.getProfileImageURL());
         }

@@ -17,10 +17,14 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public class WingApp extends Application {
 
+    public static final String TWITTER_APP_NAME = "Wing for Twitter";
+    public static final String TWITTER_APP_SOURCE = "<a href=http://zico.im'>Wing</a>";
+
     public static boolean uiInForeground = false;
     private static Context sContext;
 
-    private static AsyncTwitter asyncTwitter;
+    private static AsyncTwitterFactory mFactory = null;
+//    private static AsyncTwitter asyncTwitter;
 
     @Override
     public void onCreate() {
@@ -32,10 +36,11 @@ public class WingApp extends Application {
         return sContext;
     }
 
-    public static void initializeTwitter() {
+    private static AsyncTwitterFactory initializeTwitterFactory() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(APIKey.TWITTER_CONSUMER_KEY);
         builder.setOAuthConsumerSecret(APIKey.TWITTER_CONSUMER_SECRET);
+        builder.setAsyncNumThreads(5);
         if (PreferencesManager.getInstance(sContext).hasKey(PrefKey.KEY_ACCESSTOKEN)) {
             String accessToken = PreferencesManager.getInstance(sContext).getValue(PrefKey.KEY_ACCESSTOKEN);
             String tokenSecret = PreferencesManager.getInstance(sContext).getValue(PrefKey.KEY_TOKENSECRET);
@@ -43,19 +48,34 @@ public class WingApp extends Application {
             builder.setOAuthAccessTokenSecret(tokenSecret);
         }
         Configuration configuration = builder.build();
-        AsyncTwitterFactory factory = new AsyncTwitterFactory(configuration);
-        asyncTwitter = factory.getInstance();
+        return mFactory = new AsyncTwitterFactory(configuration);
+//        return asyncTwitter = mFactory.getInstance();
     }
 
-    public static AsyncTwitter getTwitterInstance() {
-        if (asyncTwitter == null) {
-            initializeTwitter();
+    public static AsyncTwitter newTwitterInstance() {
+        if (mFactory == null) {
+            mFactory = initializeTwitterFactory();
         }
-        return asyncTwitter;
+        return mFactory.getInstance();
     }
+
+//    public static AsyncTwitter getTwitterNew() {
+//        ConfigurationBuilder builder = new ConfigurationBuilder();
+//        builder.setOAuthConsumerKey(APIKey.TWITTER_CONSUMER_KEY);
+//        builder.setOAuthConsumerSecret(APIKey.TWITTER_CONSUMER_SECRET);
+//        builder.setAsyncNumThreads(5);
+//        if (PreferencesManager.getInstance(sContext).hasKey(PrefKey.KEY_ACCESSTOKEN)) {
+//            String accessToken = PreferencesManager.getInstance(sContext).getValue(PrefKey.KEY_ACCESSTOKEN);
+//            String tokenSecret = PreferencesManager.getInstance(sContext).getValue(PrefKey.KEY_TOKENSECRET);
+//            builder.setOAuthAccessToken(accessToken);
+//            builder.setOAuthAccessTokenSecret(tokenSecret);
+//        }
+//        Configuration configuration = builder.build();
+//        return new AsyncTwitterFactory(configuration).getInstance();
+//    }
 
     public static void resetAsyncTwitter() {
-        asyncTwitter = null;
+        mFactory = null;
     }
 
 }

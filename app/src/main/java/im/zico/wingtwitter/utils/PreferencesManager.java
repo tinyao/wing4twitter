@@ -44,6 +44,10 @@ public class PreferencesManager {
         return mPref.getString(key, null);
     }
 
+    public long getLongValue(String key) {
+        return mPref.getLong(key, 0);
+    }
+
     public void remove(String key) {
         mPref.edit()
                 .remove(key)

@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="im.zico.wingtwitter">
+    package="im.zico.wingtwitter" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
+        android:name=".WingApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:name=".WingApp"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoTitleBar">
+            android:theme="@style/AppTheme.NoTitleBar.Main" >
         </activity>
-
         <activity
             android:name=".ui.LoginActivity"
-            android:label="@string/welcome_wing"
-            android:theme="@style/AppTheme.NoTitleBar">
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.OAuthActivity"
+        <activity
+            android:name=".ui.OAuthActivity"
             android:label="@string/signin_twitter"
-            android:theme="@style/AppTheme.NoTitleBar"
-            android:parentActivityName=".ui.LoginActivity">
+            android:parentActivityName=".ui.LoginActivity"
+            android:theme="@style/AppTheme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -40,7 +44,7 @@
 
         <receiver
             android:name=".utils.NetworkStateReceiver"
-            android:label="NetworkChangeReceiver">
+            android:label="NetworkChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
@@ -50,13 +54,19 @@
         <provider
             android:name=".dao.WingDataProvider"
             android:authorities="im.zico.wing.provider"
-            android:exported="false">
-            <grant-uri-permission android:pathPattern=".*"/>
+            android:exported="false" >
+            <grant-uri-permission android:pathPattern=".*" />
         </provider>
 
+        <activity
+            android:name=".ui.TweetDetailActivity"
+            android:label="@string/title_activity_tweet_detail"
+            android:theme="@style/AppTheme.NoTitleBar.Detail">
+        </activity>
+        <activity
+            android:name=".ui.ProfileActivity"
+            android:theme="@style/AppTheme.NoTitleBar.Profile" >
+        </activity>
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

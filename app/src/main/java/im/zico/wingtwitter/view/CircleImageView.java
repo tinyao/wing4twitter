@@ -43,16 +43,18 @@ public class CircleImageView extends ImageView {
         paintBorder.setAntiAlias(true);
 
         // load the styled attributes and set their properties
-        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView, defStyle, 0);
+//        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView, defStyle, 0);
 
-        if(attributes.getBoolean(R.styleable.CircleImageView_border, true)) {
-            int defaultBorderSize = (int) (4 * getContext().getResources().getDisplayMetrics().density + 0.5f);
-            setBorderWidth(attributes.getDimensionPixelOffset(R.styleable.CircleImageView_border_width, defaultBorderSize));
-            setBorderColor(attributes.getColor(R.styleable.CircleImageView_border_color, Color.WHITE));
-        }
+//        if(attributes.getBoolean(R.styleable.CircleImageView_border, true)) {
+//
+//            int defaultBorderSize = (int) (4 * getContext().getResources().getDisplayMetrics().density + 0.5f);
+//            setBorderWidth(attributes.getDimensionPixelOffset(R.styleable.CircleImageView_border_width, defaultBorderSize));
+//            setBorderColor(attributes.getColor(R.styleable.CircleImageView_border_color, Color.WHITE));
+//
+//        }
 
-        if(attributes.getBoolean(R.styleable.CircleImageView_shadow, false))
-            addShadow();
+//        if(attributes.getBoolean(R.styleable.CircleImageView_shadow, false))
+//            addShadow();
     }
 
     public void setBorderWidth(int borderWidth) {

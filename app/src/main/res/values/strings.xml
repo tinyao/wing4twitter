@@ -18,7 +18,8 @@
     <string name="drawer_settings">Settings</string>
     <string name="drawer_trends">Trends</string>
     <string name="drawer_userlist">List</string>
-
     <string name="hello_html">This is an <a href="http://www.twitter.com/tinyao">@tinyao</a> text demo <a href="#">#Topic</a> for TextView.</string>
+    <string name="title_activity_tweet_detail">TweetDetailActivity</string>
+    <string name="title_activity_profile">ProfileActivity</string>
 
 </resources>

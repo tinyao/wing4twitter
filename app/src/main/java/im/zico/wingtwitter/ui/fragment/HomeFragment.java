@@ -4,9 +4,8 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -16,17 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import im.zico.wingtwitter.R;
-import im.zico.wingtwitter.WingApp;
 import im.zico.wingtwitter.dao.WingDataHelper;
-import im.zico.wingtwitter.type.WingTweet;
+import im.zico.wingtwitter.ui.MainActivity;
 import im.zico.wingtwitter.view.UnderlinePageIndicator;
-import twitter4j.AsyncTwitter;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.TwitterAdapter;
-import twitter4j.TwitterListener;
 
 /**
  * Created by tinyao on 12/1/14.
@@ -88,16 +80,38 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         pb = (ProgressBar) contentView.findViewById(R.id.load_progress);
         tv = (TextView) contentView.findViewById(R.id.tv_status);
 
-        Log.d("DEBUG", "get home timeline ...");
-
         return contentView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Add Event to Toolbar click, trigger listview in fragment scroll to top
+        ((MainActivity) getActivity()).getToolBar().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("DEBUG", "actionbar click ...");
+                if (mViewPager.getCurrentItem() == 0) {
+                    BaseStatusesListFragment currentFragment = (BaseStatusesListFragment) getChildFragmentManager()
+                            .findFragmentByTag("android:switcher:" + R.id.pager + ":" + mViewPager.getCurrentItem());
+                    currentFragment.scrollTop();
+                }
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tab_home:
-                mViewPager.setCurrentItem(0, true);
+                if (mViewPager.getCurrentItem() == 0) {
+                    BaseStatusesListFragment currentFragment = (BaseStatusesListFragment) getChildFragmentManager()
+                            .findFragmentByTag("android:switcher:" + R.id.pager + ":" + mViewPager.getCurrentItem());
+                    currentFragment.scrollTop();
+                } else {
+                    mViewPager.setCurrentItem(0, true);
+                }
                 break;
             case R.id.tab_mention:
                 mViewPager.setCurrentItem(1, true);
@@ -107,6 +121,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                 break;
         }
     }
+
+
 
     private class HomePagerAdapter extends FragmentPagerAdapter {
 
@@ -134,4 +150,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             return TAB_SIZE;
         }
     }
+
+
 }

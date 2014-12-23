@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import im.zico.wingtwitter.R;
+import im.zico.wingtwitter.ui.MainActivity;
 
 /**
  * Created by tinyao on 12/4/14.
@@ -33,10 +34,12 @@ public class BaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("DEBUG", "Drawer Fragment - onCreate");
-        getActivity().getActionBar().setDisplayShowCustomEnabled(false);
-        if (getArguments() != null) {
-            fragmentId = getArguments().getInt(FRAGMENT_ID);
-        }
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.d("DEBUG", "Drawer Fragment - onViewCreated");
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

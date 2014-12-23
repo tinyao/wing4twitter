@@ -30,25 +30,29 @@ import im.zico.wingtwitter.utils.HackyMovementMethod;
 /*
   Hack to fix conflict between MovementMethod and OnClickListener
 */
-public class HackyTextView extends TextView
-{
-	public HackyTextView(Context context) {
-		super(context);
-	}
-	
-	public HackyTextView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+public class HackyTextView extends TextView {
+    public HackyTextView(Context context) {
+        super(context);
+    }
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		boolean ret = super.onTouchEvent(event);
-		
-		MovementMethod method = getMovementMethod();
-		if (method instanceof HackyMovementMethod) {
-			return ((HackyMovementMethod) method).isLinkHit();
-		}
-		
-		return ret;
-	}
+    public HackyTextView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        boolean ret = super.onTouchEvent(event);
+
+        MovementMethod method = getMovementMethod();
+        if (method instanceof HackyMovementMethod) {
+            return ((HackyMovementMethod) method).isLinkHit();
+        }
+
+        return ret;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
+    <slide>
+        <targets>
+            <target android:excludeId="@id/toolbar"></target>
+            <target android:excludeId="@android:id/statusBarBackground"></target>
+            <target android:excludeId="@android:id/navigationBarBackground"></target>
+            <target android:excludeId="@id/profile_bannder_image"></target>
+            <target android:excludeId="@id/anchor"></target>
+            <target android:excludeId="@id/layout_profile_basic"></target>
+        </targets>
+    </slide>
+
+
+    <fade>
+        <targets>
+            <target android:targetId="@id/toolbar"></target>
+            <target android:targetId="@id/profile_bannder_image"></target>
+            <target android:targetId="@id/anchor"></target>
+            <target android:targetId="@id/layout_profile_basic"></target>
+        </targets>
+    </fade>
+
+</transitionSet>

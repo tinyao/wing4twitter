@@ -15,4 +15,6 @@
     <dimen name="spacing_keyline2">72dp</dimen>
     <dimen name="spacing_drawer_icon_text">32dp</dimen>
     <dimen name="timeline_avatar_size">40dp</dimen>
+    <dimen name="timeline_avatar_small">30dp</dimen>
+    <dimen name="parallax_image_height">200dp</dimen>
 </resources>
