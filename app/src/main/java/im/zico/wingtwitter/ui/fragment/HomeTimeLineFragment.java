@@ -1,7 +1,5 @@
 package im.zico.wingtwitter.ui.fragment;
 
-import android.app.ActionBar;
-import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.database.Cursor;
@@ -11,34 +9,33 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.tjerkw.slideexpandable.library.ActionSlideExpandableListView;
+
+import java.util.ArrayList;
+
 import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.WingApp;
 import im.zico.wingtwitter.adapter.TimeLineAdapter;
 import im.zico.wingtwitter.dao.WingDataHelper;
+import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
-import im.zico.wingtwitter.ui.MainActivity;
+import im.zico.wingtwitter.ui.TweetComposeActivity;
 import im.zico.wingtwitter.ui.view.LoadingFooter;
 import im.zico.wingtwitter.ui.view.TweetListView;
 import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
-import twitter4j.Twitter;
 import twitter4j.TwitterAdapter;
-import twitter4j.TwitterFactory;
 import twitter4j.TwitterListener;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * Created by tinyao on 12/4/14.
@@ -51,6 +48,7 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
     private WingDataHelper DBHelper;
     TimeLineAdapter mAdapter;
 
+    ImageButton composeBtn;
 
     /**
      * Returns a new instance of this fragment for the given section number.
@@ -73,7 +71,6 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
         this.mPageId = getArguments().getInt(ARG_SECTION_NUMBER);
     }
 
-    //    ActionSlideExpandableListView mListView;
     LoadingFooter mLoadingFooter;
 
     @Override
@@ -81,6 +78,9 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_blank, container, false);
         mListView = (TweetListView) rootView.findViewById(R.id.list);
+
+        composeBtn = (ImageButton) rootView.findViewById(R.id.fab_compose);
+
         mLoadingFooter = new LoadingFooter(getActivity());
         mListView.addFooterView(mLoadingFooter.getView());
         return rootView;
@@ -105,6 +105,8 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
 
 
     int index, top;
+
+    private int mLastFirstVisibleItem;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -135,6 +137,15 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
                     case R.id.expand_action_retweet:
                         break;
                 }
+
+                mListView.collapse();
+            }
+        });
+
+        composeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TweetComposeActivity.showDialog(getActivity());
             }
         });
 
@@ -147,7 +158,6 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-
             }
 
             @Override
@@ -166,13 +176,8 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
             }
         });
 
-//        mListView.setScrollViewCallbacks(this);
-
         Log.d("DEBUG", "onCreatedView");
     }
-
-    private boolean mFirstScroll = false;
-    private boolean mDragging = false;
 
     private SwipeRefreshLayout mSwipeRefresh;
     private AsyncTwitter asyncTwitter;
@@ -208,13 +213,14 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return DBHelper.getCursorLoader();
+        return DBHelper.getCursorLoader(WingStore.TYPE_TWEET);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d("DEBUG", "count: " + data.getCount());
         mAdapter.changeCursor(data);
+
         if (data != null && data.getCount() == 0) {
             loadFirstPage();
         }
@@ -226,6 +232,7 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+
         mAdapter.changeCursor(null);
     }
 
@@ -243,34 +250,42 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (!mSwipeRefresh.isRefreshing()) {
-                mLoadingFooter.setState(LoadingFooter.State.Idle, 3000);
-            } else {
-                mSwipeRefresh.setRefreshing(false);
-            }
-
-            index = mListView.getFirstVisiblePosition();
-            View v = mListView.getChildAt(0);
-            top = (v == null) ? 0 : v.getTop();
 
             ResponseList<Status> statuses = (ResponseList<Status>) msg.obj;
-
             Toast.makeText(getActivity(), statuses.size() + " New Tweets", Toast.LENGTH_SHORT).show();
 
-            for (Status ss : statuses) {
-                WingTweet tweet = new WingTweet(ss);
-                DBHelper.insert(tweet);
+            if (!mSwipeRefresh.isRefreshing()) {
+                // load old
+                mLoadingFooter.setState(LoadingFooter.State.Idle, 3000);
+            } else {
+                // load new
+                mSwipeRefresh.setRefreshing(false);
+                // 20 new tweets, delete all previous ones
+                if (statuses.size() >= 20) {
+                    DBHelper.deleteAllTweets();
+                }
             }
 
-            mListView.setSelectionFromTop(index, top);
+//            index = mListView.getFirstVisiblePosition();
+//            View v = mListView.getChildAt(0);
+//            top = (v == null) ? 0 : v.getTop();
+
+            ArrayList<WingTweet> wingTweets = new ArrayList<WingTweet>();
+            for (Status ss : statuses) {
+                WingTweet tweet = new WingTweet(ss);
+                wingTweets.add(tweet);
+            }
+            DBHelper.saveAll(wingTweets);
+
             super.handleMessage(msg);
         }
     };
 
     @Override
-    public void onScrollChanged(int i, boolean b, boolean b2) {
+    public void onScrollChanged(int mScrollY, boolean mFirstScroll, boolean mDragging) {
 
     }
+
 
     @Override
     public void onDownMotionEvent() {
@@ -279,15 +294,10 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
 
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-        ActionBar ab = getActivity().getActionBar();
         if (scrollState == ScrollState.UP) {
-            if (ab.isShowing()) {
-                ab.hide();
-            }
+                composeBtn.setVisibility(View.GONE);
         } else if (scrollState == ScrollState.DOWN) {
-            if (!ab.isShowing()) {
-                ab.show();
-            }
+                composeBtn.setVisibility(View.VISIBLE);
         }
     }
 }

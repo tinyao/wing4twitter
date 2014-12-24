@@ -17,4 +17,9 @@
     <dimen name="timeline_avatar_size">40dp</dimen>
     <dimen name="timeline_avatar_small">30dp</dimen>
     <dimen name="parallax_image_height">200dp</dimen>
+
+    <dimen name="fab_size">56dp</dimen>
+
+    <dimen name="button_elevation">2dp</dimen>
+    <dimen name="button_press_elevation">4dp</dimen>
 </resources>

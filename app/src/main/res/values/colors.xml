@@ -21,4 +21,6 @@
 
     <color name="alpha_primary">#11536dfe</color>
 
+    <color name="alpha_dark">#55000000</color>
+
 </resources>

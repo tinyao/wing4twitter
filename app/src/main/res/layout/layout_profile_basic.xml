@@ -11,8 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/card_bg"
         android:animateLayoutChanges="true"
+        android:background="@drawable/card_bg"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -49,12 +49,12 @@
                 android:text="\@tinyao_cz" />
 
             <Button
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@id/user_name"
-                android:text="Follow" />
+                android:text="Follow"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -64,9 +64,9 @@
             android:layout_marginLeft="2px"
             android:layout_marginRight="2px"
             android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingBottom="@dimen/activity_vertical_margin">
+            android:paddingRight="@dimen/activity_horizontal_margin">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -149,26 +149,24 @@
                 android:id="@+id/user_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:animateLayoutChanges="true"
-                android:visibility="gone"
-                android:layout_marginBottom="10dp"/>
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/user_addr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/user_web"
-                android:autoLink="all"
-                android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
         </LinearLayout>
-
 
 
         <View
@@ -183,25 +181,48 @@
             android:gravity="center_vertical">
 
             <TextView
+                android:id="@+id/user_to_tweet"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
                 android:background="?android:attr/selectableItemBackground"
-                android:text="Tweet" />
+                android:gravity="center"
+                android:text="Tweet"
+                android:textColor="@color/bg_dark" />
 
             <View
                 android:layout_width="3px"
                 android:layout_height="match_parent"
                 android:background="#ddd" />
 
-            <TextView
+            <RelativeLayout
+                android:id="@+id/user_to_follow_v"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:background="?android:attr/selectableItemBackground"
-                android:text="Follow" />
+                android:background="?android:attr/selectableItemBackground">
+
+                <ProgressBar
+                    android:id="@+id/user_to_follow_progressbar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:visibility="gone"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp" />
+
+                <TextView
+                    android:id="@+id/user_to_follow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="Follow"
+                    android:textColor="@color/bg_dark" />
+
+            </RelativeLayout>
+
         </LinearLayout>
 
 

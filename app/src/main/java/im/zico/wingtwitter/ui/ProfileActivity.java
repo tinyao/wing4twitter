@@ -2,13 +2,20 @@ package im.zico.wingtwitter.ui;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.TextPaint;
+import android.text.style.URLSpan;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.util.Log;
@@ -23,6 +30,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -40,15 +48,16 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.WingApp;
-import im.zico.wingtwitter.adapter.TimeLineAdapter;
 import im.zico.wingtwitter.adapter.UserTweetsAdapter;
+import im.zico.wingtwitter.dao.WingDataHelper;
 import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.type.WingUser;
 import im.zico.wingtwitter.ui.view.NestedListView;
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
+import im.zico.wingtwitter.utils.SpannableStringUtils;
 import twitter4j.AsyncTwitter;
 import twitter4j.Paging;
+import twitter4j.Relationship;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.TwitterAdapter;
@@ -65,8 +74,9 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
     private String userName = "";
 
     private NestedListView tweetList;
+    private WingDataHelper DBHelper;
 
-    private User mUser;
+    private WingUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,100 +93,45 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         ObservableScrollView scrollView = (ObservableScrollView) findViewById(R.id.scroll);
         scrollView.setScrollViewCallbacks(this);
 
-        revealBannder();
+        revealBanner();
 
-        // previously invisible view
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.row_item, R.id.tv,
-//            this.getResources().getStringArray(R.array.test));
-//        listView.setAdapter(adapter);
-
-//        int mPaddingOffset = getResources().getDimensionPixelSize(R.dimen.spacing_vertical_large);
-//
-//        // Set padding view for ListView. This is the flexible space.
-//        View paddingView = new View(this);
-//        AbsListView.LayoutParams lp = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
-//                mParallaxImageHeight - mPaddingOffset);
-//        paddingView.setLayoutParams(lp);
-//
-//        // This is required to disable header's list selector effect
-//        paddingView.setClickable(true);
-//
-//        listView.addHeaderView(paddingView);
-//
-//        LayoutInflater inflater = this.getLayoutInflater();
-//        View v = inflater.inflate(R.layout.layout_profile_basic, null);
-//        listView.addHeaderView(v);
-
+        DBHelper = new WingDataHelper(this);
         basicInfo = new BasicProfileCard(this);
-
         tweetList = (NestedListView) findViewById(R.id.user_profile_tweets_list);
 
         Intent intent = getIntent();
-        userName = intent.getStringExtra(WingStore.TweetColumns.USER_NAME);
-        Log.d("DEBUG", "avatar: " + intent.getStringExtra(WingStore.TweetColumns.USER_AVATAR_URL));
-        Picasso.with(this).load(getIntent()
-                .getStringExtra(WingStore.TweetColumns.USER_AVATAR_URL))
-                .into(basicInfo.avatar, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        revealBannder();
-                    }
-
-                    @Override
-                    public void onError() {
-
-                    }
-                });
-
-        basicInfo.name.setText(intent.getStringExtra(WingStore.TweetColumns.USER_NAME));
-        basicInfo.screenName.setText(intent.getStringExtra(WingStore.TweetColumns.USER_SCREEN_NAME));
         mUserId = intent.getLongExtra(WingStore.TweetColumns.USER_ID, -1);
-
         if (mUserId == -1) {
             finishAfterTransition();
+        } else {
+            mUser = DBHelper.getUser(mUserId);
+            if (mUser == null) {
+                mUser = new WingUser();
+                mUser.user_id = intent.getLongExtra(WingStore.TweetColumns.USER_ID, -1);
+                mUser.name = intent.getStringExtra(WingStore.TweetColumns.USER_NAME);
+                mUser.screenName = intent.getStringExtra(WingStore.TweetColumns.USER_SCREEN_NAME);
+                mUser.avatar = intent.getStringExtra(WingStore.TweetColumns.USER_AVATAR_URL);
+            }
+            basicInfo.setUserInfo(mUser);
         }
 
         asyncTwitter = WingApp.newTwitterInstance();
         asyncTwitter.addListener(listener);
 
         // show User detail
-        Log.d("DEBUG", "Get User Detail");
+        Log.d("DEBUG", "Get User Detail ... ");
         asyncTwitter.showUser(mUserId);
+
         Log.d("DEBUG", "Get User Statuses ...");
         asyncTwitter.getUserTimeline(mUserId, new Paging().count(5));
-        Log.d("DEBUG", "Get User Fav ...");
-        asyncTwitter.getFavorites(mUserId);
-
-        // mListBackgroundView makes ListView's background except header view.
-//        mListBackgroundView = findViewById(R.id.list_background);
-//        final View contentView = getWindow().getDecorView().findViewById(android.R.id.content);
-//        contentView.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                // mListBackgroundView's should fill its parent vertically
-//                // but the height of the content view is 0 on 'onCreate'.
-//                // So we should get it with post().
-//                mListBackgroundView.getLayoutParams().height = contentView.getHeight();
-//            }
-//        });
-
-
-//        FadingActionBarHelper helper = new FadingActionBarHelper()
-//                .actionBarBackground(R.drawable.img_user_cover_default)
-//                .headerLayout(R.layout.layout_profile_basic)
-//                .contentLayout(R.layout.activity_profile);
-//        setContentView(helper.createView(this));
-//        helper.initActionBar(this);
-//
-//        ListView listView = (ListView) findViewById(android.R.id.list);
-    }
+     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
     }
 
-    private void revealBannder() {
+    private void revealBanner() {
 
         bannerImage.postOnAnimationDelayed(new Runnable() {
             @Override
@@ -216,8 +171,14 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         @Override
         public void gotUserDetail(User user) {
             Log.d("DEBUG", "Got User Detail: " + user);
-            mUser = user;
+            WingUser tmpUser = new WingUser(user);
+            tmpUser.isFollowing = mUser.isFollowing;
+            tmpUser.isFollowMe = mUser.isFollowMe;
+            mUser = tmpUser;
             mHandler.sendEmptyMessage(GOT_USER_DETAIL);
+
+            Log.d("DEBUG", "Get User Relation ... ");
+            asyncTwitter.showFriendship(WingApp.getCurrentUserID(), mUser.user_id);
             super.gotUserDetail(user);
         }
 
@@ -241,10 +202,40 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
             super.gotFavorites(statuses);
             Log.d("DEBUG", "Got User Favs: " + statuses.size());
         }
+
+        @Override
+        public void gotShowFriendship(Relationship relationship) {
+            super.gotShowFriendship(relationship);
+            Log.d("DEBUG", "Got Relationship " + relationship.isSourceFollowingTarget());
+            mUser.isFollowing = relationship.isSourceFollowingTarget();
+            mUser.isFollowMe = relationship.isTargetFollowingSource();
+            DBHelper.save(mUser);
+            mHandler.sendEmptyMessage(GOT_RELATIONSHIP);
+        }
+
+        @Override
+        public void createdFriendship(User user) {
+            super.createdFriendship(user);
+            Log.d("DEBUG", "FOLLOWED");
+            mUser.isFollowing = true;
+            DBHelper.save(mUser);
+            mHandler.sendEmptyMessage(CREATED_RELATIONSHIP);
+        }
+
+        @Override
+        public void destroyedFriendship(User user) {
+            super.destroyedFriendship(user);
+            mUser.isFollowing = false;
+            DBHelper.save(mUser);
+            mHandler.sendEmptyMessage(DESTROYED_RELATIONSHIP);
+        }
     };
 
     private static final int GOT_USER_DETAIL = 0;
     private static final int GOT_USER_TWEETS = 1;
+    private static final int GOT_RELATIONSHIP = 2;
+    private static final int CREATED_RELATIONSHIP = 3;
+    private static final int DESTROYED_RELATIONSHIP = 4;
 
     Handler mHandler = new Handler() {
         @Override
@@ -257,35 +248,18 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
                     UserTweetsAdapter tweetsAdapter = new UserTweetsAdapter(ProfileActivity.this, (ArrayList<WingTweet>) msg.obj);
                     tweetList.setAdapter(tweetsAdapter);
                     break;
+                case GOT_RELATIONSHIP:
+                    basicInfo.toFollow.setText(mUser.isFollowing ? "Following" : "Follow");
+                    break;
+                case DESTROYED_RELATIONSHIP:
+                case CREATED_RELATIONSHIP:
+                    basicInfo.toFollowProgress.setVisibility(View.GONE);
+                    basicInfo.toFollow.setText(mUser.isFollowing ? "Following" : "Follow");
+                    break;
             }
             super.handleMessage(msg);
         }
     };
-
-
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            // pre-condition
-            return;
-        }
-
-        int totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            if (listItem instanceof ViewGroup) {
-                listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            }
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight
-                + listView.getPaddingTop() + listView.getPaddingBottom()
-                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -312,30 +286,18 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
 
         ViewHelper.setTranslationY(bannerImage, scrollY / 2);
 
-//        Log.d("DEBUG", "scrollY: " + scrollY);
-        int baseColor = getResources().getColor(R.color.primary);
-
         if (scrollY > mParallaxImageHeight * 1.2) {
             getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary)));
-            getActionBar().setTitle(userName);
+            getActionBar().setTitle(mUser.name);
             getActionBar().show();
 
-        } else if(scrollY > mParallaxImageHeight * 0.2) {
+        } else if (scrollY > mParallaxImageHeight * 0.2) {
             getActionBar().hide();
         } else {
             getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
             getActionBar().setTitle("");
             getActionBar().show();
         }
-
-
-//        int baseColor = getResources().getColor(R.color.primary);
-//        float alpha = Math.min(1, (scrollY - mParallaxImageHeight * 0.6f) / mParallaxImageHeight);
-//
-//        Log.d("DEBUG", "Alpha: " + alpha);
-////                1 - (float) Math.max(0,
-////                mParallaxImageHeight * 1.5 - scrollY) / (mParallaxImageHeight * 1.5f);
-//        setBackgroundAlpha(mToolbarView, alpha, baseColor);
     }
 
     @Override
@@ -374,7 +336,8 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         CircleImageView avatar;
         TextView name, screenName, desc, address, website;
         TextView tweets, followers, followings;
-        Button follow;
+        TextView toTweet, toFollow;
+        View toFollowV, toFollowProgress;
 
         public BasicProfileCard(Activity context) {
             avatar = (CircleImageView) context.findViewById(R.id.user_avatar);
@@ -386,30 +349,101 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
             tweets = (TextView) context.findViewById(R.id.user_tweet_count);
             followers = (TextView) context.findViewById(R.id.user_follower_count);
             followings = (TextView) context.findViewById(R.id.user_following_count);
+            toTweet = (TextView) context.findViewById(R.id.user_to_tweet);
+            toFollow = (TextView) context.findViewById(R.id.user_to_follow);
+            toFollowV = context.findViewById(R.id.user_to_follow_v);
+            toFollowProgress =  context.findViewById(R.id.user_to_follow_progressbar);
+
+            toFollowV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mUser.isFollowing) {
+                        // show dialog to confirm unfollow
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this)
+                                .setMessage("Stop following " + mUser.name + " ?")
+                                .setTitle("Unfollow")
+                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        toFollowProgress.setVisibility(View.VISIBLE);
+                                        Log.d("DEBUG", "UNFOLLOW ... " + mUser.screenName + " - " + mUser.user_id);
+                                        asyncTwitter.destroyFriendship(mUser.user_id);
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, null);
+                        builder.create().show();
+                    } else {
+                        // follow
+                        toFollowProgress.setVisibility(View.VISIBLE);
+                        Log.d("DEBUG", "FOLLOW ... " + mUser.screenName + " - " + mUser.user_id);
+                        asyncTwitter.createFriendship(mUser.user_id);
+                    }
+                }
+            });
+
+            toTweet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
 
-        public void setUserInfo(User user) {
-            desc.setText(user.getDescription());
-            address.setText(user.getLocation());
-            website.setText(user.getURL());
-            tweets.setText("" + user.getStatusesCount());
-            followers.setText("" + user.getFollowersCount());
-            followings.setText("" + user.getFriendsCount());
+        public void setUserInfo(WingUser user) {
+            name.setText(user.name);
+            screenName.setText(user.screenName);
 
-            if(user.getDescription()!=null && !user.getDescription().isEmpty())
+            desc.setText(user.desc);
+            address.setText(user.location);
+            website.setText(SpannableStringUtils.span(user.website!=null ? user.website : ""));
+            tweets.setText("" + user.tweetCount);
+            followers.setText("" + user.followerCount);
+            followings.setText("" + user.followingCount);
+
+            toFollow.setText(user.isFollowing ? "Following" : "Follow");
+
+            if (user.desc != null && !user.desc.isEmpty())
                 desc.setVisibility(View.VISIBLE);
-            if(user.getLocation()!=null && !user.getLocation().isEmpty())
+            if (user.location != null && !user.location.isEmpty())
                 address.setVisibility(View.VISIBLE);
-            if(user.getURL()!=null && !user.getURL().isEmpty())
+            if (user.website != null && !user.website.isEmpty())
                 website.setVisibility(View.VISIBLE);
 
-            if (user.getProfileBannerMobileRetinaURL() != null) {
+            Picasso.with(ProfileActivity.this)
+                    .load(user.avatar)
+                    .into(avatar);
+
+            if (user.banner != null) {
                 Picasso.with(ProfileActivity.this)
-                        .load(user.getProfileBannerMobileRetinaURL())
+                        .load(user.banner)
                         .error(R.color.primary)
                         .into(bannerImage);
             }
         }
+
+//        private void stripUnderlines(TextView textView) {
+//            Spannable s = (Spannable)textView.getText();
+//            URLSpan[] spans = s.getSpans(0, s.length(), URLSpan.class);
+//            for (URLSpan span: spans) {
+//                int start = s.getSpanStart(span);
+//                int end = s.getSpanEnd(span);
+//                s.removeSpan(span);
+//                span = new URLSpanNoUnderline(span.getURL());
+//                s.setSpan(span, start, end, 0);
+//            }
+//            textView.setText(s);
+//        }
+//
+//        class URLSpanNoUnderline extends URLSpan {
+//            public URLSpanNoUnderline(String url) {
+//                super(url);
+//            }
+//            @Override public void updateDrawState(TextPaint ds) {
+//                super.updateDrawState(ds);
+//                ds.setUnderlineText(false);
+//            }
+//        }
     }
 
 

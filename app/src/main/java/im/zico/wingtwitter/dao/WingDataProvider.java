@@ -23,23 +23,25 @@ public class WingDataProvider extends ContentProvider {
     public static final String SCHEME = "content://";
 
     public static final String PATH_STATUSES = "/" + WingStore.TweetColumns.TABLE_NAME;
+    public static final String PATH_USERS = "/" + WingStore.UserColumns.TABLE_NAME;
 
     public static final Uri STATUS_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_STATUSES);
+    public static final Uri USER_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_USERS);
 
-    private static final int TYPE_STATUS = 0;
-    private static final int TYPE_MENTION = 1;
+//    private static final int TYPE_STATUS = WingStore.TYPE_TWEET;
+//    private static final int TYPE_USER = WingStore.TYPE_USER;
 
     /*
      * MIME type definitions
      */
     public static final String STATUS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.status";
-    public static final String MENTION_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.mention";
-    public static final String MESSAGE_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.message";
+    public static final String USER_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.user";
 
     private static final UriMatcher sUriMatcher;
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(AUTHORITY, WingStore.TweetColumns.TABLE_NAME, TYPE_STATUS);
+        sUriMatcher.addURI(AUTHORITY, WingStore.TweetColumns.TABLE_NAME, WingStore.TYPE_TWEET);
+        sUriMatcher.addURI(AUTHORITY, WingStore.UserColumns.TABLE_NAME,  WingStore.TYPE_USER);
     }
 
     private static MSQLiteOpenHelper mDBHelper;
@@ -75,8 +77,10 @@ public class WingDataProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         switch (sUriMatcher.match(uri)) {
-            case TYPE_STATUS:
+            case WingStore.TYPE_TWEET:
                 return STATUS_CONTENT_TYPE;
+            case WingStore.TYPE_USER:
+                return USER_CONTENT_TYPE;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -154,8 +158,11 @@ public class WingDataProvider extends ContentProvider {
     private String matchTable(Uri uri) {
         String table;
         switch (sUriMatcher.match(uri)) {
-            case TYPE_STATUS:
+            case WingStore.TYPE_TWEET:
                 table = WingStore.TweetColumns.TABLE_NAME;
+                break;
+            case WingStore.TYPE_USER:
+                table = WingStore.UserColumns.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);

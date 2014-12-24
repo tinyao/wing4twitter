@@ -23,6 +23,15 @@
 
     </style>
 
+    <style name="TweetDialog" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowMinWidthMajor">100%</item>
+        <item name="android:windowMinWidthMinor">100%</item>
+    </style>
+
     <style name="AppTheme.NoTitleBar.Main" parent="AppTheme.NoTitleBar">
         <item name="android:windowEnterTransition">@transition/tran_explode</item>
         <item name="android:windowExitTransition">@transition/tran_explode</item>
@@ -32,15 +41,13 @@
     <style name="AppTheme.NoTitleBar.Detail" parent="AppTheme.NoTitleBar">
         <item name="android:windowEnterTransition">@transition/tran_explode</item>
         <item name="android:windowExitTransition">@transition/tran_fade</item>
-        <!--<item name="android:windowSharedElementsUseOverlay">false</item>-->
     </style>
 
     <style name="AppTheme.NoTitleBar.Profile" parent="AppTheme">
         <item name="android:windowEnterTransition">@transition/tran_slide</item>
-        <item name="android:windowReturnTransition">@transition/tran_slide</item>
+        <item name="android:windowReturnTransition">@transition/tran_fade</item>
         <item name="android:windowExitTransition">@transition/tran_slide</item>
         <item name="android:windowActionBarOverlay">true</item>
-        <!--<item name="android:windowTranslucentStatus">true</item>-->
     </style>
 
     <style name="ActionBarTabStyle.MY_STYLE" parent="@android:style/Widget.Holo.ActionBar.TabView">

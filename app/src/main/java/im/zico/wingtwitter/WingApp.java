@@ -49,7 +49,6 @@ public class WingApp extends Application {
         }
         Configuration configuration = builder.build();
         return mFactory = new AsyncTwitterFactory(configuration);
-//        return asyncTwitter = mFactory.getInstance();
     }
 
     public static AsyncTwitter newTwitterInstance() {
@@ -57,6 +56,13 @@ public class WingApp extends Application {
             mFactory = initializeTwitterFactory();
         }
         return mFactory.getInstance();
+    }
+
+    public static long getCurrentUserID() {
+        if (PreferencesManager.getInstance(sContext).hasKey(PrefKey.KEY_USERID)) {
+            return PreferencesManager.getInstance(sContext).getLongValue(PrefKey.KEY_USERID);
+        }
+        return -1;
     }
 
 //    public static AsyncTwitter getTwitterNew() {

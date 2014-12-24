@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:name=".WingApp"
@@ -24,6 +24,7 @@
             android:theme="@style/AppTheme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -34,8 +35,10 @@
             android:theme="@style/AppTheme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="zico.im"
                     android:scheme="oauth" />
@@ -61,11 +64,17 @@
         <activity
             android:name=".ui.TweetDetailActivity"
             android:label="@string/title_activity_tweet_detail"
-            android:theme="@style/AppTheme.NoTitleBar.Detail">
+            android:theme="@style/AppTheme.NoTitleBar.Detail" >
         </activity>
         <activity
             android:name=".ui.ProfileActivity"
             android:theme="@style/AppTheme.NoTitleBar.Profile" >
+        </activity>
+        <activity
+            android:name=".ui.TweetComposeActivity"
+            android:label="@string/title_activity_tweet_compose"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/TweetDialog">
         </activity>
     </application>
 

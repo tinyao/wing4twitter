@@ -55,6 +55,7 @@ public class TweetListView extends ActionSlideExpandableListView implements Scro
     }
 
     private OnScrollListener mOriginalScrollListener;
+
     private OnScrollListener mScrollListener = new OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -71,6 +72,7 @@ public class TweetListView extends ActionSlideExpandableListView implements Scro
             // AbsListView#invokeOnItemScrollListener calls onScrollChanged(0, 0, 0, 0)
             // on Android 4.0+, but Android 2.3 is not. (Android 3.0 is unknown)
             // So call it with onScrollListener.
+
             onScrollChanged();
         }
     };
@@ -118,6 +120,7 @@ public class TweetListView extends ActionSlideExpandableListView implements Scro
     }
 
     private void onScrollChanged() {
+
         if (mCallbacks != null) {
             if (getChildCount() > 0) {
                 int firstVisiblePosition = getFirstVisiblePosition();
@@ -194,13 +197,13 @@ public class TweetListView extends ActionSlideExpandableListView implements Scro
                         mScrollState = ScrollState.STOP;
                     }
                     mPrevScrollY = mScrollY;
+
                 } else {
                     LogUtils.v(TAG, "first: " + firstVisiblePosition);
                 }
             }
         }
     }
-
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {

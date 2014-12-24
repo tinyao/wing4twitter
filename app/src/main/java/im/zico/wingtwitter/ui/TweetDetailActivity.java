@@ -7,7 +7,6 @@ import android.widget.Toolbar;
 
 import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.ui.fragment.TweetDetailFragment;
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
 public class TweetDetailActivity extends BaseActivity {
 

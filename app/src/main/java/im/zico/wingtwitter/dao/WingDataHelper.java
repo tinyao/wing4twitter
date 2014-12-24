@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.zico.wingtwitter.type.WingTweet;
+import im.zico.wingtwitter.type.WingUser;
 
 /**
  * Created by tinyao on 12/5/14.
@@ -21,23 +22,19 @@ public class WingDataHelper extends BaseDataHelper {
     }
 
     @Override
-    protected Uri getContentUri() {
-        return WingDataProvider.STATUS_CONTENT_URI;
-    }
-
-    public WingTweet query(long id) {
-        WingTweet wingTweet = null;
-        Cursor cursor = query(null, null, null, null);
-        if (cursor.moveToFirst()) {
-            wingTweet = WingTweet.fromCursor(cursor);
+    protected Uri getContentUri(int type) {
+        switch (type) {
+            case WingStore.TYPE_TWEET:
+                return WingDataProvider.STATUS_CONTENT_URI;
+            case WingStore.TYPE_USER:
+                return WingDataProvider.USER_CONTENT_URI;
         }
-        cursor.close();
-        return wingTweet;
+        return null;
     }
 
     public WingTweet getTweet(long tweet_id) {
         WingTweet wingTweet = null;
-        Cursor cursor = query(null, WingStore.TweetColumns.TWEET_ID + " = ?",
+        Cursor cursor = query(WingStore.TYPE_TWEET, null, WingStore.TweetColumns.TWEET_ID + " = ?",
                 new String[]{ "" + tweet_id }, null);
         if (cursor.moveToFirst()) {
             wingTweet = WingTweet.fromCursor(cursor);
@@ -46,43 +43,105 @@ public class WingDataHelper extends BaseDataHelper {
         return wingTweet;
     }
 
-    public void bulkInsert(List<WingTweet> wingTweets) {
+    /**
+     * Save Tweet List
+     * @param wingTweets
+     */
+    public synchronized void saveAll(List<WingTweet> wingTweets) {
         ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
 
         for (WingTweet wingTweet : wingTweets) {
             ContentValues values = wingTweet.toContentValues();
             contentValues.add(values);
         }
+
         ContentValues[] valueArray = new ContentValues[contentValues.size()];
-        bulkInsert(contentValues.toArray(valueArray));
+        bulkInsert(WingStore.TYPE_TWEET, contentValues.toArray(valueArray));
     }
 
-    public void insert(WingTweet wingTweet) {
-        if(!isExisted(wingTweet.tweet_id)) {
+
+    /**
+     * Save single tweet
+     * @param wingTweet
+     */
+    public void save(WingTweet wingTweet) {
+        if(!isTweetExisted(wingTweet.tweet_id)) {
             ContentValues values = wingTweet.toContentValues();
-            insert(values);
+            insert(WingStore.TYPE_TWEET, values);
         }
     }
+
+    /**
+     * Save single user
+     * @param wingUser
+     */
+    public synchronized void save(WingUser wingUser) {
+        if(!isUserExsisted(wingUser.user_id)) {
+            ContentValues values = wingUser.toContentValues();
+            insert(WingStore.TYPE_USER, values);
+        } else {
+            ContentValues values = wingUser.toContentValues();
+            update(WingStore.TYPE_USER, values,
+                    WingStore.UserColumns.USER_ID + "=?", new String[]{ wingUser.user_id+"" });
+        }
+    }
+
+    public WingUser getUser(long userId) {
+        WingUser wingUser = null;
+        Cursor cursor = query(WingStore.TYPE_USER, null, WingStore.UserColumns.USER_ID + " = ?",
+                new String[]{ "" + userId }, null);
+        if (cursor.getCount()>0 && cursor.moveToFirst()) {
+            wingUser = new WingUser(cursor);
+        }
+        cursor.close();
+        return wingUser;
+    }
+
+
 
     public void delete(long id) {
 
     }
 
-    public int deletePrevious(long tweet_id) {
-        return delete(getContentUri(), WingStore.TweetColumns.TWEET_ID + " < ?", new String[]{ "" + tweet_id });
+    public int deletePreviousTweets(long tweet_id) {
+        return delete(getContentUri(WingStore.TYPE_TWEET), WingStore.TweetColumns.TWEET_ID + " < ?", new String[]{ "" + tweet_id });
     }
 
-    public boolean isExisted(long tweet_id) {
-        Cursor c = query(getContentUri(), null, WingStore.TweetColumns.TWEET_ID + " = ?",
+    public int deleteAllTweets() {
+        return delete(getContentUri(WingStore.TYPE_TWEET),null, null);
+    }
+
+//    public int clearTweets() {
+//        // only keep 40 tweets
+//
+//    }
+
+    public boolean isTweetExisted(long tweet_id) {
+        Cursor c = query(getContentUri(WingStore.TYPE_TWEET), null, WingStore.TweetColumns.TWEET_ID + " = ?",
                 new String[]{ "" + tweet_id}, null);
         boolean existed = c!=null && c.getCount() > 0;
         c.close();
         return existed;
     }
 
-    public CursorLoader getCursorLoader() {
-        return new CursorLoader(getContext(), getContentUri(), null, null,
-                null, WingStore.TweetColumns.TWEET_ID + " DESC" + " LIMIT 20");
+    private boolean isUserExsisted(long user_id) {
+        Cursor c = query(getContentUri(WingStore.TYPE_USER), null, WingStore.UserColumns.USER_ID + " = ?",
+                new String[]{ "" + user_id}, null);
+        boolean existed = ( c!=null && c.getCount() > 0 );
+        c.close();
+        return existed;
+    }
+
+    public CursorLoader getCursorLoader(int type) {
+        switch (type) {
+            case WingStore.TYPE_TWEET:
+                return new CursorLoader(getContext(), getContentUri(type), null, null,
+                        null, WingStore.TweetColumns.TWEET_ID + " DESC");
+            case WingStore.TYPE_USER:
+                return new CursorLoader(getContext(), getContentUri(type), null, null,
+                        null, WingStore.UserColumns.USER_ID + " DESC");
+        }
+        return null;
     }
 
 }

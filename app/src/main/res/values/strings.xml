@@ -21,5 +21,8 @@
     <string name="hello_html">This is an <a href="http://www.twitter.com/tinyao">@tinyao</a> text demo <a href="#">#Topic</a> for TextView.</string>
     <string name="title_activity_tweet_detail">TweetDetailActivity</string>
     <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_tweet_compose">TweetComposeActivity</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>

@@ -8,6 +8,7 @@ import android.util.Log;
 import im.zico.wingtwitter.dao.WingStore.*;
 import im.zico.wingtwitter.utils.database.Column;
 import im.zico.wingtwitter.utils.database.SQLiteTable;
+import twitter4j.User;
 
 /**
  * Created by tinyao on 12/5/14.
@@ -26,6 +27,8 @@ public class MSQLiteOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(createTable(TweetColumns.TABLE_NAME, TweetColumns.COLUMNS,
                 TweetColumns.TYPES, TweetColumns.CONSTRAINTS, true));
+        db.execSQL(createTable(UserColumns.TABLE_NAME, UserColumns.COLUMNS,
+                UserColumns.TYPES, UserColumns.CONSTRAINTS, true));
     }
 
     private static String createTable(final String tableName, final String[] columns,
