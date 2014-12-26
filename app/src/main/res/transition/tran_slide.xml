@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
-    <slide>
+    <slide android:startDelay="200" android:duration="500" android:slideEdge="bottom">
         <targets>
             <target android:excludeId="@id/toolbar"></target>
             <target android:excludeId="@android:id/statusBarBackground"></target>
             <target android:excludeId="@android:id/navigationBarBackground"></target>
             <target android:excludeId="@id/profile_bannder_image"></target>
             <target android:excludeId="@id/anchor"></target>
-            <target android:excludeId="@id/layout_profile_basic"></target>
         </targets>
     </slide>
-
 
     <fade>
         <targets>
@@ -20,5 +18,11 @@
             <target android:targetId="@id/layout_profile_basic"></target>
         </targets>
     </fade>
+
+    <!--<changeImageTransform>-->
+        <!--<targets>-->
+            <!--<target android:targetId="@android:id/home"></target>-->
+        <!--</targets>-->
+    <!--</changeImageTransform>-->
 
 </transitionSet>

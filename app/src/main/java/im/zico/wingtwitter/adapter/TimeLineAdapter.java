@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.util.Linkify;
+import android.transition.Fade;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Patterns;
@@ -28,7 +29,9 @@ import java.util.regex.Pattern;
 import de.hdodenhof.circleimageview.CircleImageView;
 import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.WingApp;
+import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
+import im.zico.wingtwitter.ui.ProfileActivity;
 import im.zico.wingtwitter.ui.TweetDetailActivity;
 import im.zico.wingtwitter.utils.HackyMovementMethod;
 import im.zico.wingtwitter.utils.SpannableStringUtils;
@@ -118,10 +121,26 @@ public class TimeLineAdapter extends CursorAdapter {
 //                                    Pair.create((View) holder.time, "time"));
 //                }
 
-//                options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, holder.mainContent, "card");
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, holder.mainContent, "card");
+                context.startActivity(intent, options.toBundle());
 
+//                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity)context).toBundle());
+            }
+        });
 
-                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity)context).toBundle());
+        holder.avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent profileIntent = new Intent(context, ProfileActivity.class);
+                profileIntent.putExtra(WingStore.TweetColumns.USER_AVATAR_URL, tweet.avatar_url);
+                profileIntent.putExtra(WingStore.TweetColumns.USER_ID, tweet.user_id);
+                profileIntent.putExtra(WingStore.TweetColumns.USER_NAME, tweet.user_name);
+                profileIntent.putExtra(WingStore.TweetColumns.USER_SCREEN_NAME, tweet.screen_name);
+
+                ActivityOptions options = ActivityOptions
+                        .makeSceneTransitionAnimation((Activity) context,
+                                Pair.create((View) holder.avatar, "avatar"));
+                context.startActivity(profileIntent, options.toBundle());
             }
         });
 

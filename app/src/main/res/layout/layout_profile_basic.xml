@@ -16,7 +16,31 @@
         android:animateLayoutChanges="true"
         android:background="@drawable/card_bg"
         android:orientation="vertical"
-        android:paddingTop="90dp">
+        android:paddingTop="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="130dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tinyao"
+                android:textColor="@color/black"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/user_screen_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="\@tinyao_cz" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -204,34 +228,34 @@
             android:src="@drawable/avatar_circle"
             android:transitionName="avatar" />
 
-        <TextView
-            android:id="@+id/user_screen_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/user_name"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="6dp"
-            android:layout_toRightOf="@id/user_avatar"
-            android:text="\@tinyao_cz" />
+        <!--<TextView-->
+            <!--android:id="@+id/user_screen_name"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignLeft="@id/user_name"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_marginTop="6dp"-->
+            <!--android:layout_toRightOf="@id/user_avatar"-->
+            <!--android:text="\@tinyao_cz" />-->
 
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/user_screen_name"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_toRightOf="@id/user_avatar"
-            android:text="tinyao"
-            android:textColor="@color/black"
-            android:textSize="22sp" />
+        <!--<TextView-->
+            <!--android:id="@+id/user_name"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_above="@id/user_screen_name"-->
+            <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+            <!--android:layout_toRightOf="@id/user_avatar"-->
+            <!--android:text="tinyao"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:textSize="22sp" />-->
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@id/user_name"
-            android:text="Follow"
-            android:visibility="gone" />
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_alignTop="@id/user_name"-->
+            <!--android:text="Follow"-->
+            <!--android:visibility="gone" />-->
 
     </RelativeLayout>
 

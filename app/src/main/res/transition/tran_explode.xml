@@ -8,6 +8,24 @@
         </targets>
     </explode>
 
+    <!--<slide android:slideEdge="top">-->
+        <!--<targets>-->
+            <!--<target android:targetId="@+id/main_card_content"></target>-->
+            <!--<target android:excludeId="@id/toolbar"></target>-->
+            <!--<target android:excludeId="@android:id/statusBarBackground"></target>-->
+            <!--<target android:excludeId="@android:id/navigationBarBackground"></target>-->
+        <!--</targets>-->
+    <!--</slide>-->
+
+    <!--<slide android:slideEdge="bottom" android:startDelay="200">-->
+        <!--<targets>-->
+            <!--<target android:targetId="@id/tweet_detail_actions"></target>-->
+            <!--<target android:excludeId="@id/toolbar"></target>-->
+            <!--<target android:excludeId="@android:id/statusBarBackground"></target>-->
+            <!--<target android:excludeId="@android:id/navigationBarBackground"></target>-->
+        <!--</targets>-->
+    <!--</slide>-->
+
     <fade>
         <targets>
             <target android:targetId="@id/toolbar"></target>

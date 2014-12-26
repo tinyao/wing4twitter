@@ -33,17 +33,18 @@
     </style>
 
     <style name="AppTheme.NoTitleBar.Main" parent="AppTheme.NoTitleBar">
-        <item name="android:windowEnterTransition">@transition/tran_explode</item>
-        <item name="android:windowExitTransition">@transition/tran_explode</item>
-        <!--<item name="android:windowSharedElementsUseOverlay">false</item>-->
+        <!--<item name="android:windowEnterTransition">@transition/tran_explode</item>-->
+        <item name="android:windowExitTransition">@transition/tran_fade</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
     </style>
 
     <style name="AppTheme.NoTitleBar.Detail" parent="AppTheme.NoTitleBar">
         <item name="android:windowEnterTransition">@transition/tran_explode</item>
         <item name="android:windowExitTransition">@transition/tran_fade</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
     </style>
 
-    <style name="AppTheme.NoTitleBar.Profile" parent="AppTheme">
+    <style name="AppTheme.Profile" parent="AppTheme">
         <item name="android:windowEnterTransition">@transition/tran_slide</item>
         <item name="android:windowReturnTransition">@transition/tran_fade</item>
         <item name="android:windowExitTransition">@transition/tran_slide</item>

@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.text.Html;
 import android.text.Spannable;
@@ -21,6 +22,7 @@ import android.transition.Fade;
 import android.transition.Transition;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -96,7 +98,7 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         scrollView = (ObservableScrollView) findViewById(R.id.scroll);
         scrollView.setScrollViewCallbacks(this);
 
-//        revealBanner();
+        revealBanner();
 
         DBHelper = new WingDataHelper(this);
         basicInfo = new BasicProfileCard(this);
@@ -130,8 +132,15 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         Log.d("DEBUG", "Get User Detail ... ");
         asyncTwitter.showUser(mUserId);
 
-        Log.d("DEBUG", "Get User Statuses ...");
-//        asyncTwitter.getUserTimeline(mUserId, new Paging().count(5));
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("DEBUG", "Get User Statuses ...");
+                asyncTwitter.getUserTimeline(mUserId, new Paging().count(5));
+            }
+        }, 1000);
+
      }
 
     @Override
@@ -146,8 +155,8 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
             public void run() {
                 if (!bannerImage.isAttachedToWindow()) return;
 
-                int cx = bannerImage.getLeft(); //(bannerImage.getRight() + bannerImage.getLeft()) / 2;
-                int cy = (bannerImage.getTop() + bannerImage.getBottom()) / 3;
+                int cx = (bannerImage.getRight() + bannerImage.getLeft()) / 4;
+                int cy = (bannerImage.getTop() + bannerImage.getBottom()) * 2 / 3;
 
                 // get the final radius for the clipping circle
                 int finalRadius = Math.max(bannerImage.getWidth(), bannerImage.getHeight());
@@ -253,6 +262,8 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
                     basicInfo.setUserInfo(mUser);
                     break;
                 case GOT_USER_TWEETS:
+                    findViewById(R.id.progressBarView).setVisibility(View.INVISIBLE);
+//                    findViewById(R.id.user_profile_tweets_view_all).setVisibility(View.VISIBLE);
                     UserTweetsAdapter tweetsAdapter = new UserTweetsAdapter(ProfileActivity.this, (ArrayList<WingTweet>) msg.obj);
                     tweetList.setAdapter(tweetsAdapter);
                     break;
@@ -461,5 +472,14 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
 //        }
     }
 
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // ToDo: When the avatar View not in screen, cancel the element-shared-transition on it
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            if (scrollView.getCurrentScrollY() > (getResources().getDimensionPixelSize(R.dimen.parallax_image_height) * 0.5) ) {
+//                getWindow().setTransition
+//            }
+//        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

@@ -68,7 +68,7 @@
         </activity>
         <activity
             android:name=".ui.ProfileActivity"
-            android:theme="@style/AppTheme.NoTitleBar.Profile" >
+            android:theme="@style/AppTheme.Profile" >
         </activity>
         <activity
             android:name=".ui.TweetComposeActivity"
