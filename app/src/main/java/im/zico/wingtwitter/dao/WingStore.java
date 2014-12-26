@@ -83,6 +83,7 @@ public class WingStore {
         public static final String SCREEN_NAME = "screen_name";
         public static final String AVATAR = "avatar";
         public static final String BANNER = "banner";
+        public static final String BANNER_COLOR = "banner_color";
         public static final String DESCRIPTION = "description";
         public static final String LOCATION = "location";
         public static final String WEBSITE = "website";
@@ -95,21 +96,21 @@ public class WingStore {
         public static final String IS_FOLLOWING_ME = "is_following_me";
 
         public static final String[] COLUMNS = new String[]{
-                ACCOUNT_ID, USER_ID, NAME, SCREEN_NAME, AVATAR, BANNER,
+                ACCOUNT_ID, USER_ID, NAME, SCREEN_NAME, AVATAR, BANNER, BANNER_COLOR,
                 DESCRIPTION, LOCATION, WEBSITE,
                 TWEET_COUNT, FAV_COUNT, FOLLOWING_COUNT, FOLLOWER_COUNT,
                 IS_FOLLOWING, IS_FOLLOWING_ME
         };
 
         public static final DataType[] TYPES = new DataType[]{
-                DataType.INTEGER, DataType.INTEGER, DataType.TEXT, DataType.TEXT, DataType.TEXT, DataType.TEXT,
+                DataType.INTEGER, DataType.INTEGER, DataType.TEXT, DataType.TEXT, DataType.TEXT, DataType.TEXT, DataType.TEXT,
                 DataType.TEXT, DataType.TEXT, DataType.TEXT,
                 DataType.INTEGER, DataType.INTEGER, DataType.INTEGER, DataType.INTEGER,
                 DataType.INTEGER_1, DataType.INTEGER_1
         };
 
         public static final Constraint[] CONSTRAINTS = new Constraint[]{
-                Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING,
+                Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING,
                 Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING,
                 Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING,
                 Constraint.NOTHING, Constraint.NOTHING};

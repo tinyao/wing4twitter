@@ -19,14 +19,20 @@
     </string-array>
 
     <string-array name="drawer_menu_group">
-    <item>Home</item>
-    <item>Favorite</item>
-    <item>Lists</item>
-    <item>Trends</item>
-    <item>Search</item>
-    <item>Draft</item>
-    <item>Settings</item>
-</string-array>
+        <item>Home</item>
+        <item>Favorite</item>
+        <item>Lists</item>
+        <item>Trends</item>
+        <item>Search</item>
+        <item>Draft</item>
+        <item>Settings</item>
+    </string-array>
+
+    <string-array name="dialog_add_photos">
+        <item>Last Capture</item>
+        <item>Camera</item>
+        <item>Gallery</item>
+    </string-array>
 
     <string-array name="test">
         <item>Home</item>

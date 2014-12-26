@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.os.Bundle;
@@ -78,6 +79,8 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
 
     private WingUser mUser;
 
+    private ObservableScrollView scrollView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,10 +93,10 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
         mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
 
-        ObservableScrollView scrollView = (ObservableScrollView) findViewById(R.id.scroll);
+        scrollView = (ObservableScrollView) findViewById(R.id.scroll);
         scrollView.setScrollViewCallbacks(this);
 
-        revealBanner();
+//        revealBanner();
 
         DBHelper = new WingDataHelper(this);
         basicInfo = new BasicProfileCard(this);
@@ -111,6 +114,11 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
                 mUser.name = intent.getStringExtra(WingStore.TweetColumns.USER_NAME);
                 mUser.screenName = intent.getStringExtra(WingStore.TweetColumns.USER_SCREEN_NAME);
                 mUser.avatar = intent.getStringExtra(WingStore.TweetColumns.USER_AVATAR_URL);
+            } else {
+                // check if banner set
+                if(mUser.banner==null || mUser.banner.isEmpty()) {
+                    findViewById(R.id.anchor).setVisibility(View.GONE);
+                }
             }
             basicInfo.setUserInfo(mUser);
         }
@@ -123,7 +131,7 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         asyncTwitter.showUser(mUserId);
 
         Log.d("DEBUG", "Get User Statuses ...");
-        asyncTwitter.getUserTimeline(mUserId, new Paging().count(5));
+//        asyncTwitter.getUserTimeline(mUserId, new Paging().count(5));
      }
 
     @Override
@@ -419,6 +427,13 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
                         .load(user.banner)
                         .error(R.color.primary)
                         .into(bannerImage);
+            } else {
+                Log.d("DEBUG", "currentY: " + scrollView.getCurrentScrollY()
+                    + " -- Y: " + scrollView.getScrollY());
+                if (scrollView.getCurrentScrollY() == 0 && user.bannerColor!=null && !user.bannerColor.isEmpty()) {
+                    Log.d("DEBUG", "banner color: " + user.bannerColor);
+                    bannerImage.setBackgroundColor(Color.parseColor("#FF" + user.bannerColor));
+                }
             }
         }
 

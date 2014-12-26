@@ -16,26 +16,29 @@
                 android:id="@+id/profile_bannder_image"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/parallax_image_height"
-                android:scaleType="centerCrop"
-                android:background="@color/primary"/>
+                android:background="@color/primary"
+                android:scaleType="centerCrop" />
 
             <View
                 android:id="@+id/anchor"
                 android:layout_width="match_parent"
+                android:layout_marginTop="-130dp"
                 android:layout_height="@dimen/parallax_image_height"
                 android:minHeight="@dimen/parallax_image_height" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_below="@id/anchor"
-                android:layout_marginTop="-60dp">
+                android:layout_marginTop="70dp"
+                android:orientation="vertical">
 
-                <include layout="@layout/layout_profile_basic"/>
-                <include layout="@layout/layout_profile_tweets"/>
+                <include layout="@layout/layout_profile_basic" />
 
-                <include layout="@layout/layout_profile_more"/>
+                <include layout="@layout/layout_profile_tweets" />
+
+                <include layout="@layout/layout_profile_more" />
+
             </LinearLayout>
 
 
@@ -52,13 +55,13 @@
     <!--android:layout_height="match_parent" />-->
 
     <!--<Toolbar-->
-        <!--android:id="@+id/toolbar"-->
-        <!--style="@style/ToolBarStyle"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="?android:attr/actionBarSize"-->
-        <!--android:popupTheme="@android:style/Theme.Material.Light"-->
-        <!--android:theme="@style/ToolBarTheme"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:transitionName="actionBar" />-->
+    <!--android:id="@+id/toolbar"-->
+    <!--style="@style/ToolBarStyle"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="?android:attr/actionBarSize"-->
+    <!--android:popupTheme="@android:style/Theme.Material.Light"-->
+    <!--android:theme="@style/ToolBarTheme"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--android:transitionName="actionBar" />-->
 
 </FrameLayout>

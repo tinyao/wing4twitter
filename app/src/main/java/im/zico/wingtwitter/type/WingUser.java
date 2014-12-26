@@ -30,6 +30,7 @@ public class WingUser {
 
     public String avatar;
     public String banner;
+    public String bannerColor;
 
     public int tweetCount;
     public int favCount;
@@ -50,6 +51,7 @@ public class WingUser {
         website = user.getURLEntity().getExpandedURL();
         avatar = TweetUtils.getLargeAvatarUrl(user.getProfileImageURL());
         banner = user.getProfileBannerMobileRetinaURL();
+        bannerColor = user.getProfileLinkColor();
         tweetCount = user.getStatusesCount();
         favCount = user.getFavouritesCount();
         followerCount = user.getFollowersCount();
@@ -80,6 +82,7 @@ public class WingUser {
         website = cursor.getString(cursor.getColumnIndex(WingStore.UserColumns.WEBSITE));
         avatar = cursor.getString(cursor.getColumnIndex(WingStore.UserColumns.AVATAR));
         banner = cursor.getString(cursor.getColumnIndex(WingStore.UserColumns.BANNER));
+        bannerColor = cursor.getString(cursor.getColumnIndex(WingStore.UserColumns.BANNER_COLOR));
 
         tweetCount = cursor.getInt(cursor.getColumnIndex(WingStore.UserColumns.TWEET_COUNT));
         followingCount = cursor.getInt(cursor.getColumnIndex(WingStore.UserColumns.FOLLOWING_COUNT));
@@ -100,6 +103,7 @@ public class WingUser {
         values.put(WingStore.UserColumns.WEBSITE, website);
         values.put(WingStore.UserColumns.AVATAR, avatar);
         values.put(WingStore.UserColumns.BANNER, banner);
+        values.put(WingStore.UserColumns.BANNER_COLOR, bannerColor);
         values.put(WingStore.UserColumns.TWEET_COUNT, tweetCount);
         values.put(WingStore.UserColumns.FAV_COUNT, favCount);
         values.put(WingStore.UserColumns.FOLLOWER_COUNT, followerCount);

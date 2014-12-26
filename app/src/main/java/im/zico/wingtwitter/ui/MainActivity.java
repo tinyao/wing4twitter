@@ -31,6 +31,7 @@ import java.lang.reflect.Field;
 import java.util.Locale;
 
 import im.zico.wingtwitter.R;
+import im.zico.wingtwitter.service.TweetService;
 import im.zico.wingtwitter.ui.fragment.BaseStatusesListFragment;
 import im.zico.wingtwitter.ui.fragment.DMFragment;
 import im.zico.wingtwitter.ui.fragment.DraftFragment;
@@ -62,6 +63,9 @@ public class MainActivity extends BaseActivity implements DrawerFragment.Navigat
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        final Intent intent = new Intent(this, TweetService.class);
+        intent.setAction(TweetService.INTENT_ACTION_GET_FOLLOWERS);
+        startService(intent);
     }
 
     @Override

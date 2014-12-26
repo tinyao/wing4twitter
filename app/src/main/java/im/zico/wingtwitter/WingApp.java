@@ -58,11 +58,15 @@ public class WingApp extends Application {
         return mFactory.getInstance();
     }
 
+    private static long cUserId = -1;
+
     public static long getCurrentUserID() {
-        if (PreferencesManager.getInstance(sContext).hasKey(PrefKey.KEY_USERID)) {
-            return PreferencesManager.getInstance(sContext).getLongValue(PrefKey.KEY_USERID);
+        if(cUserId == -1) {
+            if (PreferencesManager.getInstance(sContext).hasKey(PrefKey.KEY_USERID)) {
+                return PreferencesManager.getInstance(sContext).getLongValue(PrefKey.KEY_USERID);
+            }
         }
-        return -1;
+        return cUserId;
     }
 
 //    public static AsyncTwitter getTwitterNew() {
