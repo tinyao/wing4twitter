@@ -3,9 +3,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/main_card_content"
@@ -18,29 +18,29 @@
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical"
-        android:transitionName="card"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:paddingRight="16dp"
+        android:transitionName="card">
 
         <TextView
             android:id="@+id/retweet_hint"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:layout_gravity="right"
             android:fontFamily="sans-serif-light"
             android:gravity="center_vertical|right"
             android:text="Retweeted by tinyao"
             android:textColor="@color/text_dark_secondery"
             android:textSize="12sp"
-            android:layout_gravity="right"
-            android:visibility="gone"
-            android:transitionName="retweet"/>
+            android:transitionName="retweet"
+            android:visibility="gone" />
 
         <include layout="@layout/divider" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
+
             android:paddingTop="16dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -76,39 +76,46 @@
                 android:textSize="12sp"
                 android:transitionName="screenName" />
 
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_alignTop="@id/user_screen_name"-->
-            <!--android:layout_toRightOf="@id/user_screen_name"-->
-            <!--android:fontFamily="sans-serif-light"-->
-            <!--android:text="·"-->
-            <!--android:layout_marginLeft="6dp"-->
-            <!--android:textColor="@color/text_dark_secondery"-->
-            <!--android:textSize="12sp" />-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/user_screen_name"
+                android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@id/user_screen_name"
+                android:text="·"
+                android:visibility="gone"
+                android:textColor="@color/text_dark_secondery"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tweet_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignTop="@id/user_name"
                 android:layout_marginLeft="13dp"
                 android:fontFamily="sans-serif-light"
                 android:text="4h"
+                android:layout_alignParentRight="true"
                 android:textColor="@color/text_dark_secondery"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:transitionName="time" />
 
-            <!--<ImageView-->
-            <!--android:id="@+id/card_more"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_alignTop="@id/user_name"-->
-            <!--android:src="@drawable/ic_more"-->
-            <!--android:scaleType="centerInside"/>-->
+            <ImageView
+                android:id="@+id/tweet_card_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/user_name"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:layout_marginRight="-16dp"
+                android:layout_marginTop="-16dp"
+                android:scaleType="centerInside"
+                android:visibility="gone"
+                android:background="@drawable/ripple_img_button"
+                android:src="@drawable/ic_card_more" />
 
             <im.zico.wingtwitter.ui.view.HackyTextView
                 android:id="@+id/tweet_content"
@@ -126,16 +133,27 @@
                 android:textSize="15sp"
                 android:transitionName="content" />
 
-
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/tweet_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tweet_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:adjustViewBounds="true"
+            android:maxHeight="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_user_cover_default" />
 
 
         <RelativeLayout
-            android:layout_below="@id/main_card_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp">
+            android:layout_below="@id/main_card_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="40dp">
 
             <TextView
                 android:id="@+id/tweet_via"
@@ -189,164 +207,164 @@
     </LinearLayout>
 
 
-
     <!--<LinearLayout-->
-        <!--android:id="@+id/main_card_content"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@drawable/full_rect_bg"-->
-        <!--android:clickable="true"-->
-        <!--android:focusable="true"-->
-        <!--android:orientation="vertical"-->
-        <!--android:clipChildren="false"-->
-        <!--android:clipToPadding="false"-->
-        <!--android:paddingLeft="16dp"-->
-        <!--android:paddingBottom="10dp"-->
-        <!--android:paddingRight="16dp">-->
+    <!--android:id="@+id/main_card_content"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/full_rect_bg"-->
+    <!--android:clickable="true"-->
+    <!--android:focusable="true"-->
+    <!--android:orientation="vertical"-->
+    <!--android:clipChildren="false"-->
+    <!--android:clipToPadding="false"-->
+    <!--android:paddingLeft="16dp"-->
+    <!--android:paddingBottom="10dp"-->
+    <!--android:paddingRight="16dp">-->
 
-        <!--<TextView-->
-            <!--android:id="@+id/retweet_hint"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:fontFamily="sans-serif-light"-->
-            <!--android:gravity="center_vertical|right"-->
-            <!--android:text="Retweeted by tinyao"-->
-            <!--android:textColor="@color/text_dark_secondery"-->
-            <!--android:textSize="12sp"-->
-            <!--android:layout_gravity="right"-->
-            <!--android:visibility="gone"-->
-            <!--android:transitionName="retweet"/>-->
+    <!--<TextView-->
+    <!--android:id="@+id/retweet_hint"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:fontFamily="sans-serif-light"-->
+    <!--android:gravity="center_vertical|right"-->
+    <!--android:text="Retweeted by tinyao"-->
+    <!--android:textColor="@color/text_dark_secondery"-->
+    <!--android:textSize="12sp"-->
+    <!--android:layout_gravity="right"-->
+    <!--android:visibility="gone"-->
+    <!--android:transitionName="retweet"/>-->
 
-        <!--<include layout="@layout/divider" />-->
+    <!--<include layout="@layout/divider" />-->
 
-        <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
-            <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
-            <!--android:clickable="true">-->
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+    <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
+    <!--android:clickable="true">-->
 
-            <!--<de.hdodenhof.circleimageview.CircleImageView-->
-                <!--android:id="@+id/user_avatar"-->
-                <!--android:layout_width="@dimen/timeline_avatar_size"-->
-                <!--android:layout_height="@dimen/timeline_avatar_size"-->
-                <!--android:layout_marginRight="16dp"-->
-                <!--android:elevation="4dp"-->
-                <!--android:src="@drawable/avatar_circle"-->
-                <!--android:transitionName="avatar" />-->
+    <!--<de.hdodenhof.circleimageview.CircleImageView-->
+    <!--android:id="@+id/user_avatar"-->
+    <!--android:layout_width="@dimen/timeline_avatar_size"-->
+    <!--android:layout_height="@dimen/timeline_avatar_size"-->
+    <!--android:layout_marginRight="16dp"-->
+    <!--android:elevation="4dp"-->
+    <!--android:src="@drawable/avatar_circle"-->
+    <!--android:transitionName="avatar" />-->
 
-            <!--<TextView-->
-                <!--android:id="@+id/user_name"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignTop="@id/user_avatar"-->
-                <!--android:layout_toRightOf="@id/user_avatar"-->
-                <!--android:singleLine="true"-->
-                <!--android:text="Matias Duarte"-->
-                <!--android:textColor="@color/black"-->
-                <!--android:textSize="16sp"-->
-                <!--android:transitionName="name" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/user_name"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignTop="@id/user_avatar"-->
+    <!--android:layout_toRightOf="@id/user_avatar"-->
+    <!--android:singleLine="true"-->
+    <!--android:text="Matias Duarte"-->
+    <!--android:textColor="@color/black"-->
+    <!--android:textSize="16sp"-->
+    <!--android:transitionName="name" />-->
 
-            <!--<TextView-->
-                <!--android:id="@+id/user_screen_name"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignLeft="@id/user_name"-->
-                <!--android:layout_below="@id/user_name"-->
-                <!--android:fontFamily="sans-serif-light"-->
-                <!--android:text="\@matiasduarte"-->
-                <!--android:textColor="@color/text_dark_secondery"-->
-                <!--android:textSize="12sp"-->
-                <!--android:transitionName="screenName" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/user_screen_name"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignLeft="@id/user_name"-->
+    <!--android:layout_below="@id/user_name"-->
+    <!--android:fontFamily="sans-serif-light"-->
+    <!--android:text="\@matiasduarte"-->
+    <!--android:textColor="@color/text_dark_secondery"-->
+    <!--android:textSize="12sp"-->
+    <!--android:transitionName="screenName" />-->
 
-            <!--<TextView-->
-                <!--android:id="@+id/tweet_time"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignParentRight="true"-->
-                <!--android:layout_alignTop="@id/user_name"-->
-                <!--android:layout_marginLeft="13dp"-->
-                <!--android:fontFamily="sans-serif-light"-->
-                <!--android:text="4h"-->
-                <!--android:textColor="@color/text_dark_secondery"-->
-                <!--android:textSize="12sp"-->
-                <!--android:transitionName="time" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/tweet_time"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_alignTop="@id/user_name"-->
+    <!--android:layout_marginLeft="13dp"-->
+    <!--android:fontFamily="sans-serif-light"-->
+    <!--android:text="4h"-->
+    <!--android:textColor="@color/text_dark_secondery"-->
+    <!--android:textSize="12sp"-->
+    <!--android:transitionName="time" />-->
 
 
-        <!--</RelativeLayout>-->
+    <!--</RelativeLayout>-->
 
-        <!--<im.zico.wingtwitter.ui.view.HackyTextView-->
-            <!--android:id="@+id/tweet_content"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@id/user_avatar"-->
-            <!--android:layout_marginBottom="30dp"-->
-            <!--android:focusable="false"-->
-            <!--android:fontFamily="sans-serif-light"-->
-            <!--android:lineSpacingMultiplier="1.2"-->
-            <!--android:linksClickable="true"-->
-            <!--android:text="A content URI is a URI that identifies data in a provider. Content URIs include the symbolic name of the entire provider (its authority) and a name that points to a table (a path). "-->
-            <!--android:textColor="@color/tv_main_body"-->
-            <!--android:textColorLink="@color/primary"-->
-            <!--android:textSize="15sp"-->
-            <!--android:transitionName="content" />-->
+    <!--<im.zico.wingtwitter.ui.view.HackyTextView-->
+    <!--android:id="@+id/tweet_content"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@id/user_avatar"-->
+    <!--android:layout_marginBottom="30dp"-->
+    <!--android:focusable="false"-->
+    <!--android:fontFamily="sans-serif-light"-->
+    <!--android:lineSpacingMultiplier="1.2"-->
+    <!--android:linksClickable="true"-->
+    <!--android:text="A content URI is a URI that identifies data in a provider. Content URIs include the symbolic name of the entire provider (its authority) and a name that points to a table (a path). "-->
+    <!--android:textColor="@color/tv_main_body"-->
+    <!--android:textColorLink="@color/primary"-->
+    <!--android:textSize="15sp"-->
+    <!--android:transitionName="content" />-->
 
-        <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content">-->
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
 
-            <!--<TextView-->
-                <!--android:id="@+id/tweet_via"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Instagram"-->
-                <!--android:fontFamily="sans-serif-light"-->
-                <!--android:textSize="12sp" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/tweet_via"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Instagram"-->
+    <!--android:fontFamily="sans-serif-light"-->
+    <!--android:textSize="12sp" />-->
 
-            <!--<TextView-->
-                <!--android:id="@+id/retweet_count"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_toLeftOf="@+id/retweet_count_label"-->
-                <!--android:text="2"-->
-                <!--android:textColor="@color/stroke_dark"-->
-                <!--android:textSize="11sp" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/retweet_count"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_toLeftOf="@+id/retweet_count_label"-->
+    <!--android:text="2"-->
+    <!--android:textColor="@color/stroke_dark"-->
+    <!--android:textSize="11sp" />-->
 
-            <!--<TextView-->
-                <!--android:id="@+id/retweet_count_label"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginRight="20dp"-->
-                <!--android:layout_toLeftOf="@+id/favorite_count"-->
-                <!--android:text="RETWEETS"-->
-                <!--android:layout_marginLeft="5dp"-->
-                <!--android:fontFamily="sans-serif-light"-->
-                <!--android:textSize="11sp" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/retweet_count_label"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginRight="20dp"-->
+    <!--android:layout_toLeftOf="@+id/favorite_count"-->
+    <!--android:text="RETWEETS"-->
+    <!--android:layout_marginLeft="5dp"-->
+    <!--android:fontFamily="sans-serif-light"-->
+    <!--android:textSize="11sp" />-->
 
-            <!--<TextView-->
-                <!--android:id="@+id/favorite_count"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_toLeftOf="@+id/favorite_count_label"-->
-                <!--android:text="3"-->
-                <!--android:textColor="@color/stroke_dark"-->
-                <!--android:textSize="11sp" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/favorite_count"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_toLeftOf="@+id/favorite_count_label"-->
+    <!--android:text="3"-->
+    <!--android:textColor="@color/stroke_dark"-->
+    <!--android:textSize="11sp" />-->
 
-            <!--<TextView-->
-                <!--android:id="@+id/favorite_count_label"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignParentRight="true"-->
-                <!--android:layout_marginLeft="5dp"-->
-                <!--android:fontFamily="sans-serif-light"-->
-                <!--android:text="FAVORITES"-->
-                <!--android:textSize="11sp" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/favorite_count_label"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_marginLeft="5dp"-->
+    <!--android:fontFamily="sans-serif-light"-->
+    <!--android:text="FAVORITES"-->
+    <!--android:textSize="11sp" />-->
 
-        <!--</RelativeLayout>-->
+    <!--</RelativeLayout>-->
 
     <!--</LinearLayout>-->
 
-    <include layout="@layout/tweet_action_in_detail"
+    <include
+        layout="@layout/tweet_action_in_detail"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_alignParentBottom="true" />

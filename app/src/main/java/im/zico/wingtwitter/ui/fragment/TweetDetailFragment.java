@@ -111,6 +111,15 @@ public class TweetDetailFragment extends Fragment {
         holder.counts.setText("" + tweet.retweet_count);
         holder.favorites.setText("" + tweet.favorite_count);
 
+        if(tweet.mediaUrls != null && tweet.mediaUrls.length >0 ) {
+            Picasso.with(getActivity())
+                    .load(tweet.mediaUrls[0])
+                    .into(holder.photoV);
+            holder.photoV.setVisibility(View.VISIBLE);
+        } else {
+            holder.photoV.setVisibility(View.GONE);
+        }
+
         holder.avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -239,6 +248,7 @@ public class TweetDetailFragment extends Fragment {
         public TextView tvia;
         public TextView counts;
         public TextView favorites;
+        public ImageView photoV;
 
         public Holder(View view) {
             retweeted = (TextView) view.findViewById(R.id.retweet_hint);
@@ -250,6 +260,7 @@ public class TweetDetailFragment extends Fragment {
             tvia = (TextView) view.findViewById(R.id.tweet_via);
             counts = (TextView) view.findViewById(R.id.retweet_count);
             favorites = (TextView) view.findViewById(R.id.favorite_count);
+            photoV = (ImageView) view.findViewById(R.id.tweet_photo);
         }
     }
 

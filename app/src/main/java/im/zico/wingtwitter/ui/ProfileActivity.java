@@ -475,11 +475,12 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // ToDo: When the avatar View not in screen, cancel the element-shared-transition on it
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            asyncTwitter.shutdown();
 //            if (scrollView.getCurrentScrollY() > (getResources().getDimensionPixelSize(R.dimen.parallax_image_height) * 0.5) ) {
 //                getWindow().setTransition
 //            }
-//        }
+        }
         return super.onKeyDown(keyCode, event);
     }
 }

@@ -151,6 +151,8 @@ public abstract class AbstractSlideExpandableListAdapter extends WrapperListAdap
 	 */
 	public abstract View getExpandToggleButton(View parent);
 
+    public abstract View getExpandLongToggleButton(View parent);
+
 	/**
 	 * This method is used to get the view that will be hidden
 	 * initially and expands or collapse when the ExpandToggleButton
@@ -208,16 +210,100 @@ public abstract class AbstractSlideExpandableListAdapter extends WrapperListAdap
 
 	public void enableFor(View parent, int position) {
 		View more = getExpandToggleButton(parent);
+        View contentMore = getExpandLongToggleButton(parent);
 		View itemToolbar = getExpandableView(parent);
 		itemToolbar.measure(parent.getWidth(), parent.getHeight());
 
 		enableFor(more, itemToolbar, position);
+        enableForLong(contentMore, itemToolbar, position);
 		itemToolbar.requestLayout();
 	}
 
     private View performView;
 
-	private void enableFor(final View button, final View target, final int position) {
+    private void enableFor(final View button, final View target, final int position) {
+        if(target == lastOpen && position!=lastOpenPosition) {
+            // lastOpen is recycled, so its reference is false
+            lastOpen = null;
+        }
+        if(position == lastOpenPosition) {
+            // re reference to the last view
+            // so when can animate it when collapsed
+            lastOpen = target;
+        }
+        int height = viewHeights.get(position, -1);
+        if(height == -1) {
+            viewHeights.put(position, target.getMeasuredHeight());
+            updateExpandable(target,position);
+        } else {
+            updateExpandable(target, position);
+        }
+
+        performView = button;
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+
+                Animation a = target.getAnimation();
+
+                if (a != null && a.hasStarted() && !a.hasEnded()) {
+
+                    a.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            view.performClick();
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+                    });
+
+                } else {
+
+                    target.setAnimation(null);
+
+                    int type = target.getVisibility() == View.VISIBLE
+                            ? ExpandCollapseAnimation.COLLAPSE
+                            : ExpandCollapseAnimation.EXPAND;
+
+                    // remember the state
+                    if (type == ExpandCollapseAnimation.EXPAND) {
+                        openItems.set(position, true);
+                    } else {
+                        openItems.set(position, false);
+                    }
+                    // check if we need to collapse a different view
+                    if (type == ExpandCollapseAnimation.EXPAND) {
+                        if (lastOpenPosition != -1 && lastOpenPosition != position) {
+                            if (lastOpen != null) {
+                                animateView(lastOpen, ExpandCollapseAnimation.COLLAPSE);
+                                notifiyExpandCollapseListener(
+                                        ExpandCollapseAnimation.COLLAPSE,
+                                        lastOpen, lastOpenPosition);
+                            }
+                            openItems.set(lastOpenPosition, false);
+                        }
+                        lastOpen = target;
+                        lastOpenPosition = position;
+                    } else if (lastOpenPosition == position) {
+                        lastOpenPosition = -1;
+                    }
+                    animateView(target, type);
+                    notifiyExpandCollapseListener(type, target, position);
+                }
+
+            }
+
+        });
+    }
+
+	private void enableForLong(final View button, final View target, final int position) {
 		if(target == lastOpen && position!=lastOpenPosition) {
 			// lastOpen is recycled, so its reference is false
 			lastOpen = null;

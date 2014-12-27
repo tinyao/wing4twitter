@@ -1,6 +1,9 @@
 package im.zico.wingtwitter.ui.fragment;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -28,6 +31,7 @@ import im.zico.wingtwitter.dao.WingDataHelper;
 import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.ui.TweetComposeActivity;
+import im.zico.wingtwitter.ui.TweetDetailActivity;
 import im.zico.wingtwitter.ui.view.LoadingFooter;
 import im.zico.wingtwitter.ui.view.TweetListView;
 import twitter4j.AsyncTwitter;
@@ -100,7 +104,7 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
     private void loadNextPage() {
         mLoadingFooter.setState(LoadingFooter.State.Loading);
         asyncTwitter.getHomeTimeline(
-                new Paging(1, 20).maxId(mAdapter.getItem(mAdapter.getCount() - 1).tweet_id));
+                new Paging(1, 20).maxId(mAdapter.getItem(mAdapter.getCount()-1).tweet_id - 1));
     }
 
 
@@ -118,7 +122,7 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
         asyncTwitter.addListener(listener);
 
         DBHelper = new WingDataHelper(getActivity());
-        mAdapter = new TimeLineAdapter(getActivity());
+        mAdapter = new TimeLineAdapter(getActivity(), mListView);
         mListView.setAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
 
@@ -135,6 +139,14 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
                     case R.id.expand_action_favorite:
                         break;
                     case R.id.expand_action_retweet:
+                        break;
+                    case R.id.expand_action_detail:
+                        mListView.collapse();
+                        Intent intent = new Intent(getActivity(), TweetDetailActivity.class);
+                        intent.putExtra("tweet_id", mAdapter.getItem(position).tweet_id);
+                        getActivity().startActivity(intent);
+//                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), holder.mainContent, "card");
+//                        getActivity().startActivity(intent, options.toBundle());
                         break;
                 }
 

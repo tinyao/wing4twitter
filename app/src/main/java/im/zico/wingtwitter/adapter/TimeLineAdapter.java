@@ -9,9 +9,8 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.text.util.Linkify;
-import android.transition.Fade;
-import android.util.Log;
 import android.util.Pair;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -20,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,6 +33,7 @@ import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.ui.ProfileActivity;
 import im.zico.wingtwitter.ui.TweetDetailActivity;
+import im.zico.wingtwitter.ui.view.TweetListView;
 import im.zico.wingtwitter.utils.HackyMovementMethod;
 import im.zico.wingtwitter.utils.SpannableStringUtils;
 import im.zico.wingtwitter.utils.Utils;
@@ -44,15 +45,16 @@ public class TimeLineAdapter extends CursorAdapter {
 
     private LayoutInflater mLayoutInflater;
 
-    private ListView mListView;
+    private TweetListView mListView;
 
     private BitmapDrawable mDefaultAvatarBitmap = (BitmapDrawable) WingApp.getContext()
             .getResources().getDrawable(R.drawable.ic_launcher);
 
     private Drawable mDefaultImageDrawable = new ColorDrawable(Color.argb(255, 201, 201, 201));
 
-    public TimeLineAdapter(Context context) {
+    public TimeLineAdapter(Context context, TweetListView mListView) {
         super(context, null, false);
+        this.mListView = mListView;
         mLayoutInflater = ((Activity) context).getLayoutInflater();
     }
 
@@ -95,36 +97,69 @@ public class TimeLineAdapter extends CursorAdapter {
         holder.content.setText(SpannableStringUtils.span(tweet.content));
         holder.content.setMovementMethod(HackyMovementMethod.getInstance());
 
-        holder.mainContent.setOnClickListener(new View.OnClickListener() {
+        if(tweet.mediaUrls != null && tweet.mediaUrls.length >0 ) {
+            Picasso.with(context)
+                    .load(tweet.mediaUrls[0])
+                    .into(holder.tweetPhoto);
+            holder.tweetPhoto.setVisibility(View.VISIBLE);
+        } else {
+            holder.tweetPhoto.setVisibility(View.GONE);
+        }
+
+        holder.cardMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, TweetDetailActivity.class);
-                intent.putExtra("tweet_id", tweet.tweet_id);
 
-//                ActivityOptions options;
-//                if( tweet.retweet_id == -1 ) {
-//                    options = ActivityOptions
-//                            .makeSceneTransitionAnimation((Activity) context,
-//                                    Pair.create((View) holder.name, "name"),
-//                                    Pair.create((View) holder.avatar, "avatar"),
-//                                    Pair.create((View) holder.screenName, "screenName"),
-//                                    Pair.create((View) holder.content, "content"),
-//                                    Pair.create((View) holder.time, "time"));
-//                } else {
-//                    options = ActivityOptions
-//                            .makeSceneTransitionAnimation((Activity) context,
-//                                    Pair.create((View) holder.name, "name"),
-//                                    Pair.create((View) holder.avatar, "avatar"),
-//                                    Pair.create((View) holder.screenName, "screenName"),
-//                                    Pair.create((View) holder.content, "content"),
-//                                    Pair.create((View) holder.retweeted, "retweet"),
-//                                    Pair.create((View) holder.time, "time"));
-//                }
+            }
+        });
 
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, holder.mainContent, "card");
-                context.startActivity(intent, options.toBundle());
+//        holder.mainContent.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(context, TweetDetailActivity.class);
+//                intent.putExtra("tweet_id", tweet.tweet_id);
+//
+////                ActivityOptions options;
+////                if( tweet.retweet_id == -1 ) {
+////                    options = ActivityOptions
+////                            .makeSceneTransitionAnimation((Activity) context,
+////                                    Pair.create((View) holder.name, "name"),
+////                                    Pair.create((View) holder.avatar, "avatar"),
+////                                    Pair.create((View) holder.screenName, "screenName"),
+////                                    Pair.create((View) holder.content, "content"),
+////                                    Pair.create((View) holder.time, "time"));
+////                } else {
+////                    options = ActivityOptions
+////                            .makeSceneTransitionAnimation((Activity) context,
+////                                    Pair.create((View) holder.name, "name"),
+////                                    Pair.create((View) holder.avatar, "avatar"),
+////                                    Pair.create((View) holder.screenName, "screenName"),
+////                                    Pair.create((View) holder.content, "content"),
+////                                    Pair.create((View) holder.retweeted, "retweet"),
+////                                    Pair.create((View) holder.time, "time"));
+////                }
+//
+//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, holder.mainContent, "card");
+//                context.startActivity(intent, options.toBundle());
+//
+////                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity)context).toBundle());
+//            }
+//        });
 
-//                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity)context).toBundle());
+        holder.showDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListView.collapse();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(context, TweetDetailActivity.class);
+                        intent.putExtra("tweet_id", tweet.tweet_id);
+                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, holder.mainContent, "card");
+                        context.startActivity(intent, options.toBundle());
+                    }
+                }, 200);
+
             }
         });
 
@@ -165,6 +200,10 @@ public class TimeLineAdapter extends CursorAdapter {
         public TextView time;
         public LinearLayout actionSlide;
         public View mainContent;
+        public ImageView tweetPhoto;
+        public View cardMore;
+
+        public View showDetail;
 
         public Holder(View view) {
             retweeted = (TextView) view.findViewById(R.id.retweet_hint);
@@ -173,8 +212,12 @@ public class TimeLineAdapter extends CursorAdapter {
             screenName = (TextView) view.findViewById(R.id.user_screen_name);
             content = (TextView) view.findViewById(R.id.tweet_content);
             time = (TextView) view.findViewById(R.id.tweet_time);
+            tweetPhoto = (ImageView) view.findViewById(R.id.tweet_photo);
             actionSlide = (LinearLayout) view.findViewById(R.id.expandable);
             mainContent = view.findViewById(R.id.main_card_content);
+            cardMore = view.findViewById(R.id.tweet_card_more);
+
+            showDetail = view.findViewById(R.id.expand_action_detail);
         }
     }
 

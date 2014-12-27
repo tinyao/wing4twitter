@@ -4,14 +4,18 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.Html;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.Patterns;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import im.zico.wingtwitter.dao.WingStore.*;
 import im.zico.wingtwitter.utils.TweetUtils;
+import twitter4j.MediaEntity;
 import twitter4j.Status;
+import twitter4j.URLEntity;
 import twitter4j.User;
 
 /**
@@ -49,6 +53,8 @@ public class WingTweet {
     public int retweet_count;
     public int favorite_count;
 
+    public String[] mediaUrls;
+
 
     public WingTweet() {
     }
@@ -78,6 +84,22 @@ public class WingTweet {
 
         created_at = status.getCreatedAt().getTime();
         content = status.getText();
+
+        URLEntity[] urlEntities = status.getURLEntities();
+        for (URLEntity url : urlEntities) {
+            content = content.replace(url.getText(), url.getExpandedURL());
+        }
+
+        MediaEntity[] mediaEntities = status.getMediaEntities();
+        if (mediaEntities != null && mediaEntities.length != 0) {
+            mediaUrls = new String[mediaEntities.length];
+            for (int i = 0; i < mediaEntities.length; i++) {
+                content = content.replace(mediaEntities[i].getText(), "");
+                mediaUrls[i] = mediaEntities[i].getMediaURL();
+            }
+            Log.d("DEBUG", "MEDIA URLS: " + mediaUrls);
+        }
+
         htmlContent = convert2Html(content);
         source = Html.fromHtml(status.getSource()).toString();
 
@@ -142,6 +164,8 @@ public class WingTweet {
         wingTweet.retweeted_by_user_name = cursor.getString(cursor.getColumnIndex(TweetColumns.RETWEETED_BY_USER_NAME));
         wingTweet.retweeted_by_user_screen_name = cursor.getString(cursor.getColumnIndex(TweetColumns.RETWEETED_BY_USER_SCREEN_NAME));
 
+        wingTweet.mediaUrls = str2Array(cursor.getString(cursor.getColumnIndex(TweetColumns.MEDIAS)));
+
         return wingTweet;
     }
 
@@ -174,7 +198,25 @@ public class WingTweet {
         values.put(TweetColumns.RETWEETED_BY_USER_NAME, retweeted_by_user_name);
         values.put(TweetColumns.RETWEETED_BY_USER_SCREEN_NAME, retweeted_by_user_screen_name);
 
+        values.put(TweetColumns.MEDIAS, array2Str(mediaUrls));
+
         return values;
+    }
+
+    private static String array2Str(String[] array) {
+        StringBuilder out = new StringBuilder();
+        if (array==null) return "";
+        for (int i = 0; i < array.length; i++) {
+            out.append(array[i] + (i == array.length ? "" : ","));
+        }
+        return out.toString();
+    }
+
+    private static String[] str2Array(String str) {
+        if (str.contains(",")) {
+            return str.split(",");
+        }
+        return null;
     }
 
 //    public static final class CursorIndices {

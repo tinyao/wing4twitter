@@ -63,9 +63,9 @@ public class MainActivity extends BaseActivity implements DrawerFragment.Navigat
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        final Intent intent = new Intent(this, TweetService.class);
-        intent.setAction(TweetService.INTENT_ACTION_GET_FOLLOWERS);
-        startService(intent);
+//        final Intent intent = new Intent(this, TweetService.class);
+//        intent.setAction(TweetService.INTENT_ACTION_GET_FOLLOWERS);
+//        startService(intent);
     }
 
     @Override

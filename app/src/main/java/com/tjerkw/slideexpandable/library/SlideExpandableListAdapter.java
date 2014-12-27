@@ -14,23 +14,32 @@ import im.zico.wingtwitter.R;
  * @date 6/13/12 8:04 AM
  */
 public class SlideExpandableListAdapter extends AbstractSlideExpandableListAdapter {
-	private int toggle_button_id;
+//	private int toggle_button_id;
+    private int click_toggle_id;
+    private int long_click_toggle_id;
 	private int expandable_view_id;
 
-	public SlideExpandableListAdapter(ListAdapter wrapped, int toggle_button_id, int expandable_view_id) {
+	public SlideExpandableListAdapter(ListAdapter wrapped, int click_toggle_id,
+                                      int long_click_toggle_id, int expandable_view_id) {
 		super(wrapped);
-		this.toggle_button_id = toggle_button_id;
+		this.click_toggle_id = click_toggle_id;
+        this.long_click_toggle_id = long_click_toggle_id;
 		this.expandable_view_id = expandable_view_id;
 	}
 
 	public SlideExpandableListAdapter(ListAdapter wrapped) {
-		this(wrapped, R.id.main_card_content, R.id.expandable);
+		this(wrapped, R.id.main_card_content, R.id.tweet_card_more,  R.id.expandable);
 	}
 
 	@Override
 	public View getExpandToggleButton(View parent) {
-		return parent.findViewById(toggle_button_id);
+		return parent.findViewById(click_toggle_id);
 	}
+
+    @Override
+    public View getExpandLongToggleButton(View parent) {
+        return parent.findViewById(long_click_toggle_id);
+    }
 
 	@Override
 	public View getExpandableView(View parent) {
