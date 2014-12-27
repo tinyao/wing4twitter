@@ -105,7 +105,7 @@ public class TweetDetailFragment extends Fragment {
         if (tweet.source.equals(WingApp.TWITTER_APP_NAME)) {
             holder.tvia.setText(Html.fromHtml(WingApp.TWITTER_APP_SOURCE));
         } else {
-            holder.tvia.setText(Html.escapeHtml(tweet.source));
+            holder.tvia.setText(tweet.source);
         }
 
         holder.counts.setText("" + tweet.retweet_count);

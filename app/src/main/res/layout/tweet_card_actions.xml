@@ -17,6 +17,8 @@
         android:clickable="true"
         android:scaleType="centerInside"
         android:src="@drawable/ic_delete"
+        android:background="?android:attr/selectableItemBackground"
+        android:theme="@android:style/Theme.Material"
         android:visibility="gone" />
 
     <include
@@ -32,6 +34,8 @@
         android:layout_weight="1"
         android:clickable="true"
         android:scaleType="centerInside"
+        android:background="?android:attr/selectableItemBackground"
+        android:theme="@android:style/Theme.Material"
         android:src="@drawable/ic_reply" />
 
     <include layout="@layout/divider_vertical" />
@@ -43,6 +47,8 @@
         android:layout_weight="1"
         android:clickable="true"
         android:scaleType="centerInside"
+        android:background="?android:attr/selectableItemBackground"
+        android:theme="@android:style/Theme.Material"
         android:src="@drawable/ic_retweet" />
 
     <include layout="@layout/divider_vertical" />
@@ -54,6 +60,8 @@
         android:layout_weight="1"
         android:clickable="true"
         android:scaleType="centerInside"
+        android:background="?android:attr/selectableItemBackground"
+        android:theme="@android:style/Theme.Material"
         android:src="@drawable/ic_favorite" />
 
     <include layout="@layout/divider_vertical" />
@@ -65,7 +73,23 @@
         android:layout_weight="1"
         android:clickable="true"
         android:scaleType="centerInside"
+        android:background="?android:attr/selectableItemBackground"
+        android:theme="@android:style/Theme.Material"
         android:src="@drawable/ic_show_detail" />
+
+    <include layout="@layout/divider_vertical"
+        android:layout_width="2px"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:id="@+id/expand_action_more"
+        android:layout_width="42dp"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:scaleType="centerInside"
+        android:background="?android:attr/selectableItemBackground"
+        android:theme="@android:style/Theme.Material"
+        android:src="@drawable/ic_action_more" />
 
 </LinearLayout>
 
