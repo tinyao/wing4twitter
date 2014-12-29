@@ -2,6 +2,7 @@ package im.zico.wingtwitter.ui;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,10 +18,13 @@ import android.os.Message;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.transition.Fade;
+import android.transition.Slide;
 import android.transition.Transition;
 import android.util.Log;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -33,11 +37,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
-import com.bumptech.glide.Glide;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -56,7 +57,9 @@ import im.zico.wingtwitter.dao.WingDataHelper;
 import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.type.WingUser;
+import im.zico.wingtwitter.ui.view.HtmlTextView;
 import im.zico.wingtwitter.ui.view.NestedListView;
+import im.zico.wingtwitter.utils.HackyMovementMethod;
 import im.zico.wingtwitter.utils.SpannableStringUtils;
 import twitter4j.AsyncTwitter;
 import twitter4j.Paging;
@@ -73,8 +76,9 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
     private int mParallaxImageHeight;
     private BasicProfileCard basicInfo;
     private AsyncTwitter asyncTwitter;
-    private long mUserId;
-    private String userName = "";
+
+//    private long mUserId = -1;
+    private String mScreenName;
 
     private NestedListView tweetList;
     private WingDataHelper DBHelper;
@@ -83,12 +87,21 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
 
     private ObservableScrollView scrollView;
 
+    public static void startActivity(Activity activity, String screen_name) {
+        Intent intent = new Intent(activity, ProfileActivity.class);
+        intent.putExtra(WingStore.TweetColumns.USER_SCREEN_NAME, screen_name);
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity);
+        activity.startActivity(intent, options.toBundle());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         bannerImage = (ImageView) findViewById(R.id.profile_bannder_image);
         getActionBar().setTitle("");
@@ -104,44 +117,54 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         basicInfo = new BasicProfileCard(this);
         tweetList = (NestedListView) findViewById(R.id.user_profile_tweets_list);
 
+        asyncTwitter = WingApp.newTwitterInstance();
+        asyncTwitter.addListener(listener);
+
+        initProfileFromIntent();
+
+        // show User detail
+        Log.d("DEBUG", "Get User Detail ... ");
+        asyncTwitter.showUser(mScreenName);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                asyncTwitter.getUserTimeline(mScreenName, new Paging().count(5));
+            }
+        }, 800);
+    }
+
+    private void initProfileFromIntent() {
         Intent intent = getIntent();
-        mUserId = intent.getLongExtra(WingStore.TweetColumns.USER_ID, -1);
-        if (mUserId == -1) {
-            finishAfterTransition();
+
+        if (intent.hasExtra(WingStore.TweetColumns.USER_SCREEN_NAME)) {
+            mScreenName = intent.getStringExtra(WingStore.TweetColumns.USER_SCREEN_NAME);
+        } else if(intent.getData()!=null) {
+            mScreenName = intent.getData().getHost();
         } else {
-            mUser = DBHelper.getUser(mUserId);
-            if (mUser == null) {
+            finishAfterTransition();
+            return;
+        }
+
+        mUser = DBHelper.getUser(mScreenName);
+
+        if (mUser == null) {
+            if (intent.hasExtra(WingStore.TweetColumns.USER_NAME)) {
+                // Activity from tweet user, show info from intent
                 mUser = new WingUser();
                 mUser.user_id = intent.getLongExtra(WingStore.TweetColumns.USER_ID, -1);
                 mUser.name = intent.getStringExtra(WingStore.TweetColumns.USER_NAME);
                 mUser.screenName = intent.getStringExtra(WingStore.TweetColumns.USER_SCREEN_NAME);
                 mUser.avatar = intent.getStringExtra(WingStore.TweetColumns.USER_AVATAR_URL);
-            } else {
-                // check if banner set
-                if(mUser.banner==null || mUser.banner.isEmpty()) {
-                    findViewById(R.id.anchor).setVisibility(View.GONE);
-                }
+                basicInfo.setUserInfo(mUser);
+            }
+        } else {
+            // Cached user exists, if no banner then disappear the anchor view above profile card
+            if (mUser.banner == null || mUser.banner.isEmpty()) {
+                findViewById(R.id.anchor).setVisibility(View.GONE);
             }
             basicInfo.setUserInfo(mUser);
         }
-
-        asyncTwitter = WingApp.newTwitterInstance();
-        asyncTwitter.addListener(listener);
-
-        // show User detail
-        Log.d("DEBUG", "Get User Detail ... ");
-        asyncTwitter.showUser(mUserId);
-
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("DEBUG", "Get User Statuses ...");
-                asyncTwitter.getUserTimeline(mUserId, new Paging().count(5));
-            }
-        }, 1000);
-
-     }
+    }
 
     @Override
     public void onAttachedToWindow() {
@@ -169,7 +192,7 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
                 bannerImage.setVisibility(View.VISIBLE);
                 anim.start();
             }
-        }, 100);
+        }, 50);
 
     }
 
@@ -187,15 +210,17 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
     private TwitterListener listener = new TwitterAdapter() {
         @Override
         public void gotUserDetail(User user) {
-            Log.d("DEBUG", "Got User Detail: " + user);
+            Log.d("DEBUG", "Got User Detail: " + user.getName() + ", tweets=" + user.getStatusesCount());
             WingUser tmpUser = new WingUser(user);
-            tmpUser.isFollowing = mUser.isFollowing;
-            tmpUser.isFollowMe = mUser.isFollowMe;
+            if(mUser != null){
+                tmpUser.isFollowing = mUser.isFollowing;
+                tmpUser.isFollowMe = mUser.isFollowMe;
+            }
             mUser = tmpUser;
             mHandler.sendEmptyMessage(GOT_USER_DETAIL);
 
             Log.d("DEBUG", "Get User Relation ... ");
-            asyncTwitter.showFriendship(WingApp.getCurrentUserID(), mUser.user_id);
+            asyncTwitter.showFriendship(WingApp.getCurrentScreenName(), mUser.screenName);
             super.gotUserDetail(user);
         }
 
@@ -307,7 +332,7 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
 
         if (scrollY > mParallaxImageHeight * 1.2) {
             getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary)));
-            getActionBar().setTitle(mUser.name);
+            if(mUser.name!=null) getActionBar().setTitle(mUser.name);
             getActionBar().show();
 
         } else if (scrollY > mParallaxImageHeight * 0.2) {
@@ -352,8 +377,10 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
      * View Group for Basic UserInfo
      */
     private class BasicProfileCard {
+
         CircleImageView avatar;
-        TextView name, screenName, desc, address, website;
+        TextView name, screenName, address, website;
+        HtmlTextView desc;
         TextView tweets, followers, followings;
         TextView toTweet, toFollow;
         View toFollowV, toFollowProgress;
@@ -362,7 +389,7 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
             avatar = (CircleImageView) context.findViewById(R.id.user_avatar);
             name = (TextView) context.findViewById(R.id.user_name);
             screenName = (TextView) context.findViewById(R.id.user_screen_name);
-            desc = (TextView) context.findViewById(R.id.user_desc);
+            desc = (HtmlTextView) context.findViewById(R.id.user_desc);
             address = (TextView) context.findViewById(R.id.user_addr);
             website = (TextView) context.findViewById(R.id.user_web);
             tweets = (TextView) context.findViewById(R.id.user_tweet_count);
@@ -371,7 +398,7 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
             toTweet = (TextView) context.findViewById(R.id.user_to_tweet);
             toFollow = (TextView) context.findViewById(R.id.user_to_follow);
             toFollowV = context.findViewById(R.id.user_to_follow_v);
-            toFollowProgress =  context.findViewById(R.id.user_to_follow_progressbar);
+            toFollowProgress = context.findViewById(R.id.user_to_follow_progressbar);
 
             toFollowV.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -412,22 +439,27 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         public void setUserInfo(WingUser user) {
             name.setText(user.name);
             screenName.setText(user.screenName);
-
-            desc.setText(user.desc);
-            address.setText(user.location);
-            website.setText(SpannableStringUtils.span(user.website!=null ? user.website : ""));
             tweets.setText("" + user.tweetCount);
             followers.setText("" + user.followerCount);
             followings.setText("" + user.followingCount);
-
             toFollow.setText(user.isFollowing ? "Following" : "Follow");
 
-            if (user.desc != null && !user.desc.isEmpty())
+            if (user.desc != null && !user.desc.isEmpty()) {
+                desc.setHtmlText(user.desc);
                 desc.setVisibility(View.VISIBLE);
-            if (user.location != null && !user.location.isEmpty())
+            }
+
+            if (user.location != null && !user.location.isEmpty()){
+                address.setText(user.location);
                 address.setVisibility(View.VISIBLE);
-            if (user.website != null && !user.website.isEmpty())
+            }
+
+            if (user.website != null && !user.website.isEmpty()) {
+                website.setText(user.website);
+                website.setMovementMethod(HackyMovementMethod.getInstance());
+                SpannableStringUtils.removeUnderlines((Spannable) website.getText());
                 website.setVisibility(View.VISIBLE);
+            }
 
             Picasso.with(ProfileActivity.this)
                     .load(user.avatar)
@@ -440,8 +472,8 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
                         .into(bannerImage);
             } else {
                 Log.d("DEBUG", "currentY: " + scrollView.getCurrentScrollY()
-                    + " -- Y: " + scrollView.getScrollY());
-                if (scrollView.getCurrentScrollY() == 0 && user.bannerColor!=null && !user.bannerColor.isEmpty()) {
+                        + " -- Y: " + scrollView.getScrollY());
+                if (scrollView.getCurrentScrollY() == 0 && user.bannerColor != null && !user.bannerColor.isEmpty()) {
                     Log.d("DEBUG", "banner color: " + user.bannerColor);
                     bannerImage.setBackgroundColor(Color.parseColor("#FF" + user.bannerColor));
                 }
@@ -477,9 +509,11 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         // ToDo: When the avatar View not in screen, cancel the element-shared-transition on it
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             asyncTwitter.shutdown();
-//            if (scrollView.getCurrentScrollY() > (getResources().getDimensionPixelSize(R.dimen.parallax_image_height) * 0.5) ) {
-//                getWindow().setTransition
-//            }
+            if (scrollView.getCurrentScrollY() > (getResources().getDimensionPixelSize(R.dimen.parallax_image_height) * 0.5) ) {
+                getWindow().setReturnTransition(new Slide());
+                getWindow().setSharedElementReturnTransition(new Slide());
+
+            }
         }
         return super.onKeyDown(keyCode, event);
     }

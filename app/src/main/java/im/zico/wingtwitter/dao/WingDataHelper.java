@@ -97,7 +97,16 @@ public class WingDataHelper extends BaseDataHelper {
         return wingUser;
     }
 
-
+    public WingUser getUser(String screenName) {
+        WingUser wingUser = null;
+        Cursor cursor = query(WingStore.TYPE_USER, null, WingStore.UserColumns.SCREEN_NAME + " = ?",
+                new String[]{ "" + screenName }, null);
+        if (cursor.getCount()>0 && cursor.moveToFirst()) {
+            wingUser = new WingUser(cursor);
+        }
+        cursor.close();
+        return wingUser;
+    }
 
     public void delete(long id) {
 

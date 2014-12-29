@@ -1,6 +1,5 @@
 package im.zico.wingtwitter.ui.fragment;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.Fragment;
 import android.content.Intent;
@@ -18,27 +17,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.WingApp;
 import im.zico.wingtwitter.dao.WingDataHelper;
-import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.ui.ProfileActivity;
-import im.zico.wingtwitter.ui.TweetDetailActivity;
+import im.zico.wingtwitter.ui.view.HtmlTextView;
 import im.zico.wingtwitter.utils.HackyMovementMethod;
 import im.zico.wingtwitter.utils.SpannableStringUtils;
 import im.zico.wingtwitter.utils.Utils;
-
 import im.zico.wingtwitter.dao.WingStore.*;
 import twitter4j.AsyncTwitter;
 import twitter4j.Query;
@@ -90,8 +82,7 @@ public class TweetDetailFragment extends Fragment {
         holder.screenName.setText("@" + tweet.screen_name);
         holder.content.setText(String.valueOf(tweet.content));
         holder.time.setText(Utils.getTimeAgo(tweet.created_at));
-        holder.content.setText(SpannableStringUtils.span(tweet.content));
-        holder.content.setMovementMethod(HackyMovementMethod.getInstance());
+        holder.content.setHtmlText(tweet.content_html);
 
         Spannable s = (Spannable) Html.fromHtml(tweet.source);
         for (URLSpan u : s.getSpans(0, s.length(), URLSpan.class)) {
@@ -243,7 +234,7 @@ public class TweetDetailFragment extends Fragment {
         public CircleImageView avatar;
         public TextView name;
         public TextView screenName;
-        public TextView content;
+        public HtmlTextView content;
         public TextView time;
         public TextView tvia;
         public TextView counts;
@@ -255,7 +246,7 @@ public class TweetDetailFragment extends Fragment {
             avatar = (CircleImageView) view.findViewById(R.id.user_avatar);
             name = (TextView) view.findViewById(R.id.user_name);
             screenName = (TextView) view.findViewById(R.id.user_screen_name);
-            content = (TextView) view.findViewById(R.id.tweet_content);
+            content = (HtmlTextView) view.findViewById(R.id.tweet_content);
             time = (TextView) view.findViewById(R.id.tweet_time);
             tvia = (TextView) view.findViewById(R.id.tweet_via);
             counts = (TextView) view.findViewById(R.id.retweet_count);

@@ -33,6 +33,7 @@ import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.WingApp;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.ui.TweetDetailActivity;
+import im.zico.wingtwitter.ui.view.HtmlTextView;
 import im.zico.wingtwitter.utils.HackyMovementMethod;
 import im.zico.wingtwitter.utils.SpannableStringUtils;
 import im.zico.wingtwitter.utils.Utils;
@@ -96,11 +97,10 @@ public class UserTweetsAdapter extends BaseAdapter {
 
         holder.name.setText(tweet.user_name);
         holder.screenName.setText("@" + tweet.screen_name);
-        holder.content.setText(String.valueOf(tweet.content));
         holder.time.setText("" + Utils.getTimeAgo(tweet.created_at));
-
-        holder.content.setText(SpannableStringUtils.span(tweet.content));
-        holder.content.setMovementMethod(HackyMovementMethod.getInstance());
+        holder.content.setHtmlText(tweet.content_html);
+//        holder.content.setText(SpannableStringUtils.span(tweet.content));
+//        holder.content.setMovementMethod(HackyMovementMethod.getInstance());
 
         return convertView;
     }
@@ -120,7 +120,7 @@ public class UserTweetsAdapter extends BaseAdapter {
         public CircleImageView avatar;
         public TextView name;
         public TextView screenName;
-        public TextView content;
+        public HtmlTextView content;
         public TextView time;
 //        public LinearLayout actionSlide;
 //        public View mainContent;
@@ -130,7 +130,7 @@ public class UserTweetsAdapter extends BaseAdapter {
             avatar = (CircleImageView) view.findViewById(R.id.user_avatar);
             name = (TextView) view.findViewById(R.id.user_name);
             screenName = (TextView) view.findViewById(R.id.user_screen_name);
-            content = (TextView) view.findViewById(R.id.tweet_content);
+            content = (HtmlTextView) view.findViewById(R.id.tweet_content);
             time = (TextView) view.findViewById(R.id.tweet_time);
 //            actionSlide = (LinearLayout) view.findViewById(R.id.expandable);
 //            mainContent = view.findViewById(R.id.main_card_content);

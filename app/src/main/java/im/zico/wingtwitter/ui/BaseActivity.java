@@ -41,4 +41,5 @@ public class BaseActivity extends Activity {
         WingApp.uiInForeground = false;
         super.onPause();
     }
+
 }

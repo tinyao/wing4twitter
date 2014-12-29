@@ -1,7 +1,9 @@
 package im.zico.wingtwitter.utils;
 
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -34,15 +36,44 @@ public class SpannableStringUtils {
             int start = ss.getSpanStart(span);
             int end = ss.getSpanEnd(span);
             ss.removeSpan(span);
-            if(ss.charAt(end-1) == ')') {
-                // Fix when url ended by ')'
-                s = new WeiboSpan(span.getURL().substring(0, span.getURL().length()-1));
-                end--;
-            }
+//            if(ss.charAt(end-1) == ')') {
+//                // Fix when url ended by ')'
+//                s = new WeiboSpan(span.getURL().substring(0, span.getURL().length()-1));
+//                end--;
+//            }
+//
+//            if (span.getURL().startsWith("http") && span.getURL().length() > 30) {
+////                s = new WeiboSpan(span.getURL().substring(0, span.getURL().length()-1));
+//                Log.d("DEBUG", "Long url: " + span.getURL());
+//            }
             ss.setSpan(s, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         return ss;
     }
+
+    public static void removeUnderlines(Spannable p_Text) {
+        URLSpan[] spans = p_Text.getSpans(0, p_Text.length(), URLSpan.class);
+
+        for(URLSpan span:spans) {
+            int start = p_Text.getSpanStart(span);
+            int end = p_Text.getSpanEnd(span);
+            p_Text.removeSpan(span);
+            span = new URLSpanNoUnderline(span.getURL());
+            p_Text.setSpan(span, start, end, 0);
+        }
+    }
+
+    static class URLSpanNoUnderline extends URLSpan {
+        public URLSpanNoUnderline(String p_Url) {
+            super(p_Url);
+        }
+
+        public void updateDrawState(TextPaint p_DrawState) {
+            super.updateDrawState(p_DrawState);
+            p_DrawState.setUnderlineText(false);
+        }
+    }
+
 
 }

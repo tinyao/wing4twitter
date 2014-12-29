@@ -10,6 +10,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.text.Html;
+import android.text.Spannable;
 import android.text.util.Linkify;
 import android.util.Pair;
 import android.util.Patterns;
@@ -33,6 +35,8 @@ import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.ui.ProfileActivity;
 import im.zico.wingtwitter.ui.TweetDetailActivity;
+import im.zico.wingtwitter.ui.view.HackyTextView;
+import im.zico.wingtwitter.ui.view.HtmlTextView;
 import im.zico.wingtwitter.ui.view.TweetListView;
 import im.zico.wingtwitter.utils.HackyMovementMethod;
 import im.zico.wingtwitter.utils.SpannableStringUtils;
@@ -94,8 +98,7 @@ public class TimeLineAdapter extends CursorAdapter {
         holder.content.setText(String.valueOf(tweet.content));
         holder.time.setText("" + Utils.getTimeAgo(tweet.created_at));
 
-        holder.content.setText(SpannableStringUtils.span(tweet.content));
-        holder.content.setMovementMethod(HackyMovementMethod.getInstance());
+        holder.content.setHtmlText(tweet.content_html);
 
         if(tweet.mediaUrls != null && tweet.mediaUrls.length >0 ) {
             Picasso.with(context)
@@ -196,7 +199,7 @@ public class TimeLineAdapter extends CursorAdapter {
         public CircleImageView avatar;
         public TextView name;
         public TextView screenName;
-        public TextView content;
+        public HtmlTextView content;
         public TextView time;
         public LinearLayout actionSlide;
         public View mainContent;
@@ -210,16 +213,20 @@ public class TimeLineAdapter extends CursorAdapter {
             avatar = (CircleImageView) view.findViewById(R.id.user_avatar);
             name = (TextView) view.findViewById(R.id.user_name);
             screenName = (TextView) view.findViewById(R.id.user_screen_name);
-            content = (TextView) view.findViewById(R.id.tweet_content);
+            content = (HtmlTextView) view.findViewById(R.id.tweet_content);
             time = (TextView) view.findViewById(R.id.tweet_time);
             tweetPhoto = (ImageView) view.findViewById(R.id.tweet_photo);
             actionSlide = (LinearLayout) view.findViewById(R.id.expandable);
             mainContent = view.findViewById(R.id.main_card_content);
             cardMore = view.findViewById(R.id.tweet_card_more);
-
             showDetail = view.findViewById(R.id.expand_action_detail);
         }
     }
+
+//    public boolean isDuplicated(long tweet_id) {
+//        this.getItem(getCount()-1).
+//
+//    }
 
     private void setLinkable(TextView textView) {
         Linkify.TransformFilter filter = new Linkify.TransformFilter() {

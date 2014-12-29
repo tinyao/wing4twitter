@@ -59,6 +59,7 @@ public class WingApp extends Application {
     }
 
     private static long cUserId = -1;
+    private static String cScreenName;
 
     public static long getCurrentUserID() {
         if(cUserId == -1) {
@@ -67,6 +68,15 @@ public class WingApp extends Application {
             }
         }
         return cUserId;
+    }
+
+    public static String getCurrentScreenName() {
+        if(cScreenName == null) {
+            if (PreferencesManager.getInstance(sContext).hasKey(PrefKey.KEY_USERID)) {
+                return PreferencesManager.getInstance(sContext).getValue(PrefKey.KEY_SCREENNAME);
+            }
+        }
+        return cScreenName;
     }
 
 //    public static AsyncTwitter getTwitterNew() {

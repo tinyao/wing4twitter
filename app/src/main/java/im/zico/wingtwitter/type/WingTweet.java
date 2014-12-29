@@ -13,10 +13,12 @@ import java.util.regex.Pattern;
 
 import im.zico.wingtwitter.dao.WingStore.*;
 import im.zico.wingtwitter.utils.TweetUtils;
+import twitter4j.HashtagEntity;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.URLEntity;
 import twitter4j.User;
+import twitter4j.UserMentionEntity;
 
 /**
  * Created by tinyao on 12/1/14.
@@ -33,6 +35,7 @@ public class WingTweet {
     public String screen_name;
 
     public String content;
+    public String content_html;
     public String htmlContent;
     public long created_at;
     public String source;
@@ -85,15 +88,32 @@ public class WingTweet {
         created_at = status.getCreatedAt().getTime();
         content = status.getText();
 
+        content_html = content;
         URLEntity[] urlEntities = status.getURLEntities();
         for (URLEntity url : urlEntities) {
             content = content.replace(url.getText(), url.getExpandedURL());
+        }
+        UserMentionEntity[] mentions = status.getUserMentionEntities();
+        for (UserMentionEntity mention: mentions) {
+            content_html = content_html.replaceFirst("@" + mention.getText(),
+                    "<a href='im.zico.wingtwitter.user://" + mention.getText() + "'>@" + mention.getText() + "</a>");
+        }
+        for (URLEntity url : urlEntities) {
+            content_html = content_html.replace(url.getText(),
+                    "<a href='" + url.getExpandedURL() + "'>" + url.getDisplayURL() + "</a>");
+            Log.d("DEBUG", "display url: " + url.getDisplayURL());
+        }
+        HashtagEntity[] hashtags = status.getHashtagEntities();
+        for (HashtagEntity tag: hashtags) {
+            content_html = content_html.replace("#" + tag.getText(),
+                    "<a href='im.zico.wingtwitter.user://" + tag.getText() + "'>#" + tag.getText() + "</a>");
         }
 
         MediaEntity[] mediaEntities = status.getMediaEntities();
         if (mediaEntities != null && mediaEntities.length != 0) {
             mediaUrls = new String[mediaEntities.length];
             for (int i = 0; i < mediaEntities.length; i++) {
+                content_html = content_html.replace(mediaEntities[i].getText(), "");
                 content = content.replace(mediaEntities[i].getText(), "");
                 mediaUrls[i] = mediaEntities[i].getMediaURL();
             }
@@ -147,6 +167,7 @@ public class WingTweet {
 
         wingTweet.created_at = cursor.getLong(cursor.getColumnIndex(TweetColumns.CREATED));
         wingTweet.content = cursor.getString(cursor.getColumnIndex(TweetColumns.CONTENT));
+        wingTweet.content_html = cursor.getString(cursor.getColumnIndex(TweetColumns.CONTENT_HTML));
         wingTweet.source = cursor.getString(cursor.getColumnIndex(TweetColumns.SOURCE));
 
         wingTweet.in_reply_status_id = cursor.getLong(cursor.getColumnIndex(TweetColumns.IN_REPLY_TO_STATUS_ID));
@@ -181,6 +202,7 @@ public class WingTweet {
 
         values.put(TweetColumns.CREATED, created_at);
         values.put(TweetColumns.CONTENT, content);
+        values.put(TweetColumns.CONTENT_HTML, content_html);
         values.put(TweetColumns.SOURCE, source);
 
         values.put(TweetColumns.RETWEET_COUNT, retweet_count);

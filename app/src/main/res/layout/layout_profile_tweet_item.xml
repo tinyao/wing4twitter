@@ -84,7 +84,7 @@
             <!--android:src="@drawable/ic_more"-->
             <!--android:scaleType="centerInside"/>-->
 
-            <im.zico.wingtwitter.ui.view.HackyTextView
+            <im.zico.wingtwitter.ui.view.HtmlTextView
                 android:id="@+id/tweet_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -96,7 +96,6 @@
                 android:linksClickable="true"
                 android:text="A content URI is a URI that identifies data in a provider. Content URIs include the symbolic name of the entire provider (its authority) and a name that points to a table (a path). "
                 android:textColor="@color/tv_main_body"
-                android:textColorLink="@color/primary"
                 android:textSize="15sp" />
 
         </RelativeLayout>

@@ -26,6 +26,7 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 
 import im.zico.wingtwitter.utils.HackyMovementMethod;
+import im.zico.wingtwitter.utils.SpannableStringUtils;
 
 /*
   Hack to fix conflict between MovementMethod and OnClickListener
@@ -55,4 +56,11 @@ public class HackyTextView extends TextView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
+
+    @Override
+    public void setText(CharSequence text, BufferType type) {
+        super.setText(SpannableStringUtils.span(text.toString()), type);
+        this.setMovementMethod(HackyMovementMethod.getInstance());
+    }
+
 }

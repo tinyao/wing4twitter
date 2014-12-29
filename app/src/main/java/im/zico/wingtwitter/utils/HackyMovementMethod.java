@@ -27,7 +27,6 @@ import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
 import android.widget.TextView;
-
 import im.zico.wingtwitter.R;
 
 /*

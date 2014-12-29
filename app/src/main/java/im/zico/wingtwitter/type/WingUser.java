@@ -46,9 +46,13 @@ public class WingUser {
         user_id = user.getId();
         name = user.getName();
         screenName = user.getScreenName();
+
         desc = formatDescription(user);
+
         location = user.getLocation();
+
         website = user.getURLEntity().getExpandedURL();
+
         avatar = TweetUtils.getLargeAvatarUrl(user.getProfileImageURL());
         banner = user.getProfileBannerMobileRetinaURL();
         bannerColor = user.getProfileLinkColor();
@@ -65,7 +69,9 @@ public class WingUser {
         URLEntity[] entities = user.getDescriptionURLEntities();
         if(entities != null) {
             for (URLEntity url : entities) {
-                originDesc = originDesc.replace(url.getText(), url.getDisplayURL());
+                originDesc = originDesc.replace(url.getText(),
+                        "<a href='" + url.getExpandedURL() + "'>" + url.getDisplayURL() + "</a>" );
+
 //                        "<a href='" + url.getExpandedURL() + "'>" + url.getDisplayURL() + "</a>" );
             }
         }

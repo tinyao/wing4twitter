@@ -239,12 +239,13 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
     }
 
     private void loadFirstPage() {
-        asyncTwitter.getHomeTimeline();
+        //asyncTwitter.getHomeTimeline();
+        asyncTwitter.getHomeTimeline(
+                new Paging(2, 20));
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
         mAdapter.changeCursor(null);
     }
 
@@ -270,17 +271,12 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment
                 // load old
                 mLoadingFooter.setState(LoadingFooter.State.Idle, 3000);
             } else {
-                // load new
                 mSwipeRefresh.setRefreshing(false);
-                // 20 new tweets, delete all previous ones
-                if (statuses.size() >= 20) {
+//                // 20 new tweets, delete all previous ones
+                if (statuses.size() >= 17) {
                     DBHelper.deleteAllTweets();
                 }
             }
-
-//            index = mListView.getFirstVisiblePosition();
-//            View v = mListView.getChildAt(0);
-//            top = (v == null) ? 0 : v.getTop();
 
             ArrayList<WingTweet> wingTweets = new ArrayList<WingTweet>();
             for (Status ss : statuses) {

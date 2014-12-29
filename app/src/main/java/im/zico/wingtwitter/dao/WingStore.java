@@ -33,6 +33,7 @@ public class WingStore {
 
         public static final String CREATED = "created_at";
         public static final String CONTENT = "content";
+        public static final String CONTENT_HTML = "content_html";
         public static final String SOURCE = "source";
 
         public static final String IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id";
@@ -53,19 +54,19 @@ public class WingStore {
         public static final String MEDIAS = "medias";
 
         public static final String[] COLUMNS = new String[]{ACCOUNT_ID, TWEET_ID, USER_ID, USER_NAME, USER_SCREEN_NAME, USER_AVATAR_URL,
-                MEDIAS, CREATED, CONTENT, SOURCE,
+                MEDIAS, CREATED, CONTENT, CONTENT_HTML, SOURCE,
                 IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, IN_REPLY_TO_USER_NAME, IN_REPLY_TO_USER_SCREEN_NAME,
                 RETWEET_COUNT, FAVORITE_COUNT, FAVORITED,
                 RETWEET_ID, RETWEETED_BY_USER_ID, RETWEETED_BY_USER_NAME, RETWEETED_BY_USER_SCREEN_NAME, RETWEET_TIME};
 
         public static final DataType[] TYPES = new DataType[]{DataType.INTEGER, DataType.INTEGER, DataType.INTEGER, DataType.TEXT, DataType.TEXT, DataType.TEXT,
-                DataType.TEXT, DataType.INTEGER, DataType.TEXT, DataType.TEXT,
+                DataType.TEXT, DataType.INTEGER, DataType.TEXT, DataType.TEXT, DataType.TEXT,
                 DataType.INTEGER, DataType.INTEGER, DataType.TEXT, DataType.TEXT,
                 DataType.INTEGER, DataType.INTEGER, DataType.INTEGER_1,
                 DataType.INTEGER, DataType.INTEGER, DataType.TEXT, DataType.TEXT, DataType.INTEGER};
 
         public static final Constraint[] CONSTRAINTS = new Constraint[]{Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING,
-                Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING,
+                Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING,
                 Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING,
                 Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING,
                 Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING};

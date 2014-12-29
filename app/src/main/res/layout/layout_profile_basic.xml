@@ -130,7 +130,7 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin">
 
-            <TextView
+            <im.zico.wingtwitter.ui.view.HtmlTextView
                 android:id="@+id/user_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -149,6 +149,7 @@
                 android:id="@+id/user_web"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autoLink="web"
                 android:visibility="gone" />
 
         </LinearLayout>
