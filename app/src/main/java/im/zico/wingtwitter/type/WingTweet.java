@@ -106,7 +106,7 @@ public class WingTweet {
         HashtagEntity[] hashtags = status.getHashtagEntities();
         for (HashtagEntity tag: hashtags) {
             content_html = content_html.replace("#" + tag.getText(),
-                    "<a href='im.zico.wingtwitter.user://" + tag.getText() + "'>#" + tag.getText() + "</a>");
+                    "<a href='im.zico.wingtwitter.topic://" + tag.getText() + "'>#" + tag.getText() + "</a>");
         }
 
         MediaEntity[] mediaEntities = status.getMediaEntities();

@@ -69,7 +69,11 @@ public class TweetDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_tweet_detail, container, false);
 
         final Holder holder = new Holder(rootView);
-        Picasso.with(getActivity()).load(tweet.avatar_url).into(holder.avatar);
+        Picasso.with(getActivity())
+                .load(tweet.avatar_url)
+                .placeholder(R.drawable.ic_avatar_placeholder)
+                .fit()
+                .into(holder.avatar);
 
         if (tweet.retweet_id != -1) {
             holder.retweeted.setVisibility(View.VISIBLE);
@@ -105,6 +109,7 @@ public class TweetDetailFragment extends Fragment {
         if(tweet.mediaUrls != null && tweet.mediaUrls.length >0 ) {
             Picasso.with(getActivity())
                     .load(tweet.mediaUrls[0])
+                    .placeholder(R.color.alpha_light_gray)
                     .into(holder.photoV);
             holder.photoV.setVisibility(View.VISIBLE);
         } else {

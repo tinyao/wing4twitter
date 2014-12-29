@@ -463,6 +463,8 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
 
             Picasso.with(ProfileActivity.this)
                     .load(user.avatar)
+                    .fit()
+                    .placeholder(R.drawable.ic_avatar_placeholder)
                     .into(avatar);
 
             if (user.banner != null) {
@@ -509,10 +511,9 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         // ToDo: When the avatar View not in screen, cancel the element-shared-transition on it
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             asyncTwitter.shutdown();
-            if (scrollView.getCurrentScrollY() > (getResources().getDimensionPixelSize(R.dimen.parallax_image_height) * 0.5) ) {
-                getWindow().setReturnTransition(new Slide());
-                getWindow().setSharedElementReturnTransition(new Slide());
-
+            if (scrollView.getCurrentScrollY() > (getResources().getDimensionPixelSize(R.dimen.parallax_image_height) * 1.2) ) {
+                getWindow().setReturnTransition(new Fade());
+                getWindow().setSharedElementReturnTransition(new Fade());
             }
         }
         return super.onKeyDown(keyCode, event);

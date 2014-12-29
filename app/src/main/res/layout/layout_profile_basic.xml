@@ -29,7 +29,6 @@
                 android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tinyao"
                 android:textColor="@color/black"
                 android:textSize="22sp" />
 
@@ -37,8 +36,7 @@
                 android:id="@+id/user_screen_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="\@tinyao_cz" />
+                android:layout_marginTop="6dp" />
 
         </LinearLayout>
 
@@ -226,7 +224,7 @@
             android:id="@+id/user_avatar"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:src="@drawable/avatar_circle"
+            android:background="@drawable/ic_avatar_placeholder"
             android:transitionName="avatar" />
 
         <!--<TextView-->

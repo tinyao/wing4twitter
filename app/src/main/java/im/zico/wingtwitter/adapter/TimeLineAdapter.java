@@ -83,6 +83,7 @@ public class TimeLineAdapter extends CursorAdapter {
         final WingTweet tweet = WingTweet.fromCursor(cursor);
 
         Picasso.with(context).load(tweet.avatar_url)
+                .placeholder(R.drawable.ic_avatar_placeholder)
                 .fit()
                 .into(holder.avatar);
 
@@ -103,6 +104,7 @@ public class TimeLineAdapter extends CursorAdapter {
         if(tweet.mediaUrls != null && tweet.mediaUrls.length >0 ) {
             Picasso.with(context)
                     .load(tweet.mediaUrls[0])
+
                     .into(holder.tweetPhoto);
             holder.tweetPhoto.setVisibility(View.VISIBLE);
         } else {

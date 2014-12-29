@@ -86,6 +86,7 @@ public class UserTweetsAdapter extends BaseAdapter {
 
         Picasso.with(mContext).load(tweet.avatar_url)
                 .fit()
+                .placeholder(R.color.alpha_light_gray)
                 .into(holder.avatar);
 
 //        if (tweet.retweet_id != -1) {
