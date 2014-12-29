@@ -26,7 +26,8 @@ public class ActionSlideExpandableListView extends SlideExpandableListView {
 
     public static final int[] TWEET_ACTIONS = {
             R.id.expand_action_delete, R.id.expand_action_reply,
-            R.id.expand_action_retweet,R.id.expand_action_favorite, R.id.expand_action_share};
+            R.id.expand_action_retweet, R.id.expand_action_favorite, R.id.expand_action_share,
+            R.id.expand_action_filter, R.id.expand_action_copy};
 
     private OnActionClickListener listener;
 

@@ -224,7 +224,7 @@
             android:id="@+id/user_avatar"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:background="@drawable/ic_avatar_placeholder"
+            android:src="@drawable/ic_avatar_placeholder"
             android:transitionName="avatar" />
 
         <!--<TextView-->

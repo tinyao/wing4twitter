@@ -29,6 +29,8 @@ public class MSQLiteOpenHelper extends SQLiteOpenHelper {
                 TweetColumns.TYPES, TweetColumns.CONSTRAINTS, true));
         db.execSQL(createTable(UserColumns.TABLE_NAME, UserColumns.COLUMNS,
                 UserColumns.TYPES, UserColumns.CONSTRAINTS, true));
+        db.execSQL(createTable(MentionedCollumns.TABLE_NAME, MentionedCollumns.COLUMNS,
+                MentionedCollumns.TYPES, MentionedCollumns.CONSTRAINTS, true));
     }
 
     private static String createTable(final String tableName, final String[] columns,

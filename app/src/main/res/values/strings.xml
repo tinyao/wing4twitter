@@ -24,5 +24,8 @@
     <string name="title_activity_tweet_compose">TweetComposeActivity</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="quote">Quote</string>
+    <string name="retweet">Retweet</string>
+    <string name="cancel">CANCEL</string>
 
 </resources>

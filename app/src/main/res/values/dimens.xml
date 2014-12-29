@@ -19,6 +19,7 @@
     <dimen name="parallax_image_height">200dp</dimen>
 
     <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_offset">72dp</dimen>
 
     <dimen name="button_elevation">2dp</dimen>
     <dimen name="button_press_elevation">4dp</dimen>

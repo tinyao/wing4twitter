@@ -52,7 +52,10 @@
             android:background="@null"
             android:gravity="left|top"
             android:hint="What's happening"
+            android:fontFamily="sans-serif-light"
+            android:lineSpacingMultiplier="1.2"
             android:minLines="5"
+            android:textSize="16sp"
             android:padding="10dp" />
 
         <RelativeLayout

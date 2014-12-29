@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +30,6 @@ import im.zico.wingtwitter.dao.WingDataHelper;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.ui.ProfileActivity;
 import im.zico.wingtwitter.ui.view.HtmlTextView;
-import im.zico.wingtwitter.utils.HackyMovementMethod;
-import im.zico.wingtwitter.utils.SpannableStringUtils;
 import im.zico.wingtwitter.utils.Utils;
 import im.zico.wingtwitter.dao.WingStore.*;
 import twitter4j.AsyncTwitter;
@@ -61,6 +61,10 @@ public class TweetDetailFragment extends Fragment {
 
         WingDataHelper dbHelper = new WingDataHelper(getActivity());
         tweet = dbHelper.getTweet(tweet_id);
+        if (tweet == null) {
+            Toast.makeText(getActivity(), "Tweet not found", Toast.LENGTH_SHORT).show();
+            getActivity().finishAfterTransition();
+        }
     }
 
     @Override
@@ -71,8 +75,6 @@ public class TweetDetailFragment extends Fragment {
         final Holder holder = new Holder(rootView);
         Picasso.with(getActivity())
                 .load(tweet.avatar_url)
-                .placeholder(R.drawable.ic_avatar_placeholder)
-                .fit()
                 .into(holder.avatar);
 
         if (tweet.retweet_id != -1) {

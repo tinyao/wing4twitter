@@ -24,23 +24,24 @@ public class WingDataProvider extends ContentProvider {
 
     public static final String PATH_STATUSES = "/" + WingStore.TweetColumns.TABLE_NAME;
     public static final String PATH_USERS = "/" + WingStore.UserColumns.TABLE_NAME;
+    public static final String PATH_MENTIONS = "/" + WingStore.MentionedCollumns.TABLE_NAME;
 
     public static final Uri STATUS_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_STATUSES);
     public static final Uri USER_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_USERS);
-
-//    private static final int TYPE_STATUS = WingStore.TYPE_TWEET;
-//    private static final int TYPE_USER = WingStore.TYPE_USER;
+    public static final Uri MENTION_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_MENTIONS);
 
     /*
      * MIME type definitions
      */
     public static final String STATUS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.status";
+    public static final String MENTION_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.mention";
     public static final String USER_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.user";
 
     private static final UriMatcher sUriMatcher;
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(AUTHORITY, WingStore.TweetColumns.TABLE_NAME, WingStore.TYPE_TWEET);
+        sUriMatcher.addURI(AUTHORITY, WingStore.MentionedCollumns.TABLE_NAME, WingStore.TYPE_MENTION);
         sUriMatcher.addURI(AUTHORITY, WingStore.UserColumns.TABLE_NAME,  WingStore.TYPE_USER);
     }
 
@@ -79,6 +80,8 @@ public class WingDataProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case WingStore.TYPE_TWEET:
                 return STATUS_CONTENT_TYPE;
+            case WingStore.TYPE_MENTION:
+                return MENTION_CONTENT_TYPE;
             case WingStore.TYPE_USER:
                 return USER_CONTENT_TYPE;
             default:
@@ -160,6 +163,9 @@ public class WingDataProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case WingStore.TYPE_TWEET:
                 table = WingStore.TweetColumns.TABLE_NAME;
+                break;
+            case WingStore.TYPE_MENTION:
+                table = WingStore.MentionedCollumns.TABLE_NAME;
                 break;
             case WingStore.TYPE_USER:
                 table = WingStore.UserColumns.TABLE_NAME;

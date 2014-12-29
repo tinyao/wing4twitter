@@ -120,4 +120,15 @@ public class WingStore {
 
     }
 
+    public static final class MentionedCollumns implements BaseColumns {
+        private MentionedCollumns() {
+        }
+
+        public static final String TABLE_NAME = "mention";
+
+        public static final String[] COLUMNS = TweetColumns.COLUMNS;
+        public static final DataType[] TYPES = TweetColumns.TYPES;
+        public static final Constraint[] CONSTRAINTS = TweetColumns.CONSTRAINTS;
+    }
+
 }

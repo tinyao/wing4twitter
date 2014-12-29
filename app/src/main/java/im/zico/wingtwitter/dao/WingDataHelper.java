@@ -26,6 +26,8 @@ public class WingDataHelper extends BaseDataHelper {
         switch (type) {
             case WingStore.TYPE_TWEET:
                 return WingDataProvider.STATUS_CONTENT_URI;
+            case WingStore.TYPE_MENTION:
+                return WingDataProvider.MENTION_CONTENT_URI;
             case WingStore.TYPE_USER:
                 return WingDataProvider.USER_CONTENT_URI;
         }
@@ -34,10 +36,18 @@ public class WingDataHelper extends BaseDataHelper {
 
     public WingTweet getTweet(long tweet_id) {
         WingTweet wingTweet = null;
+        // Search the timeline cache
         Cursor cursor = query(WingStore.TYPE_TWEET, null, WingStore.TweetColumns.TWEET_ID + " = ?",
                 new String[]{ "" + tweet_id }, null);
         if (cursor.moveToFirst()) {
             wingTweet = WingTweet.fromCursor(cursor);
+        } else {
+            // Search mentioned cache
+            cursor = query(WingStore.TYPE_MENTION, null, WingStore.TweetColumns.TWEET_ID + " = ?",
+                    new String[]{ "" + tweet_id }, null);
+            if (cursor.moveToFirst()) {
+                wingTweet = WingTweet.fromCursor(cursor);
+            }
         }
         cursor.close();
         return wingTweet;
@@ -57,6 +67,33 @@ public class WingDataHelper extends BaseDataHelper {
 
         ContentValues[] valueArray = new ContentValues[contentValues.size()];
         bulkInsert(WingStore.TYPE_TWEET, contentValues.toArray(valueArray));
+    }
+
+    /**
+     * Save Tweet List
+     * @param wingTweets
+     */
+    public synchronized void saveAllMention(List<WingTweet> wingTweets) {
+        ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
+
+        for (WingTweet wingTweet : wingTweets) {
+            ContentValues values = wingTweet.toContentValues();
+            contentValues.add(values);
+        }
+
+        ContentValues[] valueArray = new ContentValues[contentValues.size()];
+        bulkInsert(WingStore.TYPE_MENTION, contentValues.toArray(valueArray));
+    }
+
+    /**
+     * Save single tweet
+     * @param wingTweet
+     */
+    public void saveMention(WingTweet wingTweet) {
+        if(!isTweetExisted(wingTweet.tweet_id)) {
+            ContentValues values = wingTweet.toContentValues();
+            insert(WingStore.TYPE_MENTION, values);
+        }
     }
 
 
@@ -108,8 +145,13 @@ public class WingDataHelper extends BaseDataHelper {
         return wingUser;
     }
 
-    public void delete(long id) {
-
+    /**
+     *
+     * @param tweet
+     */
+    public void delete(WingTweet tweet) {
+        delete(getContentUri(WingStore.TYPE_TWEET),
+                WingStore.TweetColumns.TWEET_ID + " = ?", new String[]{ "" + tweet.tweet_id });
     }
 
     public int deletePreviousTweets(long tweet_id) {
@@ -144,6 +186,9 @@ public class WingDataHelper extends BaseDataHelper {
     public CursorLoader getCursorLoader(int type) {
         switch (type) {
             case WingStore.TYPE_TWEET:
+                return new CursorLoader(getContext(), getContentUri(type), null, null,
+                        null, WingStore.TweetColumns.TWEET_ID + " DESC");
+            case WingStore.TYPE_MENTION:
                 return new CursorLoader(getContext(), getContentUri(type), null, null,
                         null, WingStore.TweetColumns.TWEET_ID + " DESC");
             case WingStore.TYPE_USER:

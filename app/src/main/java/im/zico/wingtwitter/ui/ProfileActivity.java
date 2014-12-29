@@ -101,8 +101,6 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-
         bannerImage = (ImageView) findViewById(R.id.profile_bannder_image);
         getActionBar().setTitle("");
         getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
@@ -110,8 +108,6 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
 
         scrollView = (ObservableScrollView) findViewById(R.id.scroll);
         scrollView.setScrollViewCallbacks(this);
-
-        revealBanner();
 
         DBHelper = new WingDataHelper(this);
         basicInfo = new BasicProfileCard(this);
@@ -137,6 +133,7 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         Intent intent = getIntent();
 
         if (intent.hasExtra(WingStore.TweetColumns.USER_SCREEN_NAME)) {
+            revealBanner();
             mScreenName = intent.getStringExtra(WingStore.TweetColumns.USER_SCREEN_NAME);
         } else if(intent.getData()!=null) {
             mScreenName = intent.getData().getHost();
@@ -463,8 +460,7 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
 
             Picasso.with(ProfileActivity.this)
                     .load(user.avatar)
-                    .fit()
-                    .placeholder(R.drawable.ic_avatar_placeholder)
+//                    .fit()
                     .into(avatar);
 
             if (user.banner != null) {

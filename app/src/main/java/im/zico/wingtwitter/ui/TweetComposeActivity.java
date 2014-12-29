@@ -50,8 +50,10 @@ public class TweetComposeActivity extends Activity implements View.OnClickListen
 
     private File photo;
 
-    public static void showDialog(Activity activity) {
-        activity.startActivity(new Intent(activity, TweetComposeActivity.class));
+    public static void showDialog(Activity activity, Bundle bundles) {
+        Intent intent = new Intent(activity, TweetComposeActivity.class);
+        intent.putExtras(bundles);
+        activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.grow_from_bottom_right, 0);
     }
 
@@ -69,6 +71,14 @@ public class TweetComposeActivity extends Activity implements View.OnClickListen
         photoAdded = (ImageView) findViewById(R.id.compose_photo_added);
         updateV = findViewById(R.id.compose_update_tweet);
         textCounter = (TextView) findViewById(R.id.compose_header_text_counter);
+
+        if (getIntent().hasExtra("user")) {
+            tweetEdt.append(getIntent().getStringExtra("user") + " ");
+        }
+
+        if (getIntent().hasExtra("quote")) {
+            tweetEdt.setText(getIntent().getStringExtra("quote"));
+        }
 
         asyncTwitter = WingApp.newTwitterInstance();
         asyncTwitter.addListener(listener);

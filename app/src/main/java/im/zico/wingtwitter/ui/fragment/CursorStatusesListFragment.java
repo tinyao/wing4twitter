@@ -11,10 +11,6 @@ import android.widget.ListView;
  */
 public class CursorStatusesListFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-//    private ShotsDataHelper mDataHelper;
-
-//    private ShotsAdapter mAdapter;
-
     private ListView mListView;
 
     @Override
