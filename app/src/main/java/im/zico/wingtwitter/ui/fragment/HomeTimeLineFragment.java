@@ -1,5 +1,6 @@
 package im.zico.wingtwitter.ui.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.view.ViewPropertyAnimator;
+
+import java.util.Calendar;
 
 import im.zico.wingtwitter.APIKey;
 import im.zico.wingtwitter.R;
@@ -37,6 +40,8 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public class HomeTimeLineFragment extends BaseStatusesListFragment {
 
+    private static final String TAG = "HOME_TIMELINE";
+
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private AsyncTwitter asyncTwitter;
@@ -62,16 +67,16 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mPageId = getArguments().getInt(ARG_SECTION_NUMBER);
+        Log.d("DEBUG", "HomeTimeline onCreate: " + Calendar.getInstance().getTimeInMillis());
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        // save index and top position
-        int index = mListView.getFirstVisiblePosition();
-        View v = mListView.getChildAt(0);
-        int top = (v == null) ? 0 : v.getTop();
-        outState.putInt("postion", index);
-        outState.putInt("top", top);
+//        int index = mListView.getFirstVisiblePosition();
+//        View v = mListView.getChildAt(0);
+//        int top = (v == null) ? 0 : v.getTop();
+//        outState.putInt("postion", index);
+//        outState.putInt("top", top);
         super.onSaveInstanceState(outState);
     }
 
@@ -86,6 +91,7 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
                 TweetComposeActivity.showDialog(getActivity(), new Bundle());
             }
         });
+        Log.d("DEBUG", "HomeTimeline onViewCreated: " + Calendar.getInstance().getTimeInMillis());
     }
 
     @Override
@@ -105,7 +111,7 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
 
     @Override
     public void loadLatest() {
-        Log.d("DEBUG", "Load latest tweets ...");
+        Log.d(TAG, "Load latest tweets ...");
         if (isListEmpty()) {
             asyncTwitter.getHomeTimeline();
         } else {
@@ -121,7 +127,7 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
     }
 
     @Override
-    protected synchronized void onScrollDown() {
+    public synchronized void onScrollDown() {
         if (fabVisible) {
             // 显示
             ViewPropertyAnimator.animate(composeBtn).setInterpolator(new AccelerateDecelerateInterpolator())
@@ -152,7 +158,7 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
     }
 
     @Override
-    protected synchronized void onScrollUp() {
+    public synchronized void onScrollUp() {
         if (!fabVisible) {
             ViewPropertyAnimator.animate(composeBtn).setInterpolator(new AccelerateDecelerateInterpolator())
                     .setDuration(200)
@@ -179,5 +185,11 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
                         }
                     });;
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        Log.d("DEBUG", "HomeTimeline onAttach: " + Calendar.getInstance().getTimeInMillis());
     }
 }

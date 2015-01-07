@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -123,8 +124,7 @@ public class DrawerFragment extends Fragment {
      * @param groupPos
      * @param childPos
      */
-    private void selectItem(int groupPos, int childPos) {
-        Toast.makeText(getActivity(), "child: " + groupPos + "-" + childPos, Toast.LENGTH_SHORT).show();
+    private void selectItem(final int groupPos, final int childPos) {
         mCurrentSelectedPosition = groupPos;
         mCurrentSelectedChildPosition = childPos;
         if (expListView != null) {
@@ -136,7 +136,12 @@ public class DrawerFragment extends Fragment {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
         if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(groupPos, childPos);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mCallbacks.onNavigationDrawerItemSelected(groupPos, childPos);
+                }
+            }, 250);
         }
     }
 
@@ -189,41 +194,41 @@ public class DrawerFragment extends Fragment {
         });
 
         drawerLayout.setDrawerListener(mDrawerToggle);
-        enlargeDrawerDragger(drawerLayout);
+//        enlargeDrawerDragger(drawerLayout);
     }
 
-    /**
-     * Enlarge the trigger edge for the sliding drawer
-     *
-     * @param mDrawerLayout
-     */
-    private void enlargeDrawerDragger(DrawerLayout mDrawerLayout) {
-        Field mDragger = null;
-        try {
-            mDragger = ((Object) mDrawerLayout).getClass().getDeclaredField(
-                    "mLeftDragger");
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-        mDragger.setAccessible(true);
-
-        ViewDragHelper draggerObj = null;
-        try {
-            draggerObj = (ViewDragHelper) mDragger
-                    .get(mDrawerLayout);
-            Field mEdgeSize = draggerObj.getClass().getDeclaredField(
-                    "mEdgeSize");
-            mEdgeSize.setAccessible(true);
-            int edge = mEdgeSize.getInt(draggerObj);
-
-            mEdgeSize.setInt(draggerObj, edge * 3);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-
-    }
+//    /**
+//     * Enlarge the trigger edge for the sliding drawer
+//     *
+//     * @param mDrawerLayout
+//     */
+//    private void enlargeDrawerDragger(DrawerLayout mDrawerLayout) {
+//        Field mDragger = null;
+//        try {
+//            mDragger = ((Object) mDrawerLayout).getClass().getDeclaredField(
+//                    "mLeftDragger");
+//        } catch (NoSuchFieldException e) {
+//            e.printStackTrace();
+//        }
+//        mDragger.setAccessible(true);
+//
+//        ViewDragHelper draggerObj = null;
+//        try {
+//            draggerObj = (ViewDragHelper) mDragger
+//                    .get(mDrawerLayout);
+//            Field mEdgeSize = draggerObj.getClass().getDeclaredField(
+//                    "mEdgeSize");
+//            mEdgeSize.setAccessible(true);
+//            int edge = mEdgeSize.getInt(draggerObj);
+//
+//            mEdgeSize.setInt(draggerObj, edge * 3);
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchFieldException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     public ActionBarDrawerToggle getToggle() {
         return mDrawerToggle;

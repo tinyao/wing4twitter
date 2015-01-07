@@ -33,12 +33,10 @@ public class BaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("DEBUG", "Drawer Fragment - onCreate");
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        Log.d("DEBUG", "Drawer Fragment - onViewCreated");
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -50,18 +48,15 @@ public class BaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("DEBUG", "Drawer Fragment - Resume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d("DEBUG", "Drawer Fragment - Pause");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("DEBUG", "Drawer Fragment - onCreatedView");
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 

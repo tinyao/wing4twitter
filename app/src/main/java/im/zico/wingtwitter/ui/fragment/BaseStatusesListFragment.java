@@ -2,35 +2,26 @@ package im.zico.wingtwitter.ui.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListFragment;
 import android.app.LoaderManager;
-import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.ContactsContract;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.AbsListView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.tjerkw.slideexpandable.library.ActionSlideExpandableListView;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import im.zico.wingtwitter.R;
@@ -38,14 +29,11 @@ import im.zico.wingtwitter.adapter.TimeLineAdapter;
 import im.zico.wingtwitter.dao.WingDataHelper;
 import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
-import im.zico.wingtwitter.ui.MainActivity;
 import im.zico.wingtwitter.ui.TweetComposeActivity;
-import im.zico.wingtwitter.ui.TweetDetailActivity;
 import im.zico.wingtwitter.ui.view.LoadingFooter;
 import im.zico.wingtwitter.ui.view.TweetListView;
 import im.zico.wingtwitter.utils.TweetUtils;
 import twitter4j.AsyncTwitter;
-import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.TwitterAdapter;
@@ -56,9 +44,9 @@ import twitter4j.TwitterMethod;
 /**
  * Created by tinyao on 12/4/14.
  */
-public abstract class BaseStatusesListFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+public abstract class BaseStatusesListFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        SwipeRefreshLayout.OnRefreshListener, TweetListView.ScrollDetectCallback {
 
-    public static final String ACTION_ACTIONBAR_CLICKED = "action_actionbar_clicked";
     private static final int TASK_TIMELINE = 1;
     private static final int TASK_FAVORITE = 2;
     private static final int TASK_UNFAVORITE = 3;
@@ -71,10 +59,6 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
     private LoadingFooter mLoadingFooter;
     private WingDataHelper DBHelper;
 
-    private ActionBarTapReceiver receiver;
-    private int mLastFirstVisibleItem;
-    private int mLastChildY;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +68,6 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("DEBUG", "register");
     }
 
     @Override
@@ -128,8 +111,6 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
                         break;
                     case R.id.expand_action_favorite:
                         WingTweet favTweet = mAdapter.getItem(position);
-//                        favTweet.favorited = true;
-//                        getDBHelper().update(favTweet);
                         if (!favTweet.favorited) {
                             getAsyncTwitter().createFavorite(tweet.tweet_id);
                         } else {
@@ -196,69 +177,30 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
             }
         });
 
-        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-                                          @Override
-                                          public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-//                                              if (view.getId() == view.getId()) {
-//                                                  final int currentFirstVisibleItem = view.getFirstVisiblePosition();
-//                                                  if (currentFirstVisibleItem > mLastFirstVisibleItem) {
-//                                                      onScrollDown();
-//                                                      Log.d("DEBUG", "scrolling down...");
-//                                                  } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
-//                                                      onScrollUp();
-//                                                      Log.d("DEBUG", "scrolling up...");
-//                                                  }
-//                                                  mLastFirstVisibleItem = currentFirstVisibleItem;
-//                                              }
-
-
-                                          }
-
-                                          @Override
-                                          public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
-                                                               int totalItemCount) {
-
-                                              if (mLastFirstVisibleItem==firstVisibleItem && view.getChildAt(0) != null) {
-                                                  int scrollY = mLastChildY - view.getChildAt(0).getTop();
-                                                  if (scrollY > 20 ) {
-                                                      onScrollDown();
-                                                      Log.d("DEBUG", "scrolling down...");
-                                                  } else if (scrollY < -20 ) {
-                                                      onScrollUp();
-                                                      Log.d("DEBUG", "scrolling up...");
-                                                  }
-                                              }
-//
-                                              if (view.getChildAt(0) != null) {
-                                                  mLastChildY = view.getChildAt(0).getTop();
-                                              }
-                                              mLastFirstVisibleItem = firstVisibleItem;
-
-                                              if (mLoadingFooter.getState() == LoadingFooter.State.Loading
-                                                      || mLoadingFooter.getState() == LoadingFooter.State.TheEnd) {
-                                                  return;
-                                              }
-                                              if (firstVisibleItem + visibleItemCount >= totalItemCount
-                                                      && totalItemCount != 0
-                                                      && totalItemCount != mListView.getHeaderViewsCount() + mListView.getFooterViewsCount()
-                                                      && mAdapter.getCount() > 0) {
-                                                  if (mLoadingFooter.getState() != LoadingFooter.State.TheEnd) {
-                                                      mLoadingFooter.setState(LoadingFooter.State.Loading);
-                                                      loadNext();
-                                                  }
-                                              }
-
-                                          }
-                                      }
-
-        );
+        mListView.setScrollCallback(this);
     }
 
+    @Override
+    public void onScrollFooter() {
+        if (mLoadingFooter.getState() != LoadingFooter.State.Loading
+                && mLoadingFooter.getState() != LoadingFooter.State.TheEnd) {
+            mLoadingFooter.setState(LoadingFooter.State.Loading);
+            loadNext();
+        }
+    }
+
+    @Override
+    public void onScrollDown() {
+
+    }
+
+    @Override
+    public void onScrollUp() {
+
+    }
 
     protected void bindSwipeToRefresh(ViewGroup v) {
         mSwipeRefresh = new SwipeRefreshLayout(getActivity());
-
         // Move child to SwipeRefreshLayout, and add SwipeRefreshLayout to root view
         v.removeViewInLayout(mListView);
         v.addView(mSwipeRefresh, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -275,15 +217,6 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
 
     public void scrollTop() {
         mListView.smoothScrollToPositionFromTop(0, 0);
-    }
-
-
-    protected synchronized void onScrollUp() {
-
-    }
-
-    protected synchronized void onScrollDown() {
-
     }
 
     public WingDataHelper getDBHelper() {
@@ -337,6 +270,7 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         @Override
         public void gotMentions(ResponseList<Status> statuses) {
             super.gotMentions(statuses);
+            onTwitterResult(statuses);
         }
 
         @Override
@@ -470,20 +404,6 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
     };
 
 
-    class ActionBarTapReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d("DEBUG", "mPageId=" + mPageId);
-            if (intent.getAction().equals(ACTION_ACTIONBAR_CLICKED)) {
-                int updatePage = intent.getIntExtra("pager_id", -1);
-                Log.d("DEBUG", "mPageId=" + mPageId + ", updatePage=" + updatePage);
-                if (mPageId == updatePage)
-                    mListView.smoothScrollToPositionFromTop(0, 0);
-            }
-        }
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -492,12 +412,10 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        activity.registerReceiver(receiver, new IntentFilter(ACTION_ACTIONBAR_CLICKED));
     }
 
     @Override
     public void onDetach() {
-//        getActivity().unregisterReceiver(receiver);
         super.onDetach();
     }
 }

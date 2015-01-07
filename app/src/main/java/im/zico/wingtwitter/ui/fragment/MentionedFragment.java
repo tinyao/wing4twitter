@@ -67,6 +67,7 @@ public class MentionedFragment extends BaseStatusesListFragment {
 
     @Override
     public void loadLatest() {
+        Log.d("DEBUG", "load latest");
         if (isListEmpty()) {
             asyncTwitter.getMentions();
         } else {
