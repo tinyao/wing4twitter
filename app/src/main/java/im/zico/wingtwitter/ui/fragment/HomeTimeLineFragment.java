@@ -10,16 +10,26 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.nineoldandroids.view.ViewPropertyAnimator;
+
+import im.zico.wingtwitter.APIKey;
 import im.zico.wingtwitter.R;
 import im.zico.wingtwitter.WingApp;
 import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.ui.TweetComposeActivity;
+import im.zico.wingtwitter.utils.PrefKey;
+import im.zico.wingtwitter.utils.PreferencesManager;
 import twitter4j.AsyncTwitter;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
+import twitter4j.StatusUpdate;
+import twitter4j.Twitter;
 import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
 import twitter4j.TwitterListener;
+import twitter4j.TwitterMethod;
+import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * Created by tinyao on 12/4/14.
@@ -67,8 +77,6 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         asyncTwitter = WingApp.newTwitterInstance();
-        asyncTwitter.addListener(listener);
-
         super.onViewCreated(view, savedInstanceState);
         composeBtn = (ImageButton) view.findViewById(R.id.fab_compose);
         composeBtn.setOnClickListener(new View.OnClickListener() {
@@ -79,22 +87,10 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
         });
     }
 
-    private TwitterListener listener = new TwitterAdapter() {
-        @Override
-        public void gotHomeTimeline(ResponseList<Status> statuses) {
-            super.gotHomeTimeline(statuses);
-            onTwitterResult(statuses);
-        }
-
-        @Override
-        public void gotMentions(ResponseList<Status> statuses) {
-            super.gotMentions(statuses);
-        }
-
-        @Override
-        public void createdFavorite(Status status) {
-        }
-    };
+    @Override
+    public void onTwitterError(TwitterException te, TwitterMethod method) {
+        super.onTwitterError(te, method);
+    }
 
     @Override
     public int getType() {

@@ -46,6 +46,8 @@ public class TweetComposeActivity extends Activity implements View.OnClickListen
     private ImageView photoAdded;
     private TextView textCounter;
 
+    private long inReplyId = 0;
+
     AsyncTwitter asyncTwitter;
 
     private File photo;
@@ -74,6 +76,7 @@ public class TweetComposeActivity extends Activity implements View.OnClickListen
 
         if (getIntent().hasExtra("user")) {
             tweetEdt.append(getIntent().getStringExtra("user") + " ");
+            inReplyId = getIntent().getLongExtra("inReplyId", 0);
         }
 
         if (getIntent().hasExtra("quote")) {
@@ -172,17 +175,15 @@ public class TweetComposeActivity extends Activity implements View.OnClickListen
                 tweetEdt.setText(_currentS.substring(0, _cur)
                         + (_cur==0 ? "@" : " @")
                         + _currentS.substring(_cur));
-                tweetEdt.setSelection(_cur + 2);
-
-
+                tweetEdt.setSelection(_cur + (_cur==0 ? 1 : 2));
                 break;
             case R.id.compose_add_topic:
                 int curs = tweetEdt.getSelectionStart();
                 String currentS = tweetEdt.getText().toString();
                 tweetEdt.setText(currentS.substring(0, curs)
-                        + (curs==0 ? "#" : " #")
+                        + "#"
                         + currentS.substring(curs));
-                tweetEdt.setSelection(curs + 2);
+                tweetEdt.setSelection(curs + 1);
                 break;
             case R.id.compose_update_tweet:
                 Log.d("DEBUG", "Update Status ... ");
@@ -193,6 +194,7 @@ public class TweetComposeActivity extends Activity implements View.OnClickListen
 
     private void updateTweet() {
         StatusUpdate status = new StatusUpdate(tweetEdt.getText().toString());
+        if(inReplyId != 0) status.setInReplyToStatusId(inReplyId);
         if(photo != null) status.setMedia(photo);
         status.setLocation(new GeoLocation(40, 120));
         asyncTwitter.updateStatus(status);

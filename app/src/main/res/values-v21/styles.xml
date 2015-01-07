@@ -64,12 +64,12 @@
     <style name="CustomToolBar" parent="android:Widget.Material.ActionBar">
         <item name="android:background">@color/primary</item>
         <item name="android:elevation">4dp</item>
-        <item name="android:contentInsetStart">@dimen/spacing_keyline2</item>
+        <item name="android:contentInsetStart">@dimen/spacing_keyline_2</item>
     </style>
 
     <style name="ToolBarStyle">
         <item name="android:background">@color/primary</item>
-        <item name="android:contentInsetStart">@dimen/spacing_keyline2</item>
+        <item name="android:contentInsetStart">@dimen/spacing_keyline_2</item>
         <item name="android:elevation">4dp</item>
     </style>
 

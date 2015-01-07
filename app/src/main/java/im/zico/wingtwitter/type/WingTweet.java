@@ -101,7 +101,6 @@ public class WingTweet {
         for (URLEntity url : urlEntities) {
             content_html = content_html.replace(url.getText(),
                     "<a href='" + url.getExpandedURL() + "'>" + url.getDisplayURL() + "</a>");
-            Log.d("DEBUG", "display url: " + url.getDisplayURL());
         }
         HashtagEntity[] hashtags = status.getHashtagEntities();
         for (HashtagEntity tag: hashtags) {
@@ -109,7 +108,9 @@ public class WingTweet {
                     "<a href='im.zico.wingtwitter.topic://" + tag.getText() + "'>#" + tag.getText() + "</a>");
         }
 
-        MediaEntity[] mediaEntities = status.getMediaEntities();
+        MediaEntity[] mediaEntities = status.getExtendedMediaEntities();
+        status.getURLEntities();
+
         if (mediaEntities != null && mediaEntities.length != 0) {
             mediaUrls = new String[mediaEntities.length];
             for (int i = 0; i < mediaEntities.length; i++) {
@@ -117,7 +118,6 @@ public class WingTweet {
                 content = content.replace(mediaEntities[i].getText(), "");
                 mediaUrls[i] = mediaEntities[i].getMediaURL();
             }
-            Log.d("DEBUG", "MEDIA URLS: " + mediaUrls);
         }
 
         htmlContent = convert2Html(content);

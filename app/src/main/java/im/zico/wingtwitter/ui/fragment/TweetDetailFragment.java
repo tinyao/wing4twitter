@@ -16,10 +16,9 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +29,7 @@ import im.zico.wingtwitter.dao.WingDataHelper;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.ui.ProfileActivity;
 import im.zico.wingtwitter.ui.view.HtmlTextView;
+import im.zico.wingtwitter.utils.TweetUtils;
 import im.zico.wingtwitter.utils.Utils;
 import im.zico.wingtwitter.dao.WingStore.*;
 import twitter4j.AsyncTwitter;
@@ -108,14 +108,18 @@ public class TweetDetailFragment extends Fragment {
         holder.counts.setText("" + tweet.retweet_count);
         holder.favorites.setText("" + tweet.favorite_count);
 
-        if(tweet.mediaUrls != null && tweet.mediaUrls.length >0 ) {
-            Picasso.with(getActivity())
-                    .load(tweet.mediaUrls[0])
-                    .placeholder(R.color.alpha_light_gray)
-                    .into(holder.photoV);
-            holder.photoV.setVisibility(View.VISIBLE);
+        if (tweet.mediaUrls != null && tweet.mediaUrls.length > 0) {
+            holder.gallery.removeAllViews();
+            for (int i = 0; i < tweet.mediaUrls.length; i++) {
+                Log.d("DEBUG", tweet.user_name + " media load: " + tweet.mediaUrls[i]);
+                TweetUtils.insertPhoto(getActivity(), holder.gallery,
+                        tweet.mediaUrls[i],
+                        tweet.mediaUrls.length > 1,
+                        i == 0);
+            }
+            holder.gallery.setVisibility(View.VISIBLE);
         } else {
-            holder.photoV.setVisibility(View.GONE);
+            holder.gallery.setVisibility(View.GONE);
         }
 
         holder.avatar.setOnClickListener(new View.OnClickListener() {
@@ -246,7 +250,7 @@ public class TweetDetailFragment extends Fragment {
         public TextView tvia;
         public TextView counts;
         public TextView favorites;
-        public ImageView photoV;
+        public LinearLayout gallery;
 
         public Holder(View view) {
             retweeted = (TextView) view.findViewById(R.id.retweet_hint);
@@ -258,7 +262,7 @@ public class TweetDetailFragment extends Fragment {
             tvia = (TextView) view.findViewById(R.id.tweet_via);
             counts = (TextView) view.findViewById(R.id.retweet_count);
             favorites = (TextView) view.findViewById(R.id.favorite_count);
-            photoV = (ImageView) view.findViewById(R.id.tweet_photo);
+            gallery = (LinearLayout) view.findViewById(R.id.tweet_gallery);
         }
     }
 
@@ -270,7 +274,6 @@ public class TweetDetailFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-
         super.onDestroy();
     }
 }

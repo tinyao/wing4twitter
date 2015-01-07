@@ -52,17 +52,8 @@ public class MentionedFragment extends BaseStatusesListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         asyncTwitter = WingApp.newTwitterInstance();
-        asyncTwitter.addListener(listener);
         super.onViewCreated(view, savedInstanceState);
     }
-
-    private TwitterListener listener = new TwitterAdapter() {
-        @Override
-        public void gotMentions(ResponseList<Status> statuses) {
-            super.gotMentions(statuses);
-            onTwitterResult(statuses);
-        }
-    };
 
     @Override
     public int getType() {
@@ -70,7 +61,7 @@ public class MentionedFragment extends BaseStatusesListFragment {
     }
 
     @Override
-    AsyncTwitter getAsyncTwitter() {
+    public AsyncTwitter getAsyncTwitter() {
         return asyncTwitter;
     }
 

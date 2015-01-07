@@ -41,6 +41,8 @@ public class WingApp extends Application {
         builder.setOAuthConsumerKey(APIKey.TWITTER_CONSUMER_KEY);
         builder.setOAuthConsumerSecret(APIKey.TWITTER_CONSUMER_SECRET);
         builder.setAsyncNumThreads(5);
+        builder.setHttpConnectionTimeout(10000);
+        builder.setPrettyDebugEnabled(true);
         if (PreferencesManager.getInstance(sContext).hasKey(PrefKey.KEY_ACCESSTOKEN)) {
             String accessToken = PreferencesManager.getInstance(sContext).getValue(PrefKey.KEY_ACCESSTOKEN);
             String tokenSecret = PreferencesManager.getInstance(sContext).getValue(PrefKey.KEY_TOKENSECRET);

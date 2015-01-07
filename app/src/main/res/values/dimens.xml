@@ -12,7 +12,8 @@
     <dimen name="spacing_signin_page">40dp</dimen>
     <dimen name="spacing_vertical_medium">24dp</dimen>
     <dimen name="spacing_vertical_large">32dp</dimen>
-    <dimen name="spacing_keyline2">72dp</dimen>
+    <dimen name="spacing_keyline_2">72dp</dimen>
+    <dimen name="spacing_keyline_1">16dp</dimen>
     <dimen name="spacing_drawer_icon_text">32dp</dimen>
     <dimen name="timeline_avatar_size">40dp</dimen>
     <dimen name="timeline_avatar_small">30dp</dimen>
@@ -23,4 +24,8 @@
 
     <dimen name="button_elevation">2dp</dimen>
     <dimen name="button_press_elevation">4dp</dimen>
+    <dimen name="tweet_gallery_height">200dp</dimen>
+    <dimen name="tweet_gallery_padding">72dp</dimen>
+    <dimen name="tweet_gallery_gap">3dp</dimen>
+    <dimen name="tweet_gallery_multi_cut">40dp</dimen>
 </resources>

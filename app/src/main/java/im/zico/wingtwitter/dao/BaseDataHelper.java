@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.CursorLoader;
 
+import im.zico.wingtwitter.type.WingTweet;
+
 public abstract class BaseDataHelper {
     private Context mContext;
 

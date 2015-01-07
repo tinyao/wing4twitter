@@ -67,19 +67,11 @@ public class ActionSlideExpandableListView extends SlideExpandableListView {
 			@Override
 			public View getView(final int position, View view, ViewGroup viewGroup) {
 				final View listView = wrapped.getView(position, view, viewGroup);
-                WingTweet tweet = (WingTweet)adapter.getItem(position);
-
-                boolean isMyTweet = (tweet.user_id ==
-                        Long.valueOf(PreferencesManager.getInstance(WingApp.getContext()).getLongValue(PrefKey.KEY_USERID)));
 
 				// add the action listeners
 				if(TWEET_ACTIONS != null && listView!=null) {
 					for(int id : TWEET_ACTIONS) {
 						View buttonView = listView.findViewById(id);
-
-                        if(isMyTweet && id == R.id.expand_action_delete) {
-                            buttonView.setVisibility(VISIBLE);
-                        }
 
 						if(buttonView != null) {
 							View btnV = buttonView.findViewById(id);

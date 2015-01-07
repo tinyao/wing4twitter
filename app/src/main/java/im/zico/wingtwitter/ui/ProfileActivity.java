@@ -38,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -67,7 +68,9 @@ import twitter4j.Relationship;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterListener;
+import twitter4j.TwitterMethod;
 import twitter4j.User;
 
 public class ProfileActivity extends BaseActivity implements ObservableScrollViewCallbacks {
@@ -268,6 +271,19 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
             DBHelper.save(mUser);
             mHandler.sendEmptyMessage(DESTROYED_RELATIONSHIP);
         }
+
+        @Override
+        public void onException(TwitterException te, TwitterMethod method) {
+            Toast.makeText(ProfileActivity.this,
+                    method.toString() + ": " + te.getMessage(),
+                    Toast.LENGTH_SHORT).show();
+            if (method == TwitterMethod.USER_TIMELINE) {
+                findViewById(R.id.progressBarView).setVisibility(View.INVISIBLE);
+            }
+            super.onException(te, method);
+        }
+
+
     };
 
     private static final int GOT_USER_DETAIL = 0;

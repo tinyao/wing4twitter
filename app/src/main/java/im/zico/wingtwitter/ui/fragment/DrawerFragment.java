@@ -171,6 +171,8 @@ public class DrawerFragment extends Fragment {
 
     public void setUp(int drawer_resId, DrawerLayout drawerLayout) {
         mDrawerLayout = drawerLayout;
+        drawerLayout.setFitsSystemWindows(true);
+        drawerLayout.setStatusBarBackgroundColor(getResources().getColor(android.R.color.transparent));
         mFragmentContainerView = getActivity().findViewById(drawer_resId);
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(),
                 drawerLayout,

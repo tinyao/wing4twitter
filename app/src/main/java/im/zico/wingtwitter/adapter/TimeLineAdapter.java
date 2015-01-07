@@ -5,9 +5,11 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,15 +23,22 @@ import android.widget.TextView;
 
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.view.ViewPropertyAnimator;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import im.zico.wingtwitter.R;
+import im.zico.wingtwitter.WingApp;
 import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.ui.ProfileActivity;
 import im.zico.wingtwitter.ui.TweetDetailActivity;
 import im.zico.wingtwitter.ui.view.HtmlTextView;
+import im.zico.wingtwitter.ui.view.MediaPicTransform;
 import im.zico.wingtwitter.ui.view.TweetListView;
+import im.zico.wingtwitter.utils.PrefKey;
+import im.zico.wingtwitter.utils.PreferencesManager;
+import im.zico.wingtwitter.utils.TweetUtils;
 import im.zico.wingtwitter.utils.Utils;
 
 /**
@@ -63,8 +72,6 @@ public class TimeLineAdapter extends CursorAdapter {
         final WingTweet tweet = WingTweet.fromCursor(cursor);
 
         Picasso.with(context).load(tweet.avatar_url)
-//                .placeholder(R.drawable.ic_avatar_placeholder)
-//                .fit()
                 .into(holder.avatar);
 
         if (tweet.retweet_id != -1) {
@@ -74,6 +81,21 @@ public class TimeLineAdapter extends CursorAdapter {
             holder.retweeted.setVisibility(View.GONE);
         }
 
+        boolean isMyTweet =
+                (tweet.user_id ==
+                Long.valueOf(PreferencesManager.getInstance(WingApp.getContext()).getLongValue(PrefKey.KEY_USERID)));
+        if (isMyTweet) {
+            holder.delete.setVisibility(View.VISIBLE);
+        } else {
+            holder.delete.setVisibility(View.INVISIBLE);
+        }
+
+        if (tweet.favorited) {
+            holder.favMark.setVisibility(View.VISIBLE);
+        } else {
+            holder.favMark.setVisibility(View.INVISIBLE);
+        }
+
         holder.name.setText(tweet.user_name);
         holder.screenName.setText("@" + tweet.screen_name);
         holder.content.setText(String.valueOf(tweet.content));
@@ -81,21 +103,19 @@ public class TimeLineAdapter extends CursorAdapter {
 
         holder.content.setHtmlText(tweet.content_html);
 
-        if(tweet.mediaUrls != null && tweet.mediaUrls.length >0 ) {
-            Picasso.with(context)
-                    .load(tweet.mediaUrls[0])
-                    .into(holder.tweetPhoto);
-            holder.tweetPhoto.setVisibility(View.VISIBLE);
-        } else {
-            holder.tweetPhoto.setVisibility(View.GONE);
-        }
-
-        holder.cardMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+        if (tweet.mediaUrls != null && tweet.mediaUrls.length > 0) {
+            holder.gallery.removeAllViews();
+            for (int i = 0; i < tweet.mediaUrls.length; i++) {
+                Log.d("DEBUG", tweet.user_name + " media load: " + tweet.mediaUrls[i]);
+                TweetUtils.insertPhoto(context, holder.gallery,
+                        tweet.mediaUrls[i],
+                        tweet.mediaUrls.length > 1,
+                        i == 0);
             }
-        });
+            holder.gallery.setVisibility(View.VISIBLE);
+        } else {
+            holder.gallery.setVisibility(View.GONE);
+        }
 
         holder.showDetail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,7 +157,7 @@ public class TimeLineAdapter extends CursorAdapter {
             @Override
             public void onClick(View v) {
                 Log.d("DEBUG", "Action More ... ");
-                if(holder.actionRow1.getVisibility() == View.VISIBLE) {
+                if (holder.actionRow1.getVisibility() == View.VISIBLE) {
                     Animation animOut = AnimationUtils.loadAnimation(context,
                             R.anim.slide_top_out);
                     animOut.setAnimationListener(new Animation.AnimationListener() {
@@ -212,12 +232,12 @@ public class TimeLineAdapter extends CursorAdapter {
         public TextView time;
         public LinearLayout actionSlide;
         public View mainContent;
-        public ImageView tweetPhoto;
         public View cardMore;
+        public LinearLayout gallery;
+        public View delete;
+        public View favMark;
 
-        boolean isActionMore  = false;
-
-        public View showDetail, actionRow1, actionRow2 ,actionMore;
+        public View showDetail, actionRow1, actionRow2, actionMore;
 
 
         public Holder(View view) {
@@ -227,15 +247,48 @@ public class TimeLineAdapter extends CursorAdapter {
             screenName = (TextView) view.findViewById(R.id.user_screen_name);
             content = (HtmlTextView) view.findViewById(R.id.tweet_content);
             time = (TextView) view.findViewById(R.id.tweet_time);
-            tweetPhoto = (ImageView) view.findViewById(R.id.tweet_photo);
             actionSlide = (LinearLayout) view.findViewById(R.id.expandable);
             mainContent = view.findViewById(R.id.main_card_content);
             cardMore = view.findViewById(R.id.tweet_card_more);
             showDetail = view.findViewById(R.id.expand_action_detail);
+            delete = view.findViewById(R.id.expand_action_delete);
+            favMark = view.findViewById(R.id.tweet_fav_mark);
 
             actionRow1 = view.findViewById(R.id.expand_action_row_1);
             actionRow2 = view.findViewById(R.id.expand_action_row_2);
             actionMore = view.findViewById(R.id.expand_action_more);
+
+            gallery = (LinearLayout) view.findViewById(R.id.tweet_gallery);
+
         }
     }
+
+//    void insertPhoto(Context context, LinearLayout gallery,
+//                     String photo_url, boolean isMulti, boolean isFirst) {
+//        final ImageView imageView = new ImageView(context);
+//        int width = context.getResources().getDisplayMetrics().widthPixels
+//                - (context.getResources().getDimensionPixelSize(R.dimen.tweet_gallery_padding) * 2);
+//        LinearLayout.LayoutParams params;
+//        if (isMulti) {
+//            width -= context.getResources().getDimensionPixelSize(R.dimen.tweet_gallery_cut);
+//            params = new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.MATCH_PARENT);
+//            if (!isFirst) {
+//                params.setMargins(context.getResources().getDimensionPixelSize(R.dimen.tweet_gallery_gap), 0, 0, 0);
+//            }
+//        } else {
+//            params = new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.MATCH_PARENT);
+//        }
+//
+//        imageView.setLayoutParams(params);
+//        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//        imageView.setAdjustViewBounds(true);
+//        imageView.setTag(photo_url);
+//
+//        Picasso.with(context).load(photo_url)
+//                .fit()
+//                .centerCrop()
+//                .into(imageView);
+//
+//        gallery.addView(imageView);
+//    }
 }

@@ -108,6 +108,18 @@ public class WingDataHelper extends BaseDataHelper {
         }
     }
 
+    public void update(WingTweet wingTweet) {
+        ContentValues values = wingTweet.toContentValues();
+        update(WingStore.TYPE_TWEET, values,
+                WingStore.TweetColumns.TWEET_ID + "=?", new String[]{ wingTweet.tweet_id + "" });
+    }
+
+    public void updateMention(WingTweet wingTweet) {
+        ContentValues values = wingTweet.toContentValues();
+        update(WingStore.TYPE_MENTION, values,
+                WingStore.TweetColumns.TWEET_ID + "=?", new String[]{ wingTweet.tweet_id + "" });
+    }
+
     /**
      * Save single user
      * @param wingUser

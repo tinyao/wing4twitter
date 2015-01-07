@@ -95,7 +95,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                 if (mViewPager.getCurrentItem() == 0) {
                     BaseStatusesListFragment currentFragment = (BaseStatusesListFragment) getChildFragmentManager()
                             .findFragmentByTag("android:switcher:" + R.id.pager + ":" + mViewPager.getCurrentItem());
-                    currentFragment.scrollTop();
+                    if(currentFragment!=null) currentFragment.scrollTop();
                 }
             }
         });

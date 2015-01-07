@@ -6,166 +6,183 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:orientation="vertical">
-    <!--android:paddingBottom="3dp"-->
-    <!--android:paddingLeft="8dp"-->
-    <!--android:paddingRight="8dp"-->
-    <!--android:paddingTop="4dp">-->
 
-
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/main_card_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/card_bg"
+        android:background="@color/white"
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical"
-        android:paddingBottom="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
         android:transitionName="card">
 
-        <!--android:background="@drawable/card_ripple_selector"-->
-
-        <TextView
-            android:id="@+id/retweet_hint"
+        <ImageView
+            android:id="@+id/tweet_fav_mark"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_gravity="right"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center_vertical|right"
-            android:text="Retweeted by tinyao"
-            android:textColor="@color/text_dark_secondery"
-            android:textSize="12sp"
-            android:transitionName="retweet"
-            android:visibility="gone" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_fav_mark"
+            android:visibility="invisible" />
 
-        <include layout="@layout/divider" />
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:paddingTop="16dp">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/user_avatar"
-                android:layout_width="@dimen/timeline_avatar_size"
-                android:layout_height="@dimen/timeline_avatar_size"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/ic_avatar_placeholder"
-                android:elevation="1dp"
-                android:transitionName="avatar" />
-
-            <TextView
-                android:id="@+id/user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/user_avatar"
-                android:layout_toRightOf="@id/user_avatar"
-                android:singleLine="true"
-                android:text="Matias Duarte"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:transitionName="name" />
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
 
             <TextView
-                android:id="@+id/user_screen_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/user_name"
-                android:layout_below="@id/user_name"
+                android:id="@+id/retweet_hint"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="-16dp"
+                android:drawableLeft="@drawable/ic_retweet_mark"
+                android:drawablePadding="12dp"
                 android:fontFamily="sans-serif-light"
-                android:text="\@matiasduarte"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="20dp"
+                android:text="Retweeted by tinyao"
                 android:textColor="@color/text_dark_secondery"
                 android:textSize="12sp"
-                android:transitionName="screenName" />
+                android:transitionName="retweet"
+                android:visibility="gone" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/user_screen_name"
-                android:layout_marginLeft="6dp"
-                android:layout_toRightOf="@id/user_screen_name"
-                android:text="·"
-                android:visibility="gone"
-                android:textColor="@color/text_dark_secondery"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/tweet_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/user_name"
-                android:layout_marginLeft="13dp"
-                android:fontFamily="sans-serif-light"
-                android:text="4h"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/text_dark_secondery"
-                android:textSize="11sp"
-                android:transitionName="time" />
-
-            <ImageView
-                android:id="@+id/tweet_card_more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@id/user_name"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:layout_marginRight="-16dp"
-                android:layout_marginTop="-16dp"
-                android:scaleType="centerInside"
-                android:visibility="gone"
-                android:background="@drawable/ripple_img_button"
-                android:src="@drawable/ic_card_more" />
-
-            <im.zico.wingtwitter.ui.view.HtmlTextView
-                android:id="@+id/tweet_content"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/user_avatar"
-                android:layout_marginTop="12dp"
-                android:focusable="false"
-                android:fontFamily="sans-serif-light"
-                android:lineSpacingMultiplier="1.2"
-                android:linksClickable="true"
-                android:text="A content URI is a URI that identifies data in a provider. Content URIs include the symbolic name of the entire provider (its authority) and a name that points to a table (a path). "
-                android:textColor="@color/tv_main_body"
-                android:textSize="15sp"
-                android:transitionName="content" />
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingTop="16dp">
 
-        </RelativeLayout>
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_avatar"
+                    android:layout_width="@dimen/timeline_avatar_size"
+                    android:layout_height="@dimen/timeline_avatar_size"
+                    android:layout_marginRight="16dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/ic_avatar_placeholder"
+                    android:transitionName="avatar" />
 
-        <ImageView
-            android:id="@+id/tweet_photo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tweet_content"
-            android:layout_marginTop="8dp"
-            android:adjustViewBounds="true"
-            android:maxHeight="200dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/img_user_cover_default"
-            android:visibility="gone" />
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/user_avatar"
+                    android:layout_toRightOf="@id/user_avatar"
+                    android:singleLine="true"
+                    android:text="Matias Duarte"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:transitionName="name" />
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/user_screen_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/user_name"
+                    android:layout_alignTop="@id/user_name"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@id/user_name"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center_vertical"
+                    android:text="\@matiasduarte"
+                    android:textColor="@color/text_dark_secondery"
+                    android:textSize="12sp"
+                    android:transitionName="screenName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/user_screen_name"
+                    android:layout_marginLeft="6dp"
+                    android:layout_toRightOf="@id/user_screen_name"
+                    android:text="·"
+                    android:textColor="@color/text_dark_secondery"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tweet_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/user_name"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@id/user_name"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center_vertical"
+                    android:text="4h"
+                    android:textColor="@color/text_dark_secondery"
+                    android:textSize="11sp"
+                    android:transitionName="time" />
+
+                <ImageView
+                    android:id="@+id/tweet_card_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@id/user_name"
+                    android:layout_marginRight="-16dp"
+                    android:layout_marginTop="-16dp"
+                    android:background="@drawable/ripple_img_button"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="16dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_card_more"
+                    android:visibility="gone" />
+
+                <im.zico.wingtwitter.ui.view.HtmlTextView
+                    android:id="@+id/tweet_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/user_name"
+                    android:layout_below="@id/user_name"
+                    android:layout_marginTop="8dp"
+                    android:focusable="false"
+                    android:fontFamily="sans-serif-light"
+                    android:lineSpacingMultiplier="1.1"
+                    android:linksClickable="true"
+                    android:text="A content URI is a URI that identifies data in a provider. Content URIs include the symbolic name of the entire provider (its authority) and a name that points to a table (a path). "
+                    android:textColor="@color/tv_main_body"
+                    android:textSize="15sp"
+                    android:transitionName="content" />
+
+            </RelativeLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="56dp"
+                android:fillViewport="true"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/tweet_gallery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginTop="8dp"
+                    android:minHeight="150dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
 
     <include
         layout="@layout/tweet_card_actions"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:layout_below="@+id/main_card_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="-6px" />
-
+        android:layout_height="45dp"
+        android:layout_below="@+id/main_card_content" />
 
 </RelativeLayout>
