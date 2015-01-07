@@ -26,8 +26,6 @@ public class MentionedFragment extends BaseStatusesListFragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    AsyncTwitter asyncTwitter;
-
     /**
      * Returns a new instance of this fragment for the given section number.
      */
@@ -51,7 +49,6 @@ public class MentionedFragment extends BaseStatusesListFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        asyncTwitter = WingApp.newTwitterInstance();
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -61,17 +58,11 @@ public class MentionedFragment extends BaseStatusesListFragment {
     }
 
     @Override
-    public AsyncTwitter getAsyncTwitter() {
-        return asyncTwitter;
-    }
-
-    @Override
     public void loadLatest() {
-        Log.d("DEBUG", "load latest");
         if (isListEmpty()) {
-            asyncTwitter.getMentions();
+            getAsyncTwitter().getMentions();
         } else {
-            asyncTwitter.getMentions(
+            getAsyncTwitter().getMentions(
                     new Paging(1, 20, mAdapter.getItem(0).tweet_id));
         }
     }
@@ -79,7 +70,7 @@ public class MentionedFragment extends BaseStatusesListFragment {
     @Override
     public void loadNext() {
         Log.d("DEBUG", "load more");
-        asyncTwitter.getMentions(new Paging(1, 20)
+        getAsyncTwitter().getMentions(new Paging(1, 20)
                 .maxId(mAdapter.getItem(mAdapter.getCount() - 1).tweet_id - 1));
     }
 }

@@ -46,10 +46,8 @@ import twitter4j.conf.ConfigurationBuilder;
 public class HomeTimeLineFragment extends BaseStatusesListFragment {
 
     private static final String TAG = "HOME_TIMELINE";
-
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    private AsyncTwitter asyncTwitter;
     private ImageButton composeBtn;
     private boolean fabVisible = true;
 
@@ -79,8 +77,6 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        asyncTwitter = WingApp.newTwitterInstance();
-
         super.onViewCreated(view, savedInstanceState);
         composeBtn = (ImageButton) view.findViewById(R.id.fab_compose);
         composeBtn.setOnClickListener(new View.OnClickListener() {
@@ -93,27 +89,17 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
     }
 
     @Override
-    public void onTwitterError(TwitterException te, TwitterMethod method) {
-        super.onTwitterError(te, method);
-    }
-
-    @Override
     public int getType() {
         return WingStore.TYPE_TWEET;
-    }
-
-    @Override
-    public AsyncTwitter getAsyncTwitter() {
-        return asyncTwitter;
     }
 
     @Override
     public void loadLatest() {
         Log.d(TAG, "Load latest tweets ...");
         if (isListEmpty()) {
-            asyncTwitter.getHomeTimeline();
+            getAsyncTwitter().getHomeTimeline();
         } else {
-            asyncTwitter.getHomeTimeline(
+            getAsyncTwitter().getHomeTimeline(
                     new Paging(1, 20, mAdapter.getItem(0).tweet_id));
         }
     }
@@ -131,7 +117,7 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
 
     @Override
     public void loadNext() {
-        asyncTwitter.getHomeTimeline(
+        getAsyncTwitter().getHomeTimeline(
                 new Paging(1, 20).maxId(mAdapter.getItem(mAdapter.getCount() - 1).tweet_id - 1));
     }
 

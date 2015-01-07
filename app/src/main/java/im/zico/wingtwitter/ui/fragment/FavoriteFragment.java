@@ -20,8 +20,6 @@ import twitter4j.Paging;
 
 public class FavoriteFragment extends BaseStatusesListFragment {
 
-    AsyncTwitter mAsyncTwitter;
-
     public static FavoriteFragment newInstance(int frameId) {
         FavoriteFragment fragment = new FavoriteFragment();
         setParams(fragment, frameId);
@@ -38,7 +36,6 @@ public class FavoriteFragment extends BaseStatusesListFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mAsyncTwitter = WingApp.newTwitterInstance();
         view.findViewById(R.id.fab_compose).setVisibility(View.GONE);
         super.onViewCreated(view, savedInstanceState);
     }
@@ -49,11 +46,6 @@ public class FavoriteFragment extends BaseStatusesListFragment {
     }
 
     @Override
-    AsyncTwitter getAsyncTwitter() {
-        return mAsyncTwitter;
-    }
-
-    @Override
     public void onScrollFooter() {
         super.onScrollFooter();
     }
@@ -61,16 +53,18 @@ public class FavoriteFragment extends BaseStatusesListFragment {
     @Override
     public void loadLatest() {
         Log.d("DEBUG", "Load latest favs");
-        if (mAdapter.getCount() == 0) {
-            mAsyncTwitter.getFavorites();
+        if (isListEmpty()) {
+            getAsyncTwitter().getFavorites();
         } else {
-            mAsyncTwitter.getFavorites(new Paging(1, 20, mAdapter.getItem(0).tweet_id));
+            getAsyncTwitter().getFavorites(new Paging(1, 20, mAdapter.getItem(0).tweet_id));
         }
     }
 
     @Override
     public void loadNext() {
         Log.d("DEBUG", "Load next favs");
+        getAsyncTwitter().getFavorites(new Paging(1, 20)
+                .maxId(mAdapter.getItem(mAdapter.getCount() - 1).tweet_id - 1));
     }
 
 }

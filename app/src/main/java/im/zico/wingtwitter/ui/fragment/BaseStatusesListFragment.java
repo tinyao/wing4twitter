@@ -59,26 +59,15 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
     TimeLineAdapter mAdapter;
     int mPageId = 0;
 
+    private AsyncTwitter mAsyncTwitter;
+
     private LoadingFooter mLoadingFooter;
     private WingDataHelper DBHelper;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_blank, container, false);
         mListView = (TweetListView) rootView.findViewById(R.id.list);
-//        View emptyHeader = LayoutInflater.from(getActivity()).inflate(R.layout.layout_empty_header, null);
-//        mListView.addHeaderView(emptyHeader);
         mLoadingFooter = new LoadingFooter(getActivity());
         mListView.addFooterView(mLoadingFooter.getView());
         return rootView;
@@ -94,6 +83,8 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         mAdapter = new TimeLineAdapter(getActivity(), mListView);
         mListView.setAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
+
+        mListView.setScrollCallback(this);
 
         mListView.setItemActionListener(new ActionSlideExpandableListView.OnActionClickListener() {
             @Override
@@ -182,7 +173,6 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
             }
         });
 
-        mListView.setScrollCallback(this);
     }
 
     @Override
@@ -207,6 +197,10 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
 
     }
 
+    public void scrollTop() {
+        mListView.smoothScrollToPositionFromTop(0, 0);
+    }
+
     protected void bindSwipeToRefresh(ViewGroup v) {
         mSwipeRefresh = new SwipeRefreshLayout(getActivity());
         // Move child to SwipeRefreshLayout, and add SwipeRefreshLayout to root view
@@ -223,27 +217,26 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         mSwipeRefresh.setOnRefreshListener(this);
     }
 
-    public void scrollTop() {
-        mListView.smoothScrollToPositionFromTop(0, 0);
-    }
-
     public WingDataHelper getDBHelper() {
         return DBHelper;
     }
 
     public abstract int getType();
 
-    abstract AsyncTwitter getAsyncTwitter();
+    public AsyncTwitter getAsyncTwitter(){
+        if (mAsyncTwitter == null) {
+            mAsyncTwitter = WingApp.newTwitterInstance();
+        }
+        return mAsyncTwitter;
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d("DEBUG", "createLoader");
         return DBHelper.getCursorLoader(getType());
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d("DEBUG", "count: " + data.getCount());
         if (mAdapter.getCount() > 0) {
             int firstVisPos = mListView.getFirstVisiblePosition();
             View firstVisView = mListView.getChildAt(0);
@@ -288,36 +281,41 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         @Override
         public void gotHomeTimeline(ResponseList<Status> statuses) {
             super.gotHomeTimeline(statuses);
-            onTwitterResult(statuses);
+            onTimelineResult(statuses);
         }
 
         @Override
         public void gotMentions(ResponseList<Status> statuses) {
             super.gotMentions(statuses);
-            onTwitterResult(statuses);
+            onTimelineResult(statuses);
+        }
+
+        @Override
+        public void gotFavorites(ResponseList<Status> statuses) {
+            super.gotFavorites(statuses);
+            onTimelineResult(statuses);
         }
 
         @Override
         public void createdFavorite(Status status) {
-            onTwitterFaved(status);
+            WingTweet favTweet = getDBHelper().getTweet(status.getId(), getType());
+            favTweet.favorited = true;
+            getDBHelper().update(favTweet);
+            getDBHelper().save(favTweet, WingStore.TYPE_FAVORITE);
         }
 
         @Override
         public void destroyedFavorite(Status status) {
-            super.destroyedFavorite(status);
-            onTwitterUnfaved(status);
+            WingTweet unfavTweet = getDBHelper().getTweet(status.getId(), getType());
+            unfavTweet.favorited = false;
+            getDBHelper().update(unfavTweet);
+            getDBHelper().delete(unfavTweet, WingStore.TYPE_FAVORITE);
         }
 
         @Override
         public void onException(TwitterException te, TwitterMethod method) {
             super.onException(te, method);
             onTwitterError(te, method);
-        }
-
-        @Override
-        public void gotFavorites(ResponseList<Status> statuses) {
-            super.gotFavorites(statuses);
-            onTwitterFavList(statuses);
         }
     };
 
@@ -330,14 +328,7 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         }
     }
 
-    protected void onTwitterFavList(ResponseList<Status> statuses) {
-        Message msg = mHandler.obtainMessage();
-        msg.obj = statuses;
-        msg.what = TASK_TIMELINE;
-        mHandler.sendMessage(msg);
-    }
-
-    public void onTwitterResult(ResponseList<Status> statuses) {
+    public void onTimelineResult(ResponseList<Status> statuses) {
         Message msg = mHandler.obtainMessage();
         msg.obj = statuses;
         msg.what = TASK_TIMELINE;
@@ -353,24 +344,9 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         mHandler.sendMessage(msg);
     }
 
-    public void onTwitterFaved(Status status) {
-        Message msg = new Message();
-        msg.what = TASK_FAVORITE;
-        msg.obj = status.getId();
-        mHandler.sendMessage(msg);
-    }
-
-    public void onTwitterUnfaved(Status status) {
-        Message msg = new Message();
-        msg.what = TASK_UNFAVORITE;
-        msg.obj = status.getId();
-        mHandler.sendMessage(msg);
-    }
-
-    Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-
             switch (msg.what) {
                 case TASK_EXCPTION:
                     if (msg.arg1 == TwitterMethod.HOME_TIMELINE.ordinal()) {
@@ -382,33 +358,8 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
                         Toast.makeText(getActivity(), "Fail to delete favorite", Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case TASK_FAVORITE:
-                    WingTweet favTweet = getDBHelper().getTweet((long) msg.obj);
-                    favTweet.favorited = true;
-                    switch (getType()) {
-                        case WingStore.TYPE_TWEET:
-                            getDBHelper().update(favTweet);
-                            break;
-                        case WingStore.TYPE_MENTION:
-                            getDBHelper().updateMention(favTweet);
-                            break;
-                    }
-                    break;
-                case TASK_UNFAVORITE:
-                    WingTweet unfavTweet = getDBHelper().getTweet((long) msg.obj);
-                    unfavTweet.favorited = false;
-                    switch (getType()) {
-                        case WingStore.TYPE_TWEET:
-                            getDBHelper().update(unfavTweet);
-                            break;
-                        case WingStore.TYPE_MENTION:
-                            getDBHelper().updateMention(unfavTweet);
-                            break;
-                    }
-                    break;
                 case TASK_TIMELINE:
                     ResponseList<Status> statuses = (ResponseList<Status>) msg.obj;
-
                     if (!mSwipeRefresh.isRefreshing()) {
                         // load old
                         if (statuses == null || statuses.size() < 10) {
@@ -434,23 +385,12 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
                         WingTweet tweet = new WingTweet(ss);
                         wingTweets.add(tweet);
                     }
-                    switch (getType()) {
-                        case WingStore.TYPE_TWEET:
-                            getDBHelper().saveAll(wingTweets);
-                            break;
-                        case WingStore.TYPE_MENTION:
-                            getDBHelper().saveAllMention(wingTweets);
-                            break;
-                        case WingStore.TYPE_FAVORITE:
-                            getDBHelper().saveAllFavs(wingTweets);
-                            break;
-                    }
+                    getDBHelper().saveAll(wingTweets, getType());
                     break;
             }
             super.handleMessage(msg);
         }
     };
-
 
     @Override
     public void onPause() {

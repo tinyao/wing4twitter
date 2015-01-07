@@ -55,11 +55,34 @@ public class WingDataHelper extends BaseDataHelper {
         return wingTweet;
     }
 
+    public WingTweet getTweet(long tweet_id, int type) {
+        WingTweet wingTweet = null;
+        Cursor cursor = query(type, null, WingStore.TweetColumns.TWEET_ID + " = ?",
+                new String[]{ "" + tweet_id }, null);
+        if(cursor.moveToFirst()) {
+            wingTweet =  WingTweet.fromCursor(cursor);
+        }
+        cursor.close();
+        return wingTweet;
+    }
+
     /**
      * Save Tweet List
      * @param wingTweets
      */
-    public synchronized void saveAll(List<WingTweet> wingTweets) {
+//    public synchronized void saveAll(List<WingTweet> wingTweets) {
+//        ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
+//
+//        for (WingTweet wingTweet : wingTweets) {
+//            ContentValues values = wingTweet.toContentValues();
+//            contentValues.add(values);
+//        }
+//
+//        ContentValues[] valueArray = new ContentValues[contentValues.size()];
+//        bulkInsert(WingStore.TYPE_TWEET, contentValues.toArray(valueArray));
+//    }
+
+    public synchronized void saveAll(List<WingTweet> wingTweets, int type) {
         ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
 
         for (WingTweet wingTweet : wingTweets) {
@@ -68,45 +91,52 @@ public class WingDataHelper extends BaseDataHelper {
         }
 
         ContentValues[] valueArray = new ContentValues[contentValues.size()];
-        bulkInsert(WingStore.TYPE_TWEET, contentValues.toArray(valueArray));
+        bulkInsert(type, contentValues.toArray(valueArray));
     }
 
-    /**
-     * Save Tweet List
-     * @param wingTweets
-     */
-    public synchronized void saveAllMention(List<WingTweet> wingTweets) {
-        ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
+//    /**
+//     * Save Tweet List
+//     * @param wingTweets
+//     */
+//    public synchronized void saveAllMention(List<WingTweet> wingTweets) {
+//        ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
+//
+//        for (WingTweet wingTweet : wingTweets) {
+//            ContentValues values = wingTweet.toContentValues();
+//            contentValues.add(values);
+//        }
+//
+//        ContentValues[] valueArray = new ContentValues[contentValues.size()];
+//        bulkInsert(WingStore.TYPE_MENTION, contentValues.toArray(valueArray));
+//    }
 
-        for (WingTweet wingTweet : wingTweets) {
+//    /**
+//     * Save single tweet
+//     * @param wingTweet
+//     */
+//    public void saveMention(WingTweet wingTweet) {
+//        if(!isTweetExisted(wingTweet.tweet_id)) {
+//            ContentValues values = wingTweet.toContentValues();
+//            insert(WingStore.TYPE_MENTION, values);
+//        }
+//    }
+
+//
+//    /**
+//     * Save single tweet
+//     * @param wingTweet
+//     */
+//    public void save(WingTweet wingTweet) {
+//        if(!isTweetExisted(wingTweet.tweet_id)) {
+//            ContentValues values = wingTweet.toContentValues();
+//            insert(WingStore.TYPE_TWEET, values);
+//        }
+//    }
+
+    public void save(WingTweet wingTweet, int type) {
+        if(!isTweetExisted(wingTweet.tweet_id, type)) {
             ContentValues values = wingTweet.toContentValues();
-            contentValues.add(values);
-        }
-
-        ContentValues[] valueArray = new ContentValues[contentValues.size()];
-        bulkInsert(WingStore.TYPE_MENTION, contentValues.toArray(valueArray));
-    }
-
-    /**
-     * Save single tweet
-     * @param wingTweet
-     */
-    public void saveMention(WingTweet wingTweet) {
-        if(!isTweetExisted(wingTweet.tweet_id)) {
-            ContentValues values = wingTweet.toContentValues();
-            insert(WingStore.TYPE_MENTION, values);
-        }
-    }
-
-
-    /**
-     * Save single tweet
-     * @param wingTweet
-     */
-    public void save(WingTweet wingTweet) {
-        if(!isTweetExisted(wingTweet.tweet_id)) {
-            ContentValues values = wingTweet.toContentValues();
-            insert(WingStore.TYPE_TWEET, values);
+            insert(type, values);
         }
     }
 
@@ -114,24 +144,10 @@ public class WingDataHelper extends BaseDataHelper {
         ContentValues values = wingTweet.toContentValues();
         update(WingStore.TYPE_TWEET, values,
                 WingStore.TweetColumns.TWEET_ID + "=?", new String[]{ wingTweet.tweet_id + "" });
-    }
-
-    public void updateMention(WingTweet wingTweet) {
-        ContentValues values = wingTweet.toContentValues();
+        update(WingStore.TYPE_FAVORITE, values,
+                WingStore.TweetColumns.TWEET_ID + "=?", new String[]{ wingTweet.tweet_id + "" });
         update(WingStore.TYPE_MENTION, values,
                 WingStore.TweetColumns.TWEET_ID + "=?", new String[]{ wingTweet.tweet_id + "" });
-    }
-
-    public void saveAllFavs(ArrayList<WingTweet> wingTweets) {
-        ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
-
-        for (WingTweet wingTweet : wingTweets) {
-            ContentValues values = wingTweet.toContentValues();
-            contentValues.add(values);
-        }
-
-        ContentValues[] valueArray = new ContentValues[contentValues.size()];
-        bulkInsert(WingStore.TYPE_FAVORITE, contentValues.toArray(valueArray));
     }
 
     /**
@@ -180,6 +196,11 @@ public class WingDataHelper extends BaseDataHelper {
                 WingStore.TweetColumns.TWEET_ID + " = ?", new String[]{ "" + tweet.tweet_id });
     }
 
+    public void delete(WingTweet tweet, int type) {
+        delete(getContentUri(type),
+                WingStore.TweetColumns.TWEET_ID + " = ?", new String[]{ "" + tweet.tweet_id });
+    }
+
     public int deletePreviousTweets(long tweet_id) {
         return delete(getContentUri(WingStore.TYPE_TWEET), WingStore.TweetColumns.TWEET_ID + " < ?", new String[]{ "" + tweet_id });
     }
@@ -188,13 +209,16 @@ public class WingDataHelper extends BaseDataHelper {
         return delete(getContentUri(WingStore.TYPE_TWEET),null, null);
     }
 
-//    public int clearTweets() {
-//        // only keep 40 tweets
-//
-//    }
-
     public boolean isTweetExisted(long tweet_id) {
         Cursor c = query(getContentUri(WingStore.TYPE_TWEET), null, WingStore.TweetColumns.TWEET_ID + " = ?",
+                new String[]{ "" + tweet_id}, null);
+        boolean existed = c!=null && c.getCount() > 0;
+        c.close();
+        return existed;
+    }
+
+    public boolean isTweetExisted(long tweet_id, int type) {
+        Cursor c = query(getContentUri(type), null, WingStore.TweetColumns.TWEET_ID + " = ?",
                 new String[]{ "" + tweet_id}, null);
         boolean existed = c!=null && c.getCount() > 0;
         c.close();
