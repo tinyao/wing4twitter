@@ -9,6 +9,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import im.zico.wingtwitter.APIKey;
@@ -120,23 +121,63 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
     }
 
     @Override
-    protected void onScrollDown() {
+    protected synchronized void onScrollDown() {
         if (fabVisible) {
             // 显示
             ViewPropertyAnimator.animate(composeBtn).setInterpolator(new AccelerateDecelerateInterpolator())
                     .setDuration(200)
-                    .translationY(getResources().getDimensionPixelSize(R.dimen.fab_offset));
-            fabVisible = false;
+                    .translationY(getResources().getDimensionPixelSize(R.dimen.fab_offset))
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            fabVisible = false;
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    });
         }
     }
 
     @Override
-    protected void onScrollUp() {
+    protected synchronized void onScrollUp() {
         if (!fabVisible) {
             ViewPropertyAnimator.animate(composeBtn).setInterpolator(new AccelerateDecelerateInterpolator())
                     .setDuration(200)
-                    .translationY(0);
-            fabVisible = true;
+                    .translationY(0)
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            fabVisible = true;
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    });;
         }
     }
 }

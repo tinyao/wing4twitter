@@ -73,6 +73,7 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
 
     private ActionBarTapReceiver receiver;
     private int mLastFirstVisibleItem;
+    private int mLastChildY;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -199,17 +200,17 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
                                           @Override
                                           public void onScrollStateChanged(AbsListView view, int scrollState) {
 
-                                              if (view.getId() == view.getId()) {
-                                                  final int currentFirstVisibleItem = view.getFirstVisiblePosition();
-                                                  if (currentFirstVisibleItem > mLastFirstVisibleItem) {
-                                                      onScrollDown();
-                                                      Log.i("a", "scrolling down...");
-                                                  } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
-                                                      onScrollUp();
-                                                      Log.i("a", "scrolling up...");
-                                                  }
-                                                  mLastFirstVisibleItem = currentFirstVisibleItem;
-                                              }
+//                                              if (view.getId() == view.getId()) {
+//                                                  final int currentFirstVisibleItem = view.getFirstVisiblePosition();
+//                                                  if (currentFirstVisibleItem > mLastFirstVisibleItem) {
+//                                                      onScrollDown();
+//                                                      Log.d("DEBUG", "scrolling down...");
+//                                                  } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
+//                                                      onScrollUp();
+//                                                      Log.d("DEBUG", "scrolling up...");
+//                                                  }
+//                                                  mLastFirstVisibleItem = currentFirstVisibleItem;
+//                                              }
 
 
                                           }
@@ -217,6 +218,22 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
                                           @Override
                                           public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
                                                                int totalItemCount) {
+
+                                              if (mLastFirstVisibleItem==firstVisibleItem && view.getChildAt(0) != null) {
+                                                  int scrollY = mLastChildY - view.getChildAt(0).getTop();
+                                                  if (scrollY > 20 ) {
+                                                      onScrollDown();
+                                                      Log.d("DEBUG", "scrolling down...");
+                                                  } else if (scrollY < -20 ) {
+                                                      onScrollUp();
+                                                      Log.d("DEBUG", "scrolling up...");
+                                                  }
+                                              }
+//
+                                              if (view.getChildAt(0) != null) {
+                                                  mLastChildY = view.getChildAt(0).getTop();
+                                              }
+                                              mLastFirstVisibleItem = firstVisibleItem;
 
                                               if (mLoadingFooter.getState() == LoadingFooter.State.Loading
                                                       || mLoadingFooter.getState() == LoadingFooter.State.TheEnd) {
@@ -261,11 +278,11 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
     }
 
 
-    protected void onScrollUp() {
+    protected synchronized void onScrollUp() {
 
     }
 
-    protected void onScrollDown() {
+    protected synchronized void onScrollDown() {
 
     }
 
