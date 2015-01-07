@@ -31,6 +31,8 @@ public class MSQLiteOpenHelper extends SQLiteOpenHelper {
                 UserColumns.TYPES, UserColumns.CONSTRAINTS, true));
         db.execSQL(createTable(MentionedCollumns.TABLE_NAME, MentionedCollumns.COLUMNS,
                 MentionedCollumns.TYPES, MentionedCollumns.CONSTRAINTS, true));
+        db.execSQL(createTable(FavoriteCollumns.TABLE_NAME, FavoriteCollumns.COLUMNS,
+                FavoriteCollumns.TYPES, FavoriteCollumns.CONSTRAINTS, true));
     }
 
     private static String createTable(final String tableName, final String[] columns,

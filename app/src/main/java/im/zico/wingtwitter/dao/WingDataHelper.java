@@ -30,6 +30,8 @@ public class WingDataHelper extends BaseDataHelper {
                 return WingDataProvider.MENTION_CONTENT_URI;
             case WingStore.TYPE_USER:
                 return WingDataProvider.USER_CONTENT_URI;
+            case WingStore.TYPE_FAVORITE:
+                return WingDataProvider.FAVORITE_CONTENT_URI;
         }
         return null;
     }
@@ -120,6 +122,18 @@ public class WingDataHelper extends BaseDataHelper {
                 WingStore.TweetColumns.TWEET_ID + "=?", new String[]{ wingTweet.tweet_id + "" });
     }
 
+    public void saveAllFavs(ArrayList<WingTweet> wingTweets) {
+        ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
+
+        for (WingTweet wingTweet : wingTweets) {
+            ContentValues values = wingTweet.toContentValues();
+            contentValues.add(values);
+        }
+
+        ContentValues[] valueArray = new ContentValues[contentValues.size()];
+        bulkInsert(WingStore.TYPE_FAVORITE, contentValues.toArray(valueArray));
+    }
+
     /**
      * Save single user
      * @param wingUser
@@ -206,8 +220,12 @@ public class WingDataHelper extends BaseDataHelper {
             case WingStore.TYPE_USER:
                 return new CursorLoader(getContext(), getContentUri(type), null, null,
                         null, WingStore.UserColumns.USER_ID + " DESC");
+            case WingStore.TYPE_FAVORITE:
+                return new CursorLoader(getContext(), getContentUri(type), null, null,
+                    null, WingStore.FavoriteCollumns.TWEET_ID + " DESC");
         }
         return null;
     }
+
 
 }

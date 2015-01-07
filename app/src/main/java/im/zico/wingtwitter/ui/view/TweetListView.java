@@ -49,14 +49,12 @@ public class TweetListView extends ActionSlideExpandableListView {
 
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            if (mLastFirstVisibleItem == firstVisibleItem && view.getChildAt(0) != null) {
+            if (firstVisibleItem!=0 && mLastFirstVisibleItem == firstVisibleItem && view.getChildAt(0) != null) {
                 int scrollY = mLastChildY - view.getChildAt(0).getTop();
                 if (scrollY > 20) {
                     mCallback.onScrollDown();
-                    Log.d(TAG, "Scrolling down...");
                 } else if (scrollY < -20) {
                     mCallback.onScrollUp();
-                    Log.d(TAG, "Scrolling up...");
                 }
             }
 
@@ -69,7 +67,6 @@ public class TweetListView extends ActionSlideExpandableListView {
                     && totalItemCount != 0
                     && totalItemCount != TweetListView.this.getHeaderViewsCount() + TweetListView.this.getFooterViewsCount()
                     && getAdapter().getCount() > 0) {
-                Log.d(TAG, "Scrolling footer...");
                 mCallback.onScrollFooter();
             }
         }
@@ -82,6 +79,19 @@ public class TweetListView extends ActionSlideExpandableListView {
         public void onScrollUp();
 
         public void onScrollFooter();
+    }
+
+    private boolean mBlockLayoutChildren;
+
+    public void setBlockLayoutChildren(boolean block) {
+        mBlockLayoutChildren = block;
+    }
+
+    @Override
+    protected void layoutChildren() {
+        if (!mBlockLayoutChildren) {
+            super.layoutChildren();
+        }
     }
 
 //    private void init() {

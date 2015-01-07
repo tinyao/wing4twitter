@@ -28,4 +28,7 @@
     <dimen name="tweet_gallery_padding">72dp</dimen>
     <dimen name="tweet_gallery_gap">3dp</dimen>
     <dimen name="tweet_gallery_multi_cut">40dp</dimen>
+
+    <dimen name="toolbar_height">56dp</dimen>
+
 </resources>

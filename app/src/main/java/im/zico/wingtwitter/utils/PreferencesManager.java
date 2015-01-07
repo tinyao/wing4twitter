@@ -36,12 +36,22 @@ public class PreferencesManager {
                 .commit();
     }
 
+    public void setValue(String key, int value) {
+        mPref.edit()
+                .putInt(key, value)
+                .commit();
+    }
+
     public boolean hasKey(String key) {
         return mPref.contains(key);
     }
 
     public String getValue(String key) {
         return mPref.getString(key, null);
+    }
+
+    public int getIntValue(String key) {
+        return mPref.getInt(key, 0);
     }
 
     public long getLongValue(String key) {

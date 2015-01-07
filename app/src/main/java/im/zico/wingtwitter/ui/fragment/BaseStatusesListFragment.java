@@ -25,6 +25,7 @@ import com.tjerkw.slideexpandable.library.ActionSlideExpandableListView;
 import java.util.ArrayList;
 
 import im.zico.wingtwitter.R;
+import im.zico.wingtwitter.WingApp;
 import im.zico.wingtwitter.adapter.TimeLineAdapter;
 import im.zico.wingtwitter.dao.WingDataHelper;
 import im.zico.wingtwitter.dao.WingStore;
@@ -32,6 +33,7 @@ import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.ui.TweetComposeActivity;
 import im.zico.wingtwitter.ui.view.LoadingFooter;
 import im.zico.wingtwitter.ui.view.TweetListView;
+import im.zico.wingtwitter.utils.PreferencesManager;
 import im.zico.wingtwitter.utils.TweetUtils;
 import twitter4j.AsyncTwitter;
 import twitter4j.ResponseList;
@@ -50,6 +52,7 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
     private static final int TASK_TIMELINE = 1;
     private static final int TASK_FAVORITE = 2;
     private static final int TASK_UNFAVORITE = 3;
+    private static final int TASK_FAVORITE_TIMELINE = 4;
     private static final int TASK_EXCPTION = -1;
     public SwipeRefreshLayout mSwipeRefresh;
     TweetListView mListView;
@@ -74,6 +77,8 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_blank, container, false);
         mListView = (TweetListView) rootView.findViewById(R.id.list);
+//        View emptyHeader = LayoutInflater.from(getActivity()).inflate(R.layout.layout_empty_header, null);
+//        mListView.addHeaderView(emptyHeader);
         mLoadingFooter = new LoadingFooter(getActivity());
         mListView.addFooterView(mLoadingFooter.getView());
         return rootView;
@@ -182,6 +187,9 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
 
     @Override
     public void onScrollFooter() {
+        if (mAdapter.getCount() == 0){
+            return;
+        }
         if (mLoadingFooter.getState() != LoadingFooter.State.Loading
                 && mLoadingFooter.getState() != LoadingFooter.State.TheEnd) {
             mLoadingFooter.setState(LoadingFooter.State.Loading);
@@ -236,7 +244,23 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d("DEBUG", "count: " + data.getCount());
-        mAdapter.changeCursor(data);
+        if (mAdapter.getCount() > 0) {
+            int firstVisPos = mListView.getFirstVisiblePosition();
+            View firstVisView = mListView.getChildAt(0);
+            int top = firstVisView != null ? firstVisView.getTop() : 0;
+            // Block children layout for now
+            mListView.setBlockLayoutChildren(true);
+            // Number of items added before the first visible item
+            int itemsAddedBeforeFirstVisible = data.getCount() - mAdapter.getCount();
+            mAdapter.changeCursor(data);
+            // Let ListView start laying out children again
+            mListView.setBlockLayoutChildren(false);
+            // Call setSelectionFromTop to change the ListView position
+            mListView.setSelectionFromTop(firstVisPos + itemsAddedBeforeFirstVisible, top);
+        } else {
+            mAdapter.changeCursor(data);
+        }
+
         if (data != null && data.getCount() == 0) {
             loadLatest();
         }
@@ -290,7 +314,28 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
             onTwitterError(te, method);
         }
 
+        @Override
+        public void gotFavorites(ResponseList<Status> statuses) {
+            super.gotFavorites(statuses);
+            onTwitterFavList(statuses);
+        }
     };
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.d("DEBUG", "onViewStateRestored");
+        if(savedInstanceState!=null) {
+            mListView.setSelectionFromTop(savedInstanceState.getInt("index"), savedInstanceState.getInt("top"));
+        }
+    }
+
+    protected void onTwitterFavList(ResponseList<Status> statuses) {
+        Message msg = mHandler.obtainMessage();
+        msg.obj = statuses;
+        msg.what = TASK_TIMELINE;
+        mHandler.sendMessage(msg);
+    }
 
     public void onTwitterResult(ResponseList<Status> statuses) {
         Message msg = mHandler.obtainMessage();
@@ -395,6 +440,9 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
                             break;
                         case WingStore.TYPE_MENTION:
                             getDBHelper().saveAllMention(wingTweets);
+                            break;
+                        case WingStore.TYPE_FAVORITE:
+                            getDBHelper().saveAllFavs(wingTweets);
                             break;
                     }
                     break;

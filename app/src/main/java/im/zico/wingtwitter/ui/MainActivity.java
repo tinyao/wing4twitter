@@ -60,8 +60,10 @@ public class MainActivity extends BaseActivity implements DrawerFragment.Navigat
         FragmentManager fragmentManager = getFragmentManager();
         Log.d("DEBUG", "ItemSelected: " + Calendar.getInstance().getTimeInMillis());
         fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
                 .replace(R.id.container, getFragment(groupPos), "" + groupPos)
                 .commit();
+
         Log.d("DEBUG", "Transaction: " + Calendar.getInstance().getTimeInMillis());
         setTitle(getResources().getStringArray(R.array.drawer_menu_group)[groupPos]);
 

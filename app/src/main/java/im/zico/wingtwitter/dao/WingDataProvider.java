@@ -25,16 +25,19 @@ public class WingDataProvider extends ContentProvider {
     public static final String PATH_STATUSES = "/" + WingStore.TweetColumns.TABLE_NAME;
     public static final String PATH_USERS = "/" + WingStore.UserColumns.TABLE_NAME;
     public static final String PATH_MENTIONS = "/" + WingStore.MentionedCollumns.TABLE_NAME;
+    public static final String PATH_FAVORITES = "/" + WingStore.FavoriteCollumns.TABLE_NAME;
 
     public static final Uri STATUS_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_STATUSES);
     public static final Uri USER_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_USERS);
     public static final Uri MENTION_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_MENTIONS);
+    public static final Uri FAVORITE_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_FAVORITES);
 
     /*
      * MIME type definitions
      */
     public static final String STATUS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.status";
     public static final String MENTION_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.mention";
+    public static final String FAVORITE_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.favorite";
     public static final String USER_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.user";
 
     private static final UriMatcher sUriMatcher;
@@ -42,6 +45,7 @@ public class WingDataProvider extends ContentProvider {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(AUTHORITY, WingStore.TweetColumns.TABLE_NAME, WingStore.TYPE_TWEET);
         sUriMatcher.addURI(AUTHORITY, WingStore.MentionedCollumns.TABLE_NAME, WingStore.TYPE_MENTION);
+        sUriMatcher.addURI(AUTHORITY, WingStore.FavoriteCollumns.TABLE_NAME,  WingStore.TYPE_FAVORITE);
         sUriMatcher.addURI(AUTHORITY, WingStore.UserColumns.TABLE_NAME,  WingStore.TYPE_USER);
     }
 
@@ -84,6 +88,8 @@ public class WingDataProvider extends ContentProvider {
                 return MENTION_CONTENT_TYPE;
             case WingStore.TYPE_USER:
                 return USER_CONTENT_TYPE;
+            case WingStore.TYPE_FAVORITE:
+                return FAVORITE_CONTENT_TYPE;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -169,6 +175,9 @@ public class WingDataProvider extends ContentProvider {
                 break;
             case WingStore.TYPE_USER:
                 table = WingStore.UserColumns.TABLE_NAME;
+                break;
+            case WingStore.TYPE_FAVORITE:
+                table = WingStore.FavoriteCollumns.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
