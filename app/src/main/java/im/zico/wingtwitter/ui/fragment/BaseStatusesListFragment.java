@@ -1,6 +1,5 @@
 package im.zico.wingtwitter.ui.fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ClipData;
@@ -35,6 +34,7 @@ import im.zico.wingtwitter.ui.view.LoadingFooter;
 import im.zico.wingtwitter.ui.view.TweetListView;
 import im.zico.wingtwitter.utils.PreferencesManager;
 import im.zico.wingtwitter.utils.TweetUtils;
+import im.zico.wingtwitter.utils.WConfig;
 import twitter4j.AsyncTwitter;
 import twitter4j.ResponseList;
 import twitter4j.Status;
@@ -60,7 +60,6 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
     int mPageId = 0;
 
     private AsyncTwitter mAsyncTwitter;
-
     private LoadingFooter mLoadingFooter;
     private WingDataHelper DBHelper;
 
@@ -201,6 +200,10 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         mListView.smoothScrollToPositionFromTop(0, 0);
     }
 
+    /**
+     * Bind a SwipeRefreshLayout to the contentView
+     * @param v
+     */
     protected void bindSwipeToRefresh(ViewGroup v) {
         mSwipeRefresh = new SwipeRefreshLayout(getActivity());
         // Move child to SwipeRefreshLayout, and add SwipeRefreshLayout to root view
@@ -221,8 +224,17 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         return DBHelper;
     }
 
+    /**
+     * Impliment to provide the main status type in fragment,
+     * such as Tweet, Mentioned, Favorite
+     * @return
+     */
     public abstract int getType();
 
+    /**
+     * Create a AsyncTwitter Instance for each fragment instance
+     * @return AsyncTwitter
+     */
     public AsyncTwitter getAsyncTwitter(){
         if (mAsyncTwitter == null) {
             mAsyncTwitter = WingApp.newTwitterInstance();
@@ -237,23 +249,28 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (mAdapter.getCount() > 0) {
+
+        if (isListEmpty() && data.getCount() > WConfig.TIMELINE_MAX_CACHE) {
+            // There are over 200 tweets cached in database, clear at each launch time
+            // isListEmpty means just launched
+            Log.d("DEBUG", "remove old");
+            DBHelper.clearOldTweets(getType());
+        }
+
+        if (mAdapter.getCount() > 0 && mLoadingFooter.getState() != LoadingFooter.State.Loading) {
             int firstVisPos = mListView.getFirstVisiblePosition();
             View firstVisView = mListView.getChildAt(0);
             int top = firstVisView != null ? firstVisView.getTop() : 0;
-            // Block children layout for now
             mListView.setBlockLayoutChildren(true);
-            // Number of items added before the first visible item
             int itemsAddedBeforeFirstVisible = data.getCount() - mAdapter.getCount();
             mAdapter.changeCursor(data);
-            // Let ListView start laying out children again
             mListView.setBlockLayoutChildren(false);
-            // Call setSelectionFromTop to change the ListView position
             mListView.setSelectionFromTop(firstVisPos + itemsAddedBeforeFirstVisible, top);
         } else {
             mAdapter.changeCursor(data);
         }
 
+        // If there isn't any cache, load from the server
         if (data != null && data.getCount() == 0) {
             loadLatest();
         }
@@ -269,14 +286,23 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         loadLatest();
     }
 
+    /**
+     * When pull to refresh, request for latest tweets
+     */
     public abstract void loadLatest();
 
+    /**
+     * When arrive at the footer, request for older tweets
+     */
     public abstract void loadNext();
 
     public boolean isListEmpty() {
         return mAdapter == null || mAdapter.getCount() == 0;
     }
 
+    /**
+     * Listener for TwitterMethod Callback
+     */
     private TwitterListener listener = new TwitterAdapter() {
         @Override
         public void gotHomeTimeline(ResponseList<Status> statuses) {
@@ -344,6 +370,9 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         mHandler.sendMessage(msg);
     }
 
+    /**
+     *
+     */
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -369,12 +398,12 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
                             mLoadingFooter.setState(LoadingFooter.State.Idle, 3000);
                         }
                     } else {
+                        // load latest
                         if (statuses.size() > 0) {
                             Toast.makeText(getActivity(), statuses.size() + " New Tweets",
                                     Toast.LENGTH_SHORT).show();
                         }
                         mSwipeRefresh.setRefreshing(false);
-                        // about 20 new tweets, delete all previous ones
                         if (statuses.size() >= 17) {
                             DBHelper.deleteAllTweets();
                         }
@@ -392,18 +421,4 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         }
     };
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
 }

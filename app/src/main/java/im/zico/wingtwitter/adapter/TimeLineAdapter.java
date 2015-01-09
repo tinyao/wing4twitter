@@ -33,6 +33,7 @@ import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.ui.ProfileActivity;
 import im.zico.wingtwitter.ui.TweetDetailActivity;
+import im.zico.wingtwitter.ui.activity.PhotoViewActivity;
 import im.zico.wingtwitter.ui.view.HtmlTextView;
 import im.zico.wingtwitter.ui.view.MediaPicTransform;
 import im.zico.wingtwitter.ui.view.TweetListView;
@@ -108,10 +109,9 @@ public class TimeLineAdapter extends CursorAdapter {
             for (int i = 0; i < tweet.mediaUrls.length; i++) {
                 Log.d("DEBUG", tweet.user_name + " media load: " + tweet.mediaUrls[i]);
                 TweetUtils.insertPhoto(context, holder.gallery,
-                        tweet.mediaUrls[i],
-                        tweet.mediaUrls.length > 1,
-                        i == 0);
+                        tweet.mediaUrls, i);
             }
+
             holder.gallery.setVisibility(View.VISIBLE);
         } else {
             holder.gallery.setVisibility(View.GONE);
@@ -239,7 +239,6 @@ public class TimeLineAdapter extends CursorAdapter {
 
         public View showDetail, actionRow1, actionRow2, actionMore;
 
-
         public Holder(View view) {
             retweeted = (TextView) view.findViewById(R.id.retweet_hint);
             avatar = (CircleImageView) view.findViewById(R.id.user_avatar);
@@ -259,7 +258,6 @@ public class TimeLineAdapter extends CursorAdapter {
             actionMore = view.findViewById(R.id.expand_action_more);
 
             gallery = (LinearLayout) view.findViewById(R.id.tweet_gallery);
-
         }
     }
 

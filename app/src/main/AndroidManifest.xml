@@ -77,6 +77,8 @@
                     android:scheme="im.zico.wingtwitter.user" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activity.PhotoViewActivity"
+            android:theme="@style/PhotoViewTheme"/>
         <activity
             android:name=".ui.TweetComposeActivity"
             android:label="@string/title_activity_tweet_compose"

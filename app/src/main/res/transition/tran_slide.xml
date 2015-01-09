@@ -19,6 +19,9 @@
         </targets>
     </fade>
 
+
+    <changeImageTransform>
+    </changeImageTransform>
     <!--<changeImageTransform>-->
         <!--<targets>-->
             <!--<target android:targetId="@android:id/home"></target>-->

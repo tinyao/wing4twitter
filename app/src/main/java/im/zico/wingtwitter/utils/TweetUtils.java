@@ -1,12 +1,20 @@
 package im.zico.wingtwitter.utils;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
+import android.util.DisplayMetrics;
+import android.util.Pair;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.squareup.picasso.Picasso;
 
 import im.zico.wingtwitter.R;
+import im.zico.wingtwitter.dao.WingStore;
+import im.zico.wingtwitter.ui.activity.PhotoViewActivity;
 import twitter4j.TwitterException;
 import twitter4j.TwitterMethod;
 
@@ -23,8 +31,11 @@ public class TweetUtils {
         return normalUrl.replace("_normal.", "_120x120.");
     }
 
-    public static void insertPhoto(Context context, LinearLayout gallery,
-                     String photo_url, boolean isMulti, boolean isFirst) {
+    public static void insertPhoto(final Context context, LinearLayout gallery,
+                     final String[] photo_urls, final int pos) {
+        boolean isMulti = photo_urls.length > 1;
+        boolean isFirst = (pos == 0);
+
         final ImageView imageView = new ImageView(context);
         int width = context.getResources().getDisplayMetrics().widthPixels
                 - context.getResources().getDimensionPixelSize(R.dimen.spacing_keyline_1)
@@ -43,9 +54,26 @@ public class TweetUtils {
         imageView.setLayoutParams(params);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setAdjustViewBounds(true);
-        imageView.setTag(photo_url);
+        imageView.setTag(photo_urls[pos]);
+        imageView.setTransitionName(photo_urls[pos]);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent photoIntent = new Intent(context, PhotoViewActivity.class);
+                photoIntent.putExtra(WingStore.TweetColumns.MEDIAS, photo_urls);
+//                DisplayMetrics metrics = new DisplayMetrics();
+//                imageView.getDisplay().getMetrics(metrics);
+                int[] location = new int[2];
+                imageView.getLocationOnScreen(location);
+                photoIntent.putExtra("pivotX", location[0]);
+                photoIntent.putExtra("pivotY", location[1]);
+                photoIntent.putExtra("position", pos);
+                context.startActivity(photoIntent);
+                ((Activity)context).overridePendingTransition(R.anim.photo_view_enter, 0);
+            }
+        });
 
-        Picasso.with(context).load(photo_url)
+        Picasso.with(context).load(photo_urls[pos])
                 .fit()
                 .centerCrop()
                 .into(imageView);

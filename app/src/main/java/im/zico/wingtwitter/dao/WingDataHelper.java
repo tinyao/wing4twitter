@@ -11,6 +11,7 @@ import java.util.List;
 
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.type.WingUser;
+import im.zico.wingtwitter.utils.WConfig;
 
 /**
  * Created by tinyao on 12/5/14.
@@ -94,6 +95,8 @@ public class WingDataHelper extends BaseDataHelper {
         bulkInsert(type, contentValues.toArray(valueArray));
     }
 
+
+
 //    /**
 //     * Save Tweet List
 //     * @param wingTweets
@@ -138,6 +141,16 @@ public class WingDataHelper extends BaseDataHelper {
             ContentValues values = wingTweet.toContentValues();
             insert(type, values);
         }
+    }
+
+    public int tweetAmount(int type) {
+        int amount = 0;
+        Cursor ccc = query(getContentUri(type), null, null, null, null);
+        if (ccc != null) {
+            amount = ccc.getCount();
+        }
+        ccc.close();
+        return amount;
     }
 
     public void update(WingTweet wingTweet) {
@@ -203,6 +216,18 @@ public class WingDataHelper extends BaseDataHelper {
 
     public int deletePreviousTweets(long tweet_id) {
         return delete(getContentUri(WingStore.TYPE_TWEET), WingStore.TweetColumns.TWEET_ID + " < ?", new String[]{ "" + tweet_id });
+    }
+
+    public void clearOldTweets(int type) {
+        Cursor ccc = query(getContentUri(type), null, null, null, WingStore.TweetColumns.TWEET_ID + " DESC");
+        if (ccc!=null && ccc.getCount() > WConfig.TIMELINE_MAX_CACHE
+                && ccc.moveToPosition(WConfig.TIMELINE_MAX_CACHE)) {
+            long startId = WingTweet.fromCursor(ccc).tweet_id;
+            delete(getContentUri(type),
+                    WingStore.TweetColumns.TWEET_ID + " <= ?",
+                    new String[]{ "" +  startId});
+        }
+        ccc.close();
     }
 
     public int deleteAllTweets() {

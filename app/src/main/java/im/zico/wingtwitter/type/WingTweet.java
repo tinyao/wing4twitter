@@ -95,7 +95,8 @@ public class WingTweet {
         }
         UserMentionEntity[] mentions = status.getUserMentionEntities();
         for (UserMentionEntity mention: mentions) {
-            content_html = content_html.replaceFirst("@" + mention.getText(),
+            Log.d("DEBUG", "Mention: " + mention.getText());
+            content_html = content_html.replaceFirst("(?i)@" + mention.getText(),
                     "<a href='im.zico.wingtwitter.user://" + mention.getText() + "'>@" + mention.getText() + "</a>");
         }
         for (URLEntity url : urlEntities) {

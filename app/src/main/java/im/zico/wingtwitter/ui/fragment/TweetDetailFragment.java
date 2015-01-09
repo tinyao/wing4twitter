@@ -113,9 +113,7 @@ public class TweetDetailFragment extends Fragment {
             for (int i = 0; i < tweet.mediaUrls.length; i++) {
                 Log.d("DEBUG", tweet.user_name + " media load: " + tweet.mediaUrls[i]);
                 TweetUtils.insertPhoto(getActivity(), holder.gallery,
-                        tweet.mediaUrls[i],
-                        tweet.mediaUrls.length > 1,
-                        i == 0);
+                        tweet.mediaUrls, i);
             }
             holder.gallery.setVisibility(View.VISIBLE);
         } else {

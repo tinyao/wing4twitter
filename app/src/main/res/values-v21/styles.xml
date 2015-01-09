@@ -50,6 +50,13 @@
         <item name="android:windowIsTranslucent">false</item>
     </style>
 
+    <style name="PhotoViewTheme" parent="android:Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/alpha_dark_2</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
     <style name="ActionBarTabStyle.MY_STYLE" parent="@android:style/Widget.Holo.ActionBar.TabView">
         <item name="android:paddingLeft">6dip</item>
         <item name="android:paddingRight">6dip</item>

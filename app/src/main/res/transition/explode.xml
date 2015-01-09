@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
-    <slide>
+    <slide android:slideEdge="right" android:interpolator="@android:interpolator/bounce">
         <targets>
             <!--<target android:excludeId="@id/toolbar"></target>-->
+            <target android:targetId="@id/photo_view"></target>
             <target android:excludeId="@android:id/statusBarBackground"></target>
             <target android:excludeId="@android:id/navigationBarBackground"></target>
         </targets>
