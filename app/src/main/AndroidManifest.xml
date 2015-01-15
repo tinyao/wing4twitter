@@ -71,23 +71,29 @@
             android:theme="@style/AppTheme.Profile" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="im.zico.wingtwitter.user" />
+
+                <data android:scheme="im.zico.wingtwitter.user" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.PhotoViewActivity"
-            android:theme="@style/PhotoViewTheme"/>
+        <activity
+            android:name=".ui.activity.PhotoViewActivity"
+            android:theme="@style/PhotoViewTheme" />
         <activity
             android:name=".ui.TweetComposeActivity"
             android:label="@string/title_activity_tweet_compose"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/TweetDialog">
+            android:theme="@style/TweetDialog"
+            android:windowSoftInputMode="adjustResize" >
         </activity>
 
-        <service
-            android:name=".service.TweetService"/>
+        <service android:name=".service.TweetService" />
+
+        <activity
+            android:name=".ui.activity.UserTimelineActivity"
+            android:label="@string/title_activity_user_timeline" >
+        </activity>
     </application>
 
 </manifest>

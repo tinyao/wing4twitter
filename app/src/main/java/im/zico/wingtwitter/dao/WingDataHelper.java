@@ -33,23 +33,35 @@ public class WingDataHelper extends BaseDataHelper {
                 return WingDataProvider.USER_CONTENT_URI;
             case WingStore.TYPE_FAVORITE:
                 return WingDataProvider.FAVORITE_CONTENT_URI;
+            case WingStore.TYPE_COMMON_TWEET:
+                return WingDataProvider.COMMON_TWEETS_URI;
         }
         return null;
     }
 
     public WingTweet getTweet(long tweet_id) {
         WingTweet wingTweet = null;
-        // Search the timeline cache
         Cursor cursor = query(WingStore.TYPE_TWEET, null, WingStore.TweetColumns.TWEET_ID + " = ?",
                 new String[]{ "" + tweet_id }, null);
         if (cursor.moveToFirst()) {
             wingTweet = WingTweet.fromCursor(cursor);
         } else {
-            // Search mentioned cache
-            cursor = query(WingStore.TYPE_MENTION, null, WingStore.TweetColumns.TWEET_ID + " = ?",
-                    new String[]{ "" + tweet_id }, null);
+            cursor = query(WingStore.TYPE_COMMON_TWEET, null, WingStore.TweetColumns.TWEET_ID + " = ?",
+                    new String[]{"" + tweet_id}, null);
             if (cursor.moveToFirst()) {
                 wingTweet = WingTweet.fromCursor(cursor);
+            } else {
+                cursor = query(WingStore.TYPE_MENTION, null, WingStore.TweetColumns.TWEET_ID + " = ?",
+                        new String[]{"" + tweet_id}, null);
+                if (cursor.moveToFirst()) {
+                    wingTweet = WingTweet.fromCursor(cursor);
+                } else {
+                    cursor = query(WingStore.TYPE_FAVORITE, null, WingStore.TweetColumns.TWEET_ID + " = ?",
+                            new String[]{"" + tweet_id}, null);
+                    if (cursor.moveToFirst()) {
+                        wingTweet = WingTweet.fromCursor(cursor);
+                    }
+                }
             }
         }
         cursor.close();
@@ -272,6 +284,9 @@ public class WingDataHelper extends BaseDataHelper {
             case WingStore.TYPE_FAVORITE:
                 return new CursorLoader(getContext(), getContentUri(type), null, null,
                     null, WingStore.FavoriteCollumns.TWEET_ID + " DESC");
+            case WingStore.TYPE_COMMON_TWEET:
+                return new CursorLoader(getContext(), getContentUri(type), null, null,
+                        null, WingStore.CommonTweetColumns.TWEET_ID + " DESC");
         }
         return null;
     }

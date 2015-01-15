@@ -2,7 +2,10 @@ package im.zico.wingtwitter;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 
+import im.zico.wingtwitter.dao.WingDataHelper;
+import im.zico.wingtwitter.type.WingUser;
 import im.zico.wingtwitter.utils.PrefKey;
 import im.zico.wingtwitter.utils.PreferencesManager;
 import twitter4j.AsyncTwitter;
@@ -62,6 +65,7 @@ public class WingApp extends Application {
 
     private static long cUserId = -1;
     private static String cScreenName;
+    private static WingUser mUser;
 
     public static long getCurrentUserID() {
         if(cUserId == -1) {
@@ -79,6 +83,17 @@ public class WingApp extends Application {
             }
         }
         return cScreenName;
+    }
+
+    public static WingUser getCurrentAccountUser() {
+        if (mUser == null) {
+            SharedPreferences sp = PreferencesManager.getInstance(sContext).getSharedPrefs();
+            if (sp.contains(PrefKey.KEY_USERID)) {
+                cUserId = sp.getLong(PrefKey.KEY_USERID, 0);
+                return new WingDataHelper(sContext).getUser(cUserId);
+            }
+        }
+        return mUser;
     }
 
 //    public static AsyncTwitter getTwitterNew() {

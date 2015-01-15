@@ -1,18 +1,18 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="m.zico.wingtwitter.ui.TweetDetailActivity">
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical"-->
+    <!--tools:context="m.zico.wingtwitter.ui.TweetDetailActivity">-->
 
-    <Toolbar
-        android:id="@+id/toolbar"
-        style="@style/ToolBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:popupTheme="@android:style/Theme.Material.Light"
-        android:theme="@style/ToolBarTheme"
-        android:transitionName="actionBar" />
+    <!--<Toolbar-->
+        <!--android:id="@+id/toolbar"-->
+        <!--style="@style/ToolBarStyle"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="?android:attr/actionBarSize"-->
+        <!--android:popupTheme="@android:style/Theme.Material.Light"-->
+        <!--android:theme="@style/ToolBarTheme"-->
+        <!--android:transitionName="actionBar" />-->
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -21,4 +21,4 @@
         android:layout_height="match_parent"
         tools:ignore="MergeRootFrame" />
 
-</LinearLayout>
+<!--</LinearLayout>-->

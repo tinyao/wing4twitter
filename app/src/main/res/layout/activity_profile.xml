@@ -23,6 +23,7 @@
                 android:id="@+id/anchor"
                 android:layout_width="match_parent"
                 android:layout_marginTop="-130dp"
+                android:visibility="gone"
                 android:layout_height="@dimen/parallax_image_height"
                 android:minHeight="@dimen/parallax_image_height" />
 

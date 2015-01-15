@@ -7,4 +7,11 @@
         </targets>
     </fade>
 
+    <!--<explode>-->
+        <!--<targets>-->
+            <!--<target android:excludeId="@android:id/statusBarBackground"></target>-->
+            <!--<target android:excludeId="@android:id/navigationBarBackground"></target>-->
+        <!--</targets>-->
+    <!--</explode>-->
+
 </transitionSet>

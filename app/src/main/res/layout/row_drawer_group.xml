@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:orientation="vertical">-->
+
+<!--<View--><!--android:id="@+id/drawer_divider"--><!--android:layout_width="match_parent"--><!--android:layout_height="2px"--><!--android:layout_alignParentTop="true"--><!--android:layout_marginBottom="8dp"--><!--android:layout_marginTop="8dp"--><!--android:background="#dddddd" />-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="16dp"
@@ -10,29 +14,28 @@
         android:id="@+id/img_drawer_group_tag"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:scaleType="centerInside"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        android:scaleType="centerInside" />
 
     <TextView
         android:id="@+id/tv_drawer_group_label"
         style="@style/DrawerItemTxt"
-        android:duplicateParentState="true"
-        android:layout_toRightOf="@id/img_drawer_group_tag"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginLeft="@dimen/spacing_drawer_icon_text"
-        android:textColor="@drawable/tv_color_selector"
-        android:text="@string/drawer_trends" />
+        android:layout_toRightOf="@id/img_drawer_group_tag"
+        android:duplicateParentState="true"
+        android:text="@string/drawer_trends"
+        android:textColor="@drawable/tv_color_selector" />
 
     <CheckBox
         android:id="@+id/check_drawer_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:focusable="false"
-        android:checked="false"
         android:button="@drawable/ic_triagle_selector"
-        android:layout_alignParentRight="true"/>
-
+        android:checked="false"
+        android:focusable="false" />
 
 </RelativeLayout>

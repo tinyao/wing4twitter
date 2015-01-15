@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:layout_gravity="center"--><!--android:layout_marginBottom="@dimen/activity_vertical_margin"--><!--android:layout_marginLeft="8dp"--><!--android:layout_marginRight="8dp"--><!--android:background="@drawable/card_bg"--><!--android:minHeight="45dp"--><!--android:orientation="vertical"--><!--android:paddingBottom="4px">-->
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_card_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginBottom="@dimen/activity_vertical_margin"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
-
-    android:background="@drawable/card_bg"
+    android:background="@color/white"
     android:minHeight="45dp"
     android:orientation="vertical"
-    android:paddingBottom="4px">
+    android:paddingBottom="4px"
+    app:cardCornerRadius="2dp"
+    app:cardPreventCornerOverlap="true">
 
     <RelativeLayout
         android:id="@+id/user_profile_tweets_main"
@@ -21,9 +26,9 @@
 
         <im.zico.wingtwitter.ui.view.NestedListView
             android:id="@+id/user_profile_tweets_list"
-            android:animateLayoutChanges="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true" />
 
         <TextView
             android:id="@+id/user_profile_tweets_view_all"
@@ -52,5 +57,7 @@
 
     </FrameLayout>
 
+</android.support.v7.widget.CardView>
 
-</FrameLayout>
+
+    <!--</FrameLayout>-->

@@ -58,6 +58,7 @@ import im.zico.wingtwitter.dao.WingDataHelper;
 import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.type.WingUser;
+import im.zico.wingtwitter.ui.activity.UserTimelineActivity;
 import im.zico.wingtwitter.ui.view.HtmlTextView;
 import im.zico.wingtwitter.ui.view.NestedListView;
 import im.zico.wingtwitter.utils.HackyMovementMethod;
@@ -80,7 +81,6 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
     private BasicProfileCard basicInfo;
     private AsyncTwitter asyncTwitter;
 
-//    private long mUserId = -1;
     private String mScreenName;
 
     private NestedListView tweetList;
@@ -141,8 +141,10 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         } else if(intent.getData()!=null) {
             mScreenName = intent.getData().getHost();
         } else {
-            finishAfterTransition();
-            return;
+            revealBanner();
+            mScreenName = WingApp.getCurrentScreenName();
+//            finishAfterTransition();
+//            return;
         }
 
         mUser = DBHelper.getUser(mScreenName);
@@ -190,9 +192,10 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
 
                 // make the view visible and start the animation
                 bannerImage.setVisibility(View.VISIBLE);
+                anim.setDuration(400);
                 anim.start();
             }
-        }, 50);
+        }, 100);
 
     }
 
@@ -301,17 +304,18 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
                     break;
                 case GOT_USER_TWEETS:
                     findViewById(R.id.progressBarView).setVisibility(View.INVISIBLE);
-//                    findViewById(R.id.user_profile_tweets_view_all).setVisibility(View.VISIBLE);
                     UserTweetsAdapter tweetsAdapter = new UserTweetsAdapter(ProfileActivity.this, (ArrayList<WingTweet>) msg.obj);
                     tweetList.setAdapter(tweetsAdapter);
                     break;
                 case GOT_RELATIONSHIP:
                     basicInfo.toFollow.setText(mUser.isFollowing ? "Following" : "Follow");
+                    basicInfo.isFollowadge.setVisibility(mUser.isFollowing ? View.VISIBLE : View.INVISIBLE);
                     break;
                 case DESTROYED_RELATIONSHIP:
                 case CREATED_RELATIONSHIP:
                     basicInfo.toFollowProgress.setVisibility(View.GONE);
                     basicInfo.toFollow.setText(mUser.isFollowing ? "Following" : "Follow");
+                    basicInfo.isFollowadge.setVisibility(mUser.isFollowing ? View.VISIBLE : View.INVISIBLE);
                     break;
             }
             super.handleMessage(msg);
@@ -343,18 +347,36 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
 
         ViewHelper.setTranslationY(bannerImage, scrollY / 2);
 
-        if (scrollY > mParallaxImageHeight * 1.2) {
-            getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary)));
-            if(mUser.name!=null) getActionBar().setTitle(mUser.name);
-            getActionBar().show();
-
-        } else if (scrollY > mParallaxImageHeight * 0.2) {
+        if (scrollY > mParallaxImageHeight * 0.15) {
             getActionBar().hide();
         } else {
-            getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-            getActionBar().setTitle("");
             getActionBar().show();
         }
+
+//        if (scrollY < mParallaxImageHeight * 0.15) {
+////            getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+////            getActionBar().setTitle("");
+//            getActionBar().show();
+//        }
+
+//        if (scrollY < 0) {
+//            getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary)));
+//            if(mUser.name!=null) getActionBar().setTitle(mUser.name);
+//            getActionBar().show();
+//        }
+
+//        if (scrollY > mParallaxImageHeight * 1.2) {
+//            getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary)));
+//            if(mUser.name!=null) getActionBar().setTitle(mUser.name);
+//            getActionBar().show();
+//
+//        } else if (scrollY > mParallaxImageHeight * 0.2) {
+//            getActionBar().hide();
+//        } else {
+//            getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+//            getActionBar().setTitle("");
+//            getActionBar().show();
+//        }
     }
 
     @Override
@@ -389,7 +411,7 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
     /**
      * View Group for Basic UserInfo
      */
-    private class BasicProfileCard {
+    private class BasicProfileCard implements View.OnClickListener{
 
         CircleImageView avatar;
         TextView name, screenName, address, website;
@@ -397,6 +419,7 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
         TextView tweets, followers, followings;
         TextView toTweet, toFollow;
         View toFollowV, toFollowProgress;
+        View isFollowadge;
 
         public BasicProfileCard(Activity context) {
             avatar = (CircleImageView) context.findViewById(R.id.user_avatar);
@@ -412,41 +435,14 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
             toFollow = (TextView) context.findViewById(R.id.user_to_follow);
             toFollowV = context.findViewById(R.id.user_to_follow_v);
             toFollowProgress = context.findViewById(R.id.user_to_follow_progressbar);
+            isFollowadge = context.findViewById(R.id.user_follow_badge);
 
-            toFollowV.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mUser.isFollowing) {
-                        // show dialog to confirm unfollow
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this)
-                                .setMessage("Stop following " + mUser.name + " ?")
-                                .setTitle("Unfollow")
-                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        toFollowProgress.setVisibility(View.VISIBLE);
-                                        Log.d("DEBUG", "UNFOLLOW ... " + mUser.screenName + " - " + mUser.user_id);
-                                        asyncTwitter.destroyFriendship(mUser.user_id);
-                                    }
-                                })
-                                .setNegativeButton(R.string.no, null);
-                        builder.create().show();
-                    } else {
-                        // follow
-                        toFollowProgress.setVisibility(View.VISIBLE);
-                        Log.d("DEBUG", "FOLLOW ... " + mUser.screenName + " - " + mUser.user_id);
-                        asyncTwitter.createFriendship(mUser.user_id);
-                    }
-                }
-            });
-
-            toTweet.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
+            toTweet.setOnClickListener(this);
+            tweets.setOnClickListener(this);
+            followers.setOnClickListener(this);
+            followings.setOnClickListener(this);
+            toFollowV.setOnClickListener(this);
         }
 
         public void setUserInfo(WingUser user) {
@@ -456,6 +452,7 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
             followers.setText("" + user.followerCount);
             followings.setText("" + user.followingCount);
             toFollow.setText(user.isFollowing ? "Following" : "Follow");
+            isFollowadge.setVisibility(user.isFollowing ? View.VISIBLE : View.INVISIBLE);
 
             if (user.desc != null && !user.desc.isEmpty()) {
                 desc.setHtmlText(user.desc);
@@ -491,6 +488,55 @@ public class ProfileActivity extends BaseActivity implements ObservableScrollVie
                     Log.d("DEBUG", "banner color: " + user.bannerColor);
                     bannerImage.setBackgroundColor(Color.parseColor("#FF" + user.bannerColor));
                 }
+            }
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.user_to_follow_v:
+                    if (mUser.isFollowing) {
+                        // show dialog to confirm unfollow
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this)
+                                .setMessage("Stop following " + mUser.name + " ?")
+                                .setTitle("Unfollow")
+                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        toFollowProgress.setVisibility(View.VISIBLE);
+                                        Log.d("DEBUG", "UNFOLLOW ... " + mUser.screenName + " - " + mUser.user_id);
+                                        asyncTwitter.destroyFriendship(mUser.user_id);
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, null);
+                        builder.create().show();
+                    } else {
+                        // follow
+                        toFollowProgress.setVisibility(View.VISIBLE);
+                        Log.d("DEBUG", "FOLLOW ... " + mUser.screenName + " - " + mUser.user_id);
+                        asyncTwitter.createFriendship(mUser.user_id);
+                    }
+                    break;
+                case R.id.user_tweet_count:
+                    // view user timeline
+                    Intent toUserTimeline = new Intent(ProfileActivity.this, UserTimelineActivity.class);
+                    toUserTimeline.putExtra(WingStore.UserColumns.SCREEN_NAME, mUser.screenName);
+                    toUserTimeline.putExtra(WingStore.UserColumns.NAME, mUser.name);
+                    startActivity(toUserTimeline);
+                    break;
+                case R.id.user_follower_count:
+                    // view all followers
+
+                    break;
+                case R.id.user_following_count:
+                    // view all followings
+
+                    break;
+                case R.id.user_to_tweet:
+                    // go to compose activity
+
+                    break;
             }
         }
 

@@ -26,11 +26,13 @@ public class WingDataProvider extends ContentProvider {
     public static final String PATH_USERS = "/" + WingStore.UserColumns.TABLE_NAME;
     public static final String PATH_MENTIONS = "/" + WingStore.MentionedCollumns.TABLE_NAME;
     public static final String PATH_FAVORITES = "/" + WingStore.FavoriteCollumns.TABLE_NAME;
+    public static final String PATH_COMMON_TWEETS = "/" + WingStore.CommonTweetColumns.TABLE_NAME;
 
     public static final Uri STATUS_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_STATUSES);
     public static final Uri USER_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_USERS);
     public static final Uri MENTION_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_MENTIONS);
     public static final Uri FAVORITE_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_FAVORITES);
+    public static final Uri COMMON_TWEETS_URI = Uri.parse(SCHEME + AUTHORITY + PATH_COMMON_TWEETS);
 
     /*
      * MIME type definitions
@@ -39,6 +41,7 @@ public class WingDataProvider extends ContentProvider {
     public static final String MENTION_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.mention";
     public static final String FAVORITE_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.favorite";
     public static final String USER_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.user";
+    public static final String COMMON_TWEET_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.zico.wing.common_tweets";
 
     private static final UriMatcher sUriMatcher;
     static {
@@ -47,6 +50,7 @@ public class WingDataProvider extends ContentProvider {
         sUriMatcher.addURI(AUTHORITY, WingStore.MentionedCollumns.TABLE_NAME, WingStore.TYPE_MENTION);
         sUriMatcher.addURI(AUTHORITY, WingStore.FavoriteCollumns.TABLE_NAME,  WingStore.TYPE_FAVORITE);
         sUriMatcher.addURI(AUTHORITY, WingStore.UserColumns.TABLE_NAME,  WingStore.TYPE_USER);
+        sUriMatcher.addURI(AUTHORITY, WingStore.CommonTweetColumns.TABLE_NAME,  WingStore.TYPE_COMMON_TWEET);
     }
 
     private static MSQLiteOpenHelper mDBHelper;
@@ -90,6 +94,8 @@ public class WingDataProvider extends ContentProvider {
                 return USER_CONTENT_TYPE;
             case WingStore.TYPE_FAVORITE:
                 return FAVORITE_CONTENT_TYPE;
+            case WingStore.TYPE_COMMON_TWEET:
+                return COMMON_TWEET_CONTENT_TYPE;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -178,6 +184,9 @@ public class WingDataProvider extends ContentProvider {
                 break;
             case WingStore.TYPE_FAVORITE:
                 table = WingStore.FavoriteCollumns.TABLE_NAME;
+                break;
+            case WingStore.TYPE_COMMON_TWEET:
+                table = WingStore.CommonTweetColumns.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);

@@ -24,6 +24,10 @@ public class PreferencesManager {
         return sInstance;
     }
 
+    public SharedPreferences getSharedPrefs() {
+        return mPref;
+    }
+
     public void setValue(String key, String value) {
         mPref.edit()
                 .putString(key, value)

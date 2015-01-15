@@ -50,7 +50,7 @@
         <item name="android:windowIsTranslucent">false</item>
     </style>
 
-    <style name="PhotoViewTheme" parent="android:Theme.Material.NoActionBar.Fullscreen">
+    <style name="PhotoViewTheme" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/alpha_dark_2</item>
         <item name="android:windowContentOverlay">@null</item>

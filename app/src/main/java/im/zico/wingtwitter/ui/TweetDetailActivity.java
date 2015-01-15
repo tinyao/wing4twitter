@@ -17,10 +17,10 @@ public class TweetDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tweet_detail);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle("Detail");
+//        toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setActionBar(toolbar);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setTitle("Detail");
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()

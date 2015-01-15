@@ -181,7 +181,7 @@
     <include
         layout="@layout/tweet_card_actions"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="48dp"
         android:layout_below="@+id/main_card_content" />
 
 </RelativeLayout>

@@ -14,6 +14,7 @@ public class WingStore {
     public static final int TYPE_MENTION = 1;
     public static final int TYPE_FAVORITE = 2;
     public static final int TYPE_DM = 3;
+    public static final int TYPE_COMMON_TWEET = 4;
     public static final int TYPE_USER = 5;
 
     public static class TweetColumns implements BaseColumns {
@@ -137,6 +138,10 @@ public class WingStore {
 //        public static final String[] COLUMNS = TweetColumns.COLUMNS;
 //        public static final DataType[] TYPES = TweetColumns.TYPES;
 //        public static final Constraint[] CONSTRAINTS = TweetColumns.CONSTRAINTS;
+    }
+
+    public static final class CommonTweetColumns extends TweetColumns {
+        public static final String TABLE_NAME = "cached_tweets";
     }
 
 }

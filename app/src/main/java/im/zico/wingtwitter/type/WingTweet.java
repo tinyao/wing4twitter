@@ -57,7 +57,7 @@ public class WingTweet {
     public int favorite_count;
 
     public String[] mediaUrls;
-
+    public long cachedTime;
 
     public WingTweet() {
     }

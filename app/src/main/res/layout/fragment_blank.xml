@@ -10,6 +10,8 @@
         android:layout_height="wrap_content"
         android:divider="@color/alpha_light_gray"
         android:dividerHeight="1dp"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
         android:drawSelectorOnTop="false" />
 
     <ImageButton

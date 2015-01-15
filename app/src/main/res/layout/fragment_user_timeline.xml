@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <im.zico.wingtwitter.ui.view.TweetListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/alpha_light_gray"
+        android:dividerHeight="1dp"
+        android:drawSelectorOnTop="false" />
+
+
+</FrameLayout>

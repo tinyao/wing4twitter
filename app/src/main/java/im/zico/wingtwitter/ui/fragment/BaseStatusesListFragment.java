@@ -1,5 +1,9 @@
 package im.zico.wingtwitter.ui.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ClipData;
@@ -17,8 +21,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
 
+import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.tjerkw.slideexpandable.library.ActionSlideExpandableListView;
 
 import java.util.ArrayList;
@@ -87,7 +95,7 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
 
         mListView.setItemActionListener(new ActionSlideExpandableListView.OnActionClickListener() {
             @Override
-            public void onClick(View itemView, View clickedView, final int position) {
+            public void onClick(final View itemView, View clickedView, final int position) {
                 final WingTweet tweet = mAdapter.getItem(position);
                 switch (clickedView.getId()) {
                     case R.id.expand_action_reply:
@@ -109,7 +117,23 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
                         if (!favTweet.favorited) {
                             getAsyncTwitter().createFavorite(tweet.tweet_id);
                         } else {
-                            getAsyncTwitter().destroyFavorite(tweet.tweet_id);
+                            if (getType() == WingStore.TYPE_FAVORITE) {
+                                ViewPropertyAnimator.animate(itemView).setInterpolator(new AccelerateDecelerateInterpolator())
+                                        .setDuration(200)
+                                        .translationXBy(0-getResources().getDisplayMetrics().widthPixels)
+                                        .setListener(new com.nineoldandroids.animation.AnimatorListenerAdapter() {
+                                            @Override
+                                            public void onAnimationEnd(com.nineoldandroids.animation.Animator animation) {
+                                                super.onAnimationEnd(animation);
+                                                getDBHelper().delete(mAdapter.getItem(position), WingStore.TYPE_FAVORITE);
+                                                getAsyncTwitter().destroyFavorite(tweet.tweet_id);
+                                                performDismiss(itemView);
+                                            }
+                                        });
+
+                            } else {
+                                getAsyncTwitter().destroyFavorite(tweet.tweet_id);
+                            }
                         }
                         break;
                     case R.id.expand_action_retweet:
@@ -274,6 +298,38 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         if (data != null && data.getCount() == 0) {
             loadLatest();
         }
+    }
+
+    private void performDismiss(final View mDismissView) {
+        // Animate the dismissed view to zero-height and then fire the dismiss callback.
+        // This triggers layout on each animation frame; in the future we may want to do something
+        // smarter and more performant.
+
+        final ViewGroup.LayoutParams lp = mDismissView.getLayoutParams();
+        final int originalHeight = mDismissView.getHeight();
+
+        ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(200);
+
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Reset view presentation
+                mDismissView.setAlpha(1f);
+                mDismissView.setTranslationX(0);
+                lp.height = originalHeight;
+                mDismissView.setLayoutParams(lp);
+            }
+        });
+
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                lp.height = (Integer) valueAnimator.getAnimatedValue();
+                mDismissView.setLayoutParams(lp);
+            }
+        });
+
+        animator.start();
     }
 
     @Override

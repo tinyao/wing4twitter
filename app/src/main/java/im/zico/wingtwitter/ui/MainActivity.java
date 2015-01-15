@@ -31,7 +31,6 @@ public class MainActivity extends BaseActivity implements DrawerFragment.Navigat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
@@ -40,10 +39,6 @@ public class MainActivity extends BaseActivity implements DrawerFragment.Navigat
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-
-//        final Intent intent = new Intent(this, TweetService.class);
-//        intent.setAction(TweetService.INTENT_ACTION_GET_FOLLOWERS);
-//        startService(intent);
     }
 
     @Override

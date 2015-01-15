@@ -1,6 +1,8 @@
 package im.zico.wingtwitter.ui.fragment;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import im.zico.wingtwitter.R;
+import im.zico.wingtwitter.WingApp;
 import im.zico.wingtwitter.adapter.DrawerListAdapter;
+import im.zico.wingtwitter.dao.WingStore;
+import im.zico.wingtwitter.ui.ProfileActivity;
 
 
 public class DrawerFragment extends Fragment {
@@ -73,13 +81,37 @@ public class DrawerFragment extends Fragment {
         avatarView = (ImageView) headerCover.findViewById(R.id.drawer_user_avatar);
         userName = (TextView) headerCover.findViewById(R.id.drawer_user_name);
         expListView.addHeaderView(headerCover);
+        View footerView = getActivity().getLayoutInflater().inflate(R.layout.drawer_menu_footer, null);
+        expListView.addFooterView(footerView);
+
+//        Picasso.with(getActivity()).load(WingApp.getCurrentAccountUser().avatar).into(avatarView);
+//        userName.setText(WingApp.getCurrentAccountUser().name);
+
+        headerCover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent profileIntent = new Intent(getActivity(), ProfileActivity.class);
+                ActivityOptions options = ActivityOptions
+                        .makeSceneTransitionAnimation(getActivity(),
+                                Pair.create((View) avatarView, "avatar"));
+                getActivity().startActivity(profileIntent, options.toBundle());
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDrawerLayout.closeDrawers();
+                    }
+                }, 400);
+            }
+        });
 
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 if (groupPosition == 2 || groupPosition == 3) {
-                    expListView.setItemChecked(groupPosition + 1, true);
-                    expListView.setItemChecked(groupPosition + 1, false);
+
+                    return false;
+//                    expListView.setItemChecked(groupPosition + 1, true);
+//                    expListView.setItemChecked(groupPosition + 1, false);
                 } else {
                     selectItem(groupPosition, -1);
                 }
@@ -92,6 +124,8 @@ public class DrawerFragment extends Fragment {
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 if (groupPosition == 2 || groupPosition == 3) {
                     selectItem(groupPosition, childPosition);
+                    expListView.setItemChecked(groupPosition + 1, true);
+                    return true;
                 }
                 return false;
             }

@@ -102,11 +102,18 @@ public class DrawerListAdapter extends BaseExpandableListAdapter {
                 .getResourceId(groupPosition, R.drawable.ic_drawer_home));
 
         CheckBox groupIndicator = (CheckBox) convertView.findViewById(R.id.check_drawer_group);
-        if (groupPosition == 2 || groupPosition == 3) {
-            groupIndicator.setVisibility(View.VISIBLE);
-        } else {
+//        View divider = convertView.findViewById(R.id.drawer_divider);
+//        if (groupPosition == 2 || groupPosition == 3) {
+//            groupIndicator.setVisibility(View.VISIBLE);
+//        } else {
             groupIndicator.setVisibility(View.GONE);
-        }
+//        }
+
+//        if (groupPosition == 5) {
+//            divider.setVisibility(View.VISIBLE);
+//        } else {
+//            divider.setVisibility(View.GONE);
+//        }
 
         return convertView;
     }

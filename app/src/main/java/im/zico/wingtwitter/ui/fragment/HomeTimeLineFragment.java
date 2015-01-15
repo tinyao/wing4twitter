@@ -156,7 +156,6 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
     @Override
     public synchronized void onScrollUp() {
         if (!fabVisible) {
-//            showToolbar(true);
             ViewPropertyAnimator.animate(composeBtn).setInterpolator(new AccelerateDecelerateInterpolator())
                     .setDuration(200)
                     .translationY(0)
@@ -183,19 +182,6 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
                     });
         }
     }
-
-//    @Override
-//    public void onScrollHeader() {
-//        showToolbar(true);
-//    }
-//
-//    public synchronized void showToolbar(boolean toShow) {
-//        Toolbar toolbar = ((MainActivity) getActivity()).getToolBar();
-//        ViewPropertyAnimator.animate(toolbar).setInterpolator(new AccelerateDecelerateInterpolator())
-//                .setDuration(200)
-//                .translationY(toShow ? 0 : 0 - getResources().getDimensionPixelSize(R.dimen.toolbar_height));
-//    }
-
 
     @Override
     public void onAttach(Activity activity) {

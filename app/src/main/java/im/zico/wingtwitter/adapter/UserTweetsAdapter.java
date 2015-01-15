@@ -117,94 +117,19 @@ public class UserTweetsAdapter extends BaseAdapter {
 
     private class Holder {
 
-//        public TextView retweeted;
         public CircleImageView avatar;
         public TextView name;
         public TextView screenName;
         public HtmlTextView content;
         public TextView time;
-//        public LinearLayout actionSlide;
-//        public View mainContent;
 
         public Holder(View view) {
-//            retweeted = (TextView) view.findViewById(R.id.retweet_hint);
             avatar = (CircleImageView) view.findViewById(R.id.user_avatar);
             name = (TextView) view.findViewById(R.id.user_name);
             screenName = (TextView) view.findViewById(R.id.user_screen_name);
             content = (HtmlTextView) view.findViewById(R.id.tweet_content);
             time = (TextView) view.findViewById(R.id.tweet_time);
-//            actionSlide = (LinearLayout) view.findViewById(R.id.expandable);
-//            mainContent = view.findViewById(R.id.main_card_content);
         }
     }
 
-//    private void setLinkable(TextView textView) {
-//        Linkify.TransformFilter filter = new Linkify.TransformFilter() {
-//            public final String transformUrl(final Matcher match, String url) {
-//                return match.group();
-//            }
-//        };
-//
-//        Pattern mentionPattern = Pattern.compile("@([A-Za-z0-9_-]+)");
-//        String mentionScheme = "http://www.twitter.com/";
-//        Linkify.addLinks(textView, mentionPattern, mentionScheme, null, filter);
-//
-//        Pattern hashtagPattern = Pattern.compile("#([A-Za-z0-9_-]+)");
-//        String hashtagScheme = "http://www.twitter.com/search/";
-//        Linkify.addLinks(textView, hashtagPattern, hashtagScheme, null, filter);
-//
-//        Pattern urlPattern = Patterns.WEB_URL;
-//        Linkify.addLinks(textView, urlPattern, null, null, filter);
-//    }
-
-//    public static void expand(final View v) {
-//        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//        final int targetHeight = v.getMeasuredHeight();
-//
-//        v.getLayoutParams().height = 0;
-//        v.setVisibility(View.VISIBLE);
-//        Animation a = new Animation() {
-//            @Override
-//            protected void applyTransformation(float interpolatedTime, Transformation t) {
-//                v.getLayoutParams().height = interpolatedTime == 1
-//                        ? LinearLayout.LayoutParams.WRAP_CONTENT
-//                        : (int) (targetHeight * interpolatedTime);
-//                v.requestLayout();
-//            }
-//
-//            @Override
-//            public boolean willChangeBounds() {
-//                return true;
-//            }
-//        };
-//
-//        // 1dp/ms
-//        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
-//        v.startAnimation(a);
-//    }
-//
-//    public static void collapse(final View v) {
-//        final int initialHeight = v.getMeasuredHeight();
-//
-//        Animation a = new Animation() {
-//            @Override
-//            protected void applyTransformation(float interpolatedTime, Transformation t) {
-//                if (interpolatedTime == 1) {
-//                    v.setVisibility(View.GONE);
-//                } else {
-//                    v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
-//                    v.requestLayout();
-//                }
-//            }
-//
-//            @Override
-//            public boolean willChangeBounds() {
-//                return true;
-//            }
-//        };
-//
-//        // 1dp/ms
-//        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
-//        v.startAnimation(a);
-//    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.AbsListView;
+
 import com.tjerkw.slideexpandable.library.ActionSlideExpandableListView;
 
 
@@ -49,25 +50,27 @@ public class TweetListView extends ActionSlideExpandableListView {
 
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            if (firstVisibleItem!=0 && mLastFirstVisibleItem == firstVisibleItem && view.getChildAt(0) != null) {
-                int scrollY = mLastChildY - view.getChildAt(0).getTop();
-                if (scrollY > 20) {
-                    mCallback.onScrollDown();
-                } else if (scrollY < -20) {
-                    mCallback.onScrollUp();
+            if (mCallback != null) {
+                if (firstVisibleItem != 0 && mLastFirstVisibleItem == firstVisibleItem && view.getChildAt(0) != null) {
+                    int scrollY = mLastChildY - view.getChildAt(0).getTop();
+                    if (scrollY > 20) {
+                        mCallback.onScrollDown();
+                    } else if (scrollY < -20) {
+                        mCallback.onScrollUp();
+                    }
                 }
-            }
 
-            if (view.getChildAt(0) != null) {
-                mLastChildY = view.getChildAt(0).getTop();
-            }
-            mLastFirstVisibleItem = firstVisibleItem;
+                if (view.getChildAt(0) != null) {
+                    mLastChildY = view.getChildAt(0).getTop();
+                }
+                mLastFirstVisibleItem = firstVisibleItem;
 
-            if (firstVisibleItem + visibleItemCount >= totalItemCount
-                    && totalItemCount != 0
-                    && totalItemCount != TweetListView.this.getHeaderViewsCount() + TweetListView.this.getFooterViewsCount()
-                    && getAdapter().getCount() > 0) {
-                mCallback.onScrollFooter();
+                if (firstVisibleItem + visibleItemCount >= totalItemCount
+                        && totalItemCount != 0
+                        && totalItemCount != TweetListView.this.getHeaderViewsCount() + TweetListView.this.getFooterViewsCount()
+                        && getAdapter().getCount() > 0) {
+                    mCallback.onScrollFooter();
+                }
             }
         }
     };
