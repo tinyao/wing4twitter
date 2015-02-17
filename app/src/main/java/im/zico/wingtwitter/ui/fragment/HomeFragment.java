@@ -73,6 +73,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         mViewPager = (ViewPager) contentView.findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.page_margin));
         indicator.setViewPager(mViewPager);
 
         Log.d("DEBUG", "Home onCreateViewed: " + Calendar.getInstance().getTimeInMillis());

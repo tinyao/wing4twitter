@@ -5,25 +5,18 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.view.ViewPropertyAnimator;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -33,9 +26,7 @@ import im.zico.wingtwitter.dao.WingStore;
 import im.zico.wingtwitter.type.WingTweet;
 import im.zico.wingtwitter.ui.ProfileActivity;
 import im.zico.wingtwitter.ui.TweetDetailActivity;
-import im.zico.wingtwitter.ui.activity.PhotoViewActivity;
 import im.zico.wingtwitter.ui.view.HtmlTextView;
-import im.zico.wingtwitter.ui.view.MediaPicTransform;
 import im.zico.wingtwitter.ui.view.TweetListView;
 import im.zico.wingtwitter.utils.PrefKey;
 import im.zico.wingtwitter.utils.PreferencesManager;
@@ -116,6 +107,32 @@ public class TimeLineAdapter extends CursorAdapter {
         } else {
             holder.gallery.setVisibility(View.GONE);
         }
+
+        if (mListView.getSlideAdapter().isAnyItemExpanded()) {
+            // is the expanded one
+            Log.d("DEBUG", "lastopen: " + mListView.getSlideAdapter().getLastOpenPosition()
+                + ", pos: " + cursor.getPosition());
+            if(mListView.getSlideAdapter().getLastOpenPosition() == cursor.getPosition()) {
+                holder.mainContent.setBackgroundResource(R.drawable.tweet_bg_dark);
+                holder.name.setTextColor(Color.LTGRAY);
+                holder.content.setTextColor(Color.LTGRAY);
+            } else {
+                // is not the expanded one
+                holder.mainContent.setBackgroundResource(R.drawable.flat_ripple_selector);
+                holder.name.setTextColor(Color.BLACK);
+                holder.content.setTextColor(Color.BLACK);
+            }
+        }
+        holder.mainContent.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(context, TweetDetailActivity.class);
+                intent.putExtra("tweet_id", tweet.tweet_id);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, holder.mainContent, "card");
+                context.startActivity(intent, options.toBundle());
+                return true;
+            }
+        });
 
         holder.showDetail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,6 +237,10 @@ public class TimeLineAdapter extends CursorAdapter {
             view.setTag(holder);
         }
         return holder;
+    }
+
+    public void inverseColor(int position, Holder holder) {
+        holder.mainContent.setBackgroundResource(R.drawable.tweet_bg_dark);
     }
 
     private class Holder {

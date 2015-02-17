@@ -208,6 +208,10 @@ public abstract class AbstractSlideExpandableListAdapter extends WrapperListAdap
 		return (lastOpenPosition != -1) ? true : false;
 	}
 
+    public int getLastOpenPosition() {
+        return lastOpenPosition;
+    }
+
 	public void enableFor(View parent, int position) {
 		View more = getExpandToggleButton(parent);
         View contentMore = getExpandLongToggleButton(parent);
@@ -441,19 +445,18 @@ public abstract class AbstractSlideExpandableListAdapter extends WrapperListAdap
                                 + " -- location: " + location[0] + " / " + location[1]
                                 + "-- r3: " + r3.top + "-" + r3.bottom);
 
-
 						if (!visible) {
-                            Log.d("DEBUG", "invisible item -- movement: " + movement);
                             listView.smoothScrollBy(250 + (location[1]-r2.bottom + target.getHeight()), getScrollAnimtionDuration());
 						} else {
 
-                            if (r2.bottom - r.bottom < 250) {
-                                listView.smoothScrollBy(250-(r2.bottom-r.bottom), getScrollAnimtionDuration());
+                            if (r2.bottom - r.bottom < 250 && r2.bottom - r.bottom > 0) {
+                                listView.smoothScrollBy(250 - (r2.bottom - r.bottom) , getScrollAnimtionDuration());
+                                return;
                             }
 
-                            Log.d("DEBUG", "visible item -- r2.bottom=" + r2.bottom + " -- r.bottom="+ r.bottom);
 							if (r2.bottom == r.bottom) {
-								listView.smoothScrollBy(movement, getScrollAnimtionDuration());
+                                listView.smoothScrollBy(250 + location[1] - r2.bottom + target.getHeight(), getScrollAnimtionDuration());
+                                return;
 					 		}
 
 						}

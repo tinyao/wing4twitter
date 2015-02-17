@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,10 +25,16 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nineoldandroids.view.ViewPropertyAnimator;
+import com.tjerkw.slideexpandable.library.AbstractSlideExpandableListAdapter;
 import com.tjerkw.slideexpandable.library.ActionSlideExpandableListView;
+import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
+import com.tjerkw.slideexpandable.library.WrapperListAdapterImpl;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -92,6 +99,26 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
         getLoaderManager().initLoader(0, null, this);
 
         mListView.setScrollCallback(this);
+
+        mListView.getSlideAdapter().setItemExpandCollapseListener(new AbstractSlideExpandableListAdapter.OnItemExpandCollapseListener() {
+            @Override
+            public void onExpand(View itemView, int position) {
+                View childView = mListView.getChildAt(position - mListView.getFirstVisiblePosition());
+                childView.findViewById(R.id.main_card_content).setBackgroundResource(R.drawable.tweet_bg_dark);
+                ((TextView) childView.findViewById(R.id.user_name)).setTextColor(Color.LTGRAY);
+                ((TextView) childView.findViewById(R.id.tweet_content)).setTextColor(Color.LTGRAY);
+                Log.d("DEBUG", "onExpand");
+            }
+
+            @Override
+            public void onCollapse(View itemView, int position) {
+                View childView = mListView.getChildAt(position - mListView.getFirstVisiblePosition());
+                childView.findViewById(R.id.main_card_content).setBackgroundResource(R.drawable.flat_ripple_selector);
+                ((TextView) childView.findViewById(R.id.user_name)).setTextColor(Color.BLACK);
+                ((TextView) childView.findViewById(R.id.tweet_content)).setTextColor(Color.BLACK);
+                Log.d("DEBUG", "onCollapse");
+            }
+        });
 
         mListView.setItemActionListener(new ActionSlideExpandableListView.OnActionClickListener() {
             @Override
@@ -468,7 +495,9 @@ public abstract class BaseStatusesListFragment extends BaseFragment implements L
                     ArrayList<WingTweet> wingTweets = new ArrayList<>();
                     for (Status ss : statuses) {
                         WingTweet tweet = new WingTweet(ss);
-                        wingTweets.add(tweet);
+                        if (!getDBHelper().isTweetExisted(tweet.tweet_id, getType())) {
+                            wingTweets.add(tweet);
+                        }
                     }
                     getDBHelper().saveAll(wingTweets, getType());
                     break;

@@ -30,5 +30,6 @@
     <dimen name="tweet_gallery_multi_cut">40dp</dimen>
 
     <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="page_margin">8dp</dimen>
 
 </resources>

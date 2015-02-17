@@ -35,7 +35,6 @@ public class ExpandCollapseAnimation extends Animation {
 		mLayoutParams = ((RelativeLayout.LayoutParams) view.getLayoutParams());
 		mType = type;
 		if(mType == EXPAND) {
-
 			mLayoutParams.bottomMargin = - mEndHeight;
 		} else {
 

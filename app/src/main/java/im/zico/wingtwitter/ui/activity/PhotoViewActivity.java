@@ -50,6 +50,7 @@ public class PhotoViewActivity extends BaseActivity {
             mPhotoPagerAdapter.setMediaUrls(mediaUrls);
             mViewPager.setAdapter(mPhotoPagerAdapter);
             mViewPager.setOffscreenPageLimit(2);
+            mViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.page_margin));
             mViewPager.setCurrentItem(getIntent().getIntExtra("position", 0));
         } else {
             finishAfterTransition();

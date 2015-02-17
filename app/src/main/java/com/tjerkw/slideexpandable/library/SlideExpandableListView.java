@@ -44,6 +44,10 @@ class SlideExpandableListView extends ListView {
         super.setAdapter(this.adapter);
     }
 
+    public SlideExpandableListAdapter getSlideAdapter() {
+        return adapter;
+    }
+
     public void setAdapter(ListAdapter adapter, int toggle_button_id, int long_toggle_button_id, int expandable_view_id) {
         this.adapter = new SlideExpandableListAdapter(adapter, toggle_button_id, long_toggle_button_id, expandable_view_id);
         super.setAdapter(this.adapter);

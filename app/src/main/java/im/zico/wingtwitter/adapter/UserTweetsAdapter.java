@@ -100,8 +100,6 @@ public class UserTweetsAdapter extends BaseAdapter {
         holder.screenName.setText("@" + tweet.screen_name);
         holder.time.setText("" + Utils.getTimeAgo(tweet.created_at));
         holder.content.setHtmlText(tweet.content_html);
-//        holder.content.setText(SpannableStringUtils.span(tweet.content));
-//        holder.content.setMovementMethod(HackyMovementMethod.getInstance());
 
         return convertView;
     }

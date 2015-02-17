@@ -72,7 +72,7 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mPageId = getArguments().getInt(ARG_SECTION_NUMBER);
-        Log.d("DEBUG", "HomeTimeline onCreate: " + Calendar.getInstance().getTimeInMillis());
+        Log.d("DEBUG", TAG + "onCreate: " + Calendar.getInstance().getTimeInMillis());
     }
 
     @Override
@@ -85,7 +85,8 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
                 TweetComposeActivity.showDialog(getActivity(), new Bundle());
             }
         });
-        Log.d("DEBUG", "HomeTimeline onViewCreated: " + Calendar.getInstance().getTimeInMillis());
+
+        Log.d("DEBUG", TAG + "onViewCreated: " + Calendar.getInstance().getTimeInMillis());
     }
 
     @Override
@@ -186,7 +187,7 @@ public class HomeTimeLineFragment extends BaseStatusesListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Log.d("DEBUG", "HomeTimeline onAttach: " + Calendar.getInstance().getTimeInMillis());
+        Log.d("DEBUG", TAG + "onAttach: " + Calendar.getInstance().getTimeInMillis());
     }
 
     @Override

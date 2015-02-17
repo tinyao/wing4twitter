@@ -16,6 +16,7 @@ public class WingStore {
     public static final int TYPE_DM = 3;
     public static final int TYPE_COMMON_TWEET = 4;
     public static final int TYPE_USER = 5;
+    public static final int TYPE_FOLLOWING = 6;
 
     public static class TweetColumns implements BaseColumns {
 
@@ -142,6 +143,27 @@ public class WingStore {
 
     public static final class CommonTweetColumns extends TweetColumns {
         public static final String TABLE_NAME = "cached_tweets";
+    }
+
+    public static final class FollowingColumns implements BaseColumns {
+        public static final String TABLE_NAME = "following";
+
+        public static final String USER_ID = "user_id";
+        public static final String USER_NAME = "user_name";
+        public static final String USER_SCREEN_NAME = "screen_name";
+        public static final String AVATAR_URL = "avatar_url";
+
+        public static final String[] COLUMNS = new String[]{
+                USER_ID, USER_NAME, USER_SCREEN_NAME, AVATAR_URL
+        };
+
+        public static final DataType[] TYPES = new DataType[]{
+                DataType.INTEGER, DataType.TEXT, DataType.TEXT, DataType.TEXT
+        };
+
+        public static final Constraint[] CONSTRAINTS = new Constraint[]{
+                Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING, Constraint.NOTHING
+        };
     }
 
 }
